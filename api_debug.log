@@ -1,0 +1,1172 @@
+2025-11-01 12:36:31,383 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 12:36:31,385 [ERROR] app.main: [API] EXC: POST /api/token -> EXCEPTION: login_for_access_token() missing 1 required positional argument: 'db'
+Traceback (most recent call last):
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\main.py", line 117, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 462, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+TypeError: login_for_access_token() missing 1 required positional argument: 'db'
+2025-11-01 12:53:46,775 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 12:53:46,778 [ERROR] app.main: [API] EXC: POST /api/token -> EXCEPTION: login_for_access_token() missing 1 required positional argument: 'db'
+Traceback (most recent call last):
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\main.py", line 117, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 462, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+TypeError: login_for_access_token() missing 1 required positional argument: 'db'
+2025-11-01 12:58:56,688 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 12:58:56,690 [ERROR] app.main: [API] EXC: POST /api/token -> EXCEPTION: login_for_access_token() missing 1 required positional argument: 'db'
+Traceback (most recent call last):
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\main.py", line 117, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 462, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+TypeError: login_for_access_token() missing 1 required positional argument: 'db'
+2025-11-01 12:58:59,394 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 12:58:59,396 [ERROR] app.main: [API] EXC: POST /api/token -> EXCEPTION: login_for_access_token() missing 1 required positional argument: 'db'
+Traceback (most recent call last):
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\main.py", line 117, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 462, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+TypeError: login_for_access_token() missing 1 required positional argument: 'db'
+2025-11-01 12:59:01,434 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 12:59:01,435 [ERROR] app.main: [API] EXC: POST /api/token -> EXCEPTION: login_for_access_token() missing 1 required positional argument: 'db'
+Traceback (most recent call last):
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\main.py", line 117, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 462, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+TypeError: login_for_access_token() missing 1 required positional argument: 'db'
+2025-11-01 12:59:02,841 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 12:59:02,842 [ERROR] app.main: [API] EXC: POST /api/token -> EXCEPTION: login_for_access_token() missing 1 required positional argument: 'db'
+Traceback (most recent call last):
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\main.py", line 117, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 462, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+TypeError: login_for_access_token() missing 1 required positional argument: 'db'
+2025-11-01 13:04:12,667 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 13:04:12,944 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 13:04:12,944 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 13:04:17,596 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 13:04:17,884 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 13:04:17,889 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 13:04:17,893 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 13:04:17,920 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 13:04:17,923 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 13:04:17,933 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 13:04:18,341 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 13:04:26,821 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 13:04:26,919 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 13:04:28,028 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 13:04:28,449 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 13:04:29,990 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-01 13:04:30,077 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-01 13:04:31,216 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-01 13:04:31,242 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-01 13:05:53,814 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 13:05:54,036 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 13:05:54,054 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 13:05:54,057 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 13:05:54,091 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 13:05:54,092 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 13:05:54,103 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 13:05:54,683 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 13:06:03,218 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 13:06:03,321 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 13:06:25,550 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-01 13:06:25,584 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-01 13:07:09,977 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-01 13:07:10,012 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-01 13:11:24,880 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-01 13:11:25,199 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-01 13:53:43,735 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 13:53:43,739 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 13:53:43,758 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 13:53:43,760 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 13:53:43,765 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 13:53:44,071 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 13:58:45,804 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 13:58:46,071 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 13:58:46,075 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 13:58:46,078 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 13:58:46,089 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 13:58:46,090 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 13:58:46,097 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 13:58:46,439 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 13:58:53,474 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 13:58:53,550 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 13:59:12,041 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 13:59:12,061 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 13:59:41,810 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 13:59:41,906 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 14:01:02,938 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 14:01:03,198 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 14:01:05,228 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-01 14:01:05,254 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-01 14:01:06,838 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-01 14:01:06,844 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-01 14:08:48,614 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 14:08:48,632 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 14:08:48,649 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 14:08:48,650 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 14:08:48,658 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 14:08:49,025 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 14:08:54,419 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 14:08:54,483 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 14:08:55,645 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 14:08:55,740 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 14:17:11,270 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 14:17:11,290 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 14:17:11,302 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 14:17:11,304 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 14:17:11,313 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 14:17:11,696 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 14:17:20,881 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 14:17:21,031 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 14:17:35,749 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-01 14:17:35,766 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-01 14:18:07,699 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 14:18:07,783 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 14:18:10,075 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 14:18:10,317 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 15:14:37,415 [INFO] app.main: [API] REQ: POST /api/users/
+2025-11-01 15:14:37,704 [INFO] app.main: [API] RES: POST /api/users/ -> 200
+2025-11-01 15:14:47,876 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 15:14:48,143 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 15:14:48,149 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 15:14:48,152 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 15:14:48,181 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 15:14:48,183 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:14:48,194 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:14:48,591 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 15:25:20,646 [INFO] app.main: [API] REQ: GET /
+2025-11-01 15:25:20,649 [INFO] app.main: [API] RES: GET / -> 200
+2025-11-01 15:25:20,758 [INFO] app.main: [API] REQ: GET /favicon.ico
+2025-11-01 15:25:20,759 [INFO] app.main: [API] RES: GET /favicon.ico -> 404
+2025-11-01 15:25:35,267 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 15:25:35,535 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 15:25:35,541 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 15:25:35,546 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 15:25:35,587 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 15:25:36,008 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 15:25:38,323 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 15:25:38,422 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 15:25:48,391 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:25:48,396 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:26:25,446 [INFO] app.main: [API] REQ: PUT /api/users/2/approve
+2025-11-01 15:26:25,469 [INFO] app.main: [API] RES: PUT /api/users/2/approve -> 200
+2025-11-01 15:26:25,475 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:26:25,481 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:27:25,881 [INFO] app.main: [API] REQ: POST /api/token body=username=user2&password=********
+2025-11-01 15:27:25,886 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 15:27:25,886 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 15:27:27,970 [INFO] app.main: [API] REQ: POST /api/token body=username=user2&password=********
+2025-11-01 15:27:27,973 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 15:27:27,973 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 15:27:43,267 [INFO] app.main: [API] REQ: PUT /api/users/2/password
+2025-11-01 15:27:43,545 [INFO] app.main: [API] RES: PUT /api/users/2/password -> 200
+2025-11-01 15:27:44,682 [INFO] app.main: [API] REQ: POST /api/token body=username=user2&password=********
+2025-11-01 15:27:44,686 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 15:27:44,686 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 15:27:51,570 [INFO] app.main: [API] REQ: POST /api/token body=username=user2&password=********
+2025-11-01 15:27:51,575 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 15:27:51,576 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 15:27:56,966 [INFO] app.main: [API] REQ: POST /api/token body=username=user2&password=********
+2025-11-01 15:27:56,972 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 15:27:56,972 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 15:28:06,954 [INFO] app.main: [API] REQ: POST /api/token body=username=user2&password=********
+2025-11-01 15:28:06,958 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 15:28:06,958 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 15:28:33,797 [INFO] app.main: [API] REQ: PUT /api/users/2/password
+2025-11-01 15:28:34,088 [INFO] app.main: [API] RES: PUT /api/users/2/password -> 200
+2025-11-01 15:28:48,355 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 15:28:48,574 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 15:28:48,577 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 15:28:48,579 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 15:28:48,614 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 15:28:48,965 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 15:28:57,561 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 15:28:57,662 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 15:44:37,696 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 15:44:37,700 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 15:44:37,714 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:44:37,719 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:44:40,706 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 15:44:41,051 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 15:44:42,399 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:44:42,404 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:53:39,434 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 15:53:39,452 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 15:53:39,461 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:53:39,465 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:53:59,605 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 15:53:59,873 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 15:53:59,877 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 15:53:59,882 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 15:53:59,912 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 15:54:00,350 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 15:54:02,007 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:54:02,014 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:54:11,393 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 15:54:11,395 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-01 15:54:11,395 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-01 15:54:23,117 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 15:54:23,123 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 15:54:23,124 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 15:54:30,046 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 15:54:30,050 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 15:54:30,050 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 15:54:59,534 [INFO] app.main: [API] REQ: POST /api/users/
+2025-11-01 15:54:59,762 [INFO] app.main: [API] RES: POST /api/users/ -> 200
+2025-11-01 15:55:08,488 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 15:55:08,518 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 15:55:09,361 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:55:09,367 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:55:16,908 [INFO] app.main: [API] REQ: PUT /api/users/2/approve
+2025-11-01 15:55:16,923 [INFO] app.main: [API] RES: PUT /api/users/2/approve -> 200
+2025-11-01 15:55:16,929 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:55:16,934 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:55:37,399 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 15:55:37,646 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 15:55:37,650 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 15:55:37,652 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 15:55:37,669 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 15:55:37,687 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 15:55:41,369 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 15:55:41,467 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 15:55:57,840 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 15:55:57,843 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 15:55:57,857 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 15:55:57,862 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 15:56:54,770 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 15:56:55,035 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 15:56:57,087 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 15:56:57,173 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 16:16:06,831 [INFO] app.main: [API] REQ: GET /
+2025-11-01 16:16:06,834 [INFO] app.main: [API] RES: GET / -> 200
+2025-11-01 16:16:06,859 [INFO] app.main: [API] REQ: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-11-01 16:16:06,860 [INFO] app.main: [API] RES: GET /.well-known/appspecific/com.chrome.devtools.json -> 404
+2025-11-01 16:16:07,031 [INFO] app.main: [API] REQ: GET /favicon.ico
+2025-11-01 16:16:07,032 [INFO] app.main: [API] RES: GET /favicon.ico -> 404
+2025-11-01 16:22:41,740 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 16:22:42,040 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 16:22:42,063 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 16:22:42,067 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 16:22:42,420 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 16:22:42,815 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 16:22:42,821 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 16:22:42,843 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 16:22:51,046 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 16:22:51,050 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 16:22:51,311 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 16:22:51,315 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 16:30:14,528 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 16:30:14,836 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 16:30:14,841 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 16:30:14,862 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 16:31:09,299 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 16:31:09,385 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 16:32:57,909 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 16:32:57,914 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 16:32:58,166 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 16:32:58,170 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 16:35:25,330 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 16:35:25,604 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 16:35:25,923 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 16:35:25,944 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 16:35:27,106 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 16:35:27,194 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 16:35:57,502 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 16:35:57,506 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 16:35:57,770 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 16:35:57,776 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 17:58:42,980 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 17:58:43,257 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 17:58:43,268 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 17:58:43,273 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 17:58:43,326 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 17:58:43,705 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 17:58:44,025 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 17:58:44,049 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 17:58:45,962 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 17:58:46,110 [ERROR] app.main: [API] EXC: POST /api/reports/receivables-download-excel -> EXCEPTION: 1 validation error for ReceivableEntry
+folio
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+Traceback (most recent call last):
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\main.py", line 60, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\routing.py", line 124, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\routing.py", line 110, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\routing.py", line 390, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\routing.py", line 291, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\reports\receivables.py", line 183, in download_receivables_report_excel
+    raise e
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\reports\receivables.py", line 172, in download_receivables_report_excel
+    processed_data = process_report_data(raw_data=raw_data, as_of=filters.as_of)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\reports\receivables.py", line 67, in process_report_data
+    entry = ReceivableEntry(
+        customer_name=row.Cliente,
+    ...<13 lines>...
+        aging_bucket="N/A"
+    )
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\pydantic\main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ReceivableEntry
+folio
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+2025-11-01 17:58:56,409 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 17:58:56,672 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 17:58:56,681 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 17:58:56,685 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 17:58:57,038 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 17:58:57,058 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 17:58:57,310 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 17:58:57,342 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 17:59:00,727 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 17:59:00,768 [ERROR] app.main: [API] EXC: POST /api/reports/receivables-preview -> EXCEPTION: 1 validation error for ReceivableEntry
+folio
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+Traceback (most recent call last):
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\main.py", line 60, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\routing.py", line 124, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\routing.py", line 110, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\routing.py", line 390, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\fastapi\routing.py", line 291, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\reports\receivables.py", line 155, in run_receivables_report
+    raise e
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\reports\receivables.py", line 150, in run_receivables_report
+    processed_data = process_report_data(
+        raw_data=raw_data, as_of=filters.as_of
+    )
+  File "C:\Proyectos\ReportesWeb\reporter_backend\app\reports\receivables.py", line 67, in process_report_data
+    entry = ReceivableEntry(
+        customer_name=row.Cliente,
+    ...<13 lines>...
+        aging_bucket="N/A"
+    )
+  File "C:\Proyectos\ReportesWeb\reporter_backend\venv\Lib\site-packages\pydantic\main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ReceivableEntry
+folio
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+2025-11-01 18:00:45,501 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 18:00:45,902 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 18:01:03,851 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 18:01:04,172 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 18:06:01,576 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 18:06:01,788 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 500 Database query error: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'BusinessEntityID'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-11-01 18:06:01,788 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 500
+2025-11-01 18:11:22,599 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 18:11:22,699 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 18:11:41,069 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 18:11:41,204 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 18:22:31,573 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-01 18:22:31,626 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-01 18:22:45,875 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 18:22:45,999 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 18:23:04,889 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 18:23:05,374 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 18:24:35,326 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 18:24:35,776 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 18:24:35,778 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 18:24:43,147 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 18:24:43,493 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 18:24:43,495 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 18:24:56,596 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 18:24:57,005 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 18:24:57,014 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 18:24:57,021 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 18:24:57,360 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:24:57,540 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:24:57,610 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:24:57,635 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:24:59,285 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 18:24:59,293 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 18:24:59,612 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 18:24:59,622 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 18:25:12,567 [INFO] app.main: [API] REQ: PUT /api/users/2/password
+2025-11-01 18:25:12,989 [INFO] app.main: [API] RES: PUT /api/users/2/password -> 200
+2025-11-01 18:25:28,992 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 18:25:29,421 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 18:25:29,422 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 18:25:39,007 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 18:25:39,463 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 18:25:39,464 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 18:25:47,895 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 18:25:48,277 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 18:25:48,278 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 18:25:55,871 [INFO] app.main: [API] REQ: POST /api/token body=username=user2&password=********
+2025-11-01 18:25:55,875 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-01 18:25:55,875 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-01 18:26:03,774 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 18:26:04,251 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 18:26:04,263 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 18:26:04,271 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 18:26:04,622 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:26:04,647 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:26:04,871 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:26:04,898 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:26:06,511 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 18:26:06,519 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 18:26:06,838 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 18:26:06,850 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 18:26:22,338 [INFO] app.main: [API] REQ: PUT /api/users/2/password
+2025-11-01 18:26:22,778 [INFO] app.main: [API] RES: PUT /api/users/2/password -> 200
+2025-11-01 18:26:45,901 [INFO] app.main: [API] REQ: POST /api/token body=username=User2&password=********
+2025-11-01 18:26:46,167 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 18:26:46,190 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 18:26:46,195 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 18:26:46,553 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:26:46,582 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:26:46,800 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:26:46,826 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:26:49,597 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 18:26:49,650 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 18:27:09,647 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 18:27:09,693 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 18:40:17,202 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 18:40:17,483 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 18:40:17,489 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 18:40:17,492 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 18:40:17,529 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:40:17,622 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:40:28,270 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 18:40:28,273 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 18:40:28,288 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:40:28,293 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-01 18:40:28,300 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-01 18:40:28,307 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:40:35,042 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 18:40:35,044 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 18:40:35,058 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:40:35,074 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:40:36,802 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 18:40:36,805 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 18:40:36,817 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:40:36,834 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 18:40:42,049 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 18:40:42,096 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 18:40:51,730 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-01 18:40:52,028 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-01 18:54:56,016 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 18:54:56,030 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 18:54:56,045 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:55:07,058 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-01 18:55:07,300 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-01 18:55:07,304 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 18:55:07,308 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 18:55:10,825 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 18:55:11,767 [WARNING] app.main: [API] HTTPException: GET /api/reports/filters/customers -> 500 Database connection error: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+2025-11-01 18:55:11,767 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 500
+2025-11-01 18:55:11,769 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 18:55:26,466 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 500 Database connection error: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+2025-11-01 18:55:26,467 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 500
+2025-11-01 18:55:27,435 [WARNING] app.main: [API] HTTPException: GET /api/reports/filters/customers -> 500 Database connection error: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+2025-11-01 18:55:27,436 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 500
+2025-11-01 20:17:31,796 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 20:17:31,810 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 20:17:31,829 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 20:17:34,168 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:17:39,510 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:17:47,519 [WARNING] app.main: [API] HTTPException: GET /api/reports/filters/customers -> 500 Database connection error: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+2025-11-01 20:17:47,519 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 500
+2025-11-01 20:17:49,841 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 500 Database connection error: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+2025-11-01 20:17:49,841 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 500
+2025-11-01 20:17:55,177 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 500 Database connection error: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+2025-11-01 20:17:55,178 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 500
+2025-11-01 20:19:17,582 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:19:28,373 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:19:36,531 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:19:36,587 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 500 Database connection error: ('28000', "[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456)")
+2025-11-01 20:19:36,587 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 500
+2025-11-01 20:19:37,362 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:19:37,387 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 500 Database connection error: ('28000', "[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456)")
+2025-11-01 20:19:37,388 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 500
+2025-11-01 20:19:37,538 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:19:37,560 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 500 Database connection error: ('28000', "[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456)")
+2025-11-01 20:19:37,560 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 500
+2025-11-01 20:19:37,720 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:19:37,754 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 500 Database connection error: ('28000', "[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456)")
+2025-11-01 20:19:37,755 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 500
+2025-11-01 20:19:39,157 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 20:19:39,163 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 20:19:39,186 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 20:19:39,201 [WARNING] app.main: [API] HTTPException: GET /api/reports/filters/customers -> 500 Database connection error: ('28000', "[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456)")
+2025-11-01 20:19:39,201 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 500
+2025-11-01 20:19:40,665 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:19:40,688 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 500 Database connection error: ('28000', "[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456)")
+2025-11-01 20:19:40,688 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 500
+2025-11-01 20:19:41,864 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 20:19:41,867 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 20:19:41,885 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 20:19:41,900 [WARNING] app.main: [API] HTTPException: GET /api/reports/filters/customers -> 500 Database connection error: ('28000', "[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'sa'. (18456)")
+2025-11-01 20:19:41,900 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 500
+2025-11-01 20:20:13,530 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:20:13,999 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 20:24:18,575 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-01 20:24:18,579 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-01 20:24:18,596 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-01 20:24:18,966 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-01 20:24:24,965 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:24:25,111 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-01 20:24:51,961 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:24:51,968 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 404 No data found for the selected filters.
+2025-11-01 20:24:51,968 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 404
+2025-11-01 20:24:54,496 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:24:54,521 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 404 No data found for the selected filters.
+2025-11-01 20:24:54,521 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 404
+2025-11-01 20:24:56,411 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:24:56,433 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 404 No data found for the selected filters.
+2025-11-01 20:24:56,434 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 404
+2025-11-01 20:24:58,408 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:24:58,414 [WARNING] app.main: [API] HTTPException: POST /api/reports/receivables-preview -> 404 No data found for the selected filters.
+2025-11-01 20:24:58,414 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 404
+2025-11-01 20:25:00,370 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-01 20:25:00,389 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-02 22:26:26,311 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-02 22:26:26,313 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-02 22:26:26,314 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-02 22:26:33,149 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-02 22:26:33,411 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-02 22:26:33,416 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-02 22:26:33,422 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-02 22:26:33,461 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-02 22:26:33,836 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-02 22:26:37,270 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-02 22:26:37,431 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-03 11:38:41,477 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-03 11:38:41,495 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-03 11:38:41,496 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-03 11:39:01,222 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-03 11:39:01,473 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-03 11:39:01,478 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-03 11:39:01,482 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-03 11:39:01,510 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 11:39:01,890 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 11:39:04,608 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-03 11:39:04,788 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-03 11:39:14,947 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-03 11:39:14,997 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-03 11:39:25,489 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-03 11:39:25,576 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-03 11:39:32,952 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-03 11:39:33,291 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-03 11:40:01,082 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-03 11:40:01,089 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-03 11:48:26,737 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 11:48:27,102 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 11:48:31,582 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-03 11:48:31,753 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-03 13:21:34,630 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-03 13:21:34,655 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-03 13:21:34,675 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 13:21:35,001 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 13:21:41,153 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-03 13:21:41,166 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-03 13:21:45,838 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 13:21:45,870 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 13:21:46,850 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-03 13:21:47,008 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-03 13:21:53,026 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-03 13:21:53,297 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-03 13:22:00,608 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-03 13:22:00,671 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-03 13:22:08,326 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-03 13:22:08,371 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-03 13:24:12,724 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-03 13:24:12,951 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-03 13:24:12,956 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-03 13:24:12,961 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-03 13:24:12,993 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 13:24:13,310 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 13:25:11,618 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-03 13:25:11,750 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-03 13:25:21,423 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-03 13:25:21,430 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-03 13:25:23,809 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 13:25:23,825 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 13:25:27,863 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-03 13:25:27,896 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-03 13:25:39,584 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-03 13:25:39,627 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-03 18:42:22,981 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-03 18:42:23,042 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-03 18:42:23,064 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 18:42:23,475 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 18:44:17,975 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-03 18:44:18,249 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-03 18:44:18,256 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-03 18:44:18,261 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-03 18:44:18,292 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 18:44:18,621 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 18:44:21,703 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-03 18:44:21,715 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-03 18:44:35,599 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 18:44:35,626 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 18:44:48,799 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-03 18:44:48,962 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-03 18:45:08,059 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-03 18:45:08,115 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-03 18:45:14,256 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-03 18:45:14,296 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-03 18:45:19,682 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-03 18:45:19,994 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-03 18:45:50,137 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-03 18:45:50,222 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-03 18:45:58,656 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-03 18:45:58,694 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-03 18:48:05,272 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-03 18:48:05,278 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-03 18:48:26,209 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-03 18:48:26,541 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-03 18:48:29,655 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-03 18:48:29,806 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-06 09:59:53,285 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-06 09:59:53,349 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-06 09:59:53,349 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-06 10:00:04,870 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-06 10:00:05,198 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-06 10:00:05,202 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-06 10:00:05,209 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-06 10:00:05,233 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-06 10:00:05,646 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-06 10:00:29,925 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-06 10:00:30,142 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-06 10:01:35,555 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-06 10:01:35,566 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-06 10:01:44,564 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-06 10:01:44,913 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-06 10:01:45,903 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-06 10:01:46,062 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-06 10:02:10,090 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-06 10:02:10,145 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-07 21:57:43,217 [INFO] app.main: [API] REQ: GET /
+2025-11-07 21:57:43,227 [INFO] app.main: [API] RES: GET / -> 200
+2025-11-07 21:57:43,659 [INFO] app.main: [API] REQ: GET /favicon.ico
+2025-11-07 21:57:43,660 [INFO] app.main: [API] RES: GET /favicon.ico -> 404
+2025-11-07 21:57:49,068 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-07 21:57:49,075 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-07 21:57:49,075 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-07 21:59:58,121 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-07 21:59:58,413 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-07 21:59:58,421 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-07 21:59:58,424 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-07 21:59:58,450 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-07 21:59:58,896 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-07 22:00:05,173 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-07 22:00:05,182 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-07 22:00:21,597 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-07 22:00:21,618 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-07 22:02:30,446 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-07 22:02:30,450 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-07 22:02:30,466 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-07 22:02:30,575 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-07 22:02:52,059 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-07 22:02:52,226 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-07 22:03:17,405 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-07 22:03:17,836 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-07 22:03:51,728 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-07 22:03:51,818 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-07 22:03:59,680 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-07 22:03:59,746 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-07 22:10:26,038 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-07 22:10:26,179 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-07 22:12:43,602 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-07 22:12:43,693 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-07 22:13:06,350 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-07 22:13:06,434 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-07 22:13:35,517 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-07 22:13:35,524 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-07 22:16:47,550 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-07 22:16:47,804 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-07 22:16:47,823 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-07 22:16:47,828 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-07 22:16:47,876 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-07 22:16:47,920 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-07 22:16:58,710 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-07 22:16:58,721 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-07 22:17:04,858 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-07 22:17:04,873 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-08 12:28:32,504 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-08 12:28:32,511 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-08 12:28:32,511 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-10 11:02:57,263 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-10 11:02:57,320 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-10 11:02:57,321 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-10 11:08:31,827 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-10 11:08:32,154 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-10 11:08:32,166 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-10 11:08:32,177 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-10 11:08:32,203 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-10 11:08:32,664 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-10 11:08:39,668 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-10 11:08:39,679 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-10 11:08:59,373 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-10 11:08:59,399 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-10 11:09:28,649 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-10 11:09:28,823 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-10 11:09:38,135 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-10 11:09:38,461 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-10 11:09:59,505 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-10 11:09:59,571 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-10 11:10:04,053 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-10 11:10:04,101 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-10 11:18:25,161 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-10 11:18:25,172 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-10 11:18:26,125 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-10 11:18:26,344 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-10 11:19:04,812 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-10 11:19:04,930 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-10 11:19:24,823 [INFO] app.main: [API] REQ: GET /api/users/
+2025-11-10 11:19:24,827 [INFO] app.main: [API] RES: GET /api/users/ -> 200
+2025-11-10 11:20:10,198 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-10 11:20:10,286 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-10 11:20:15,153 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-10 11:20:15,221 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-10 11:20:22,425 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-10 11:20:22,469 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-10 11:23:39,932 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-10 11:23:39,934 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-10 11:23:39,934 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-10 17:49:09,514 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-10 17:49:09,535 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-10 17:49:09,558 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-10 17:49:09,922 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-10 17:49:11,556 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-10 17:49:11,713 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-10 17:49:21,564 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-10 17:49:21,899 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-10 17:50:11,333 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-10 17:50:11,372 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-11 13:47:42,717 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-11 13:47:42,725 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-11 13:47:42,726 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-11 13:47:59,718 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-11 13:48:00,001 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-11 13:48:00,006 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-11 13:48:00,012 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-11 13:48:00,046 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-11 13:48:00,415 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-11 13:48:04,704 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-11 13:48:04,888 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-11 13:49:31,412 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-11 13:49:32,058 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-11 13:49:57,533 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-11 13:49:57,582 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200

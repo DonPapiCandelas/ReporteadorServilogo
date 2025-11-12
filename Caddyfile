@@ -1,0 +1,20 @@
+:80 {
+    # 1. Configura el logging para que escriba en la consola (en la terminal)
+    log
+
+    # 2. Define un "bloque" llamado @api
+    #    que capture cualquier ruta que EMPIECE con /api/
+    @api path /api/*
+
+    # 3. Redirige (proxy) todo lo que coincida con @api
+    #    a tu backend de FastAPI.
+    reverse_proxy @api http://127.0.0.1:8000
+
+    # 4. Define un "bloque" para todo lo demás (tu app de React)
+    @react not path /api/*
+    handle @react {
+        root * C:\Proyectos\ReportesWeb\reporter_frontend\build
+        file_server
+        try_files {path} /index.html
+    }
+}

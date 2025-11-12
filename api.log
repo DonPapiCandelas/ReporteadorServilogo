@@ -1,0 +1,278 @@
+INFO:     192.168.0.140:64594 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.0.140:64594 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59485 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52553 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56174 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55898 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55898 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61703 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61703 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63122 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61958 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56242 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50377 - "POST /token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50377 - "POST /token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50377 - "POST /token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:63524 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55089 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56300 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65170 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59473 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59473 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59473 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57560 - "POST /token HTTP/1.1" 200 OK
+INFO:     192.168.0.140:62045 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.0.140:62045 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59803 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63399 - "POST /token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53120 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53120 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49164 - "GET /api/token HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:49164 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60447 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59831 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59831 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 500 Internal Server Error
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 500 Internal Server Error
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 500 Internal Server Error
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 500 Internal Server Error
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 500 Internal Server Error
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 500 Internal Server Error
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 401 Unauthorized
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52150 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52150 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "PUT /api/users/2/approve HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "PUT /api/users/2/password HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "PUT /api/users/2/password HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "PUT /api/users/2/approve HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     192.168.0.232:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     ::1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/reports/filters/customers HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60835 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60835 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     192.168.1.125:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     192.168.1.125:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     192.168.1.125:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     192.168.1.125:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     192.168.1.125:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     192.168.1.125:0 - "GET /api/users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-pdf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:0 - "POST /api/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "GET /api/reports/filters/customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-excel HTTP/1.1" 200 OK
+INFO:     127.0.0.1:0 - "POST /api/reports/receivables-download-html HTTP/1.1" 200 OK

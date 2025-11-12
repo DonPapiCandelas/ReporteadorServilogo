@@ -1,0 +1,109 @@
+/* src/components/ReportView.css */
+.report-view-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.currency-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.currency-title {
+  font-size: 1.5rem; /* 24px */
+  color: #2E86AB; /* Tu color primario */
+  margin-top: 0;
+  border-bottom: 2px solid #f3f4f6;
+  padding-bottom: 1rem;
+}
+
+.aging-summary {
+  display: grid;
+  grid-template-columns: 300px 1fr; /* Columna para el total, columna para la gráfica */
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.total-balance-card {
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.total-balance-card span {
+  font-size: 1rem; /* 16px */
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+}
+
+.total-balance-card strong {
+  font-size: 2.25rem; /* 36px */
+  font-weight: 700;
+  color: #2E86AB;
+}
+
+.chart-container {
+  width: 100%;
+}
+
+.table-title {
+  font-size: 1.25rem; /* 20px */
+  color: #111827;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.table-container {
+  max-height: 500px;
+  overflow-y: auto;   /* Scroll vertical para listas largas */
+  overflow-x: auto;   /* ¡NUEVO! Scroll horizontal para tablas anchas */
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.entries-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.entries-table th,
+.entries-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem; /* 14px */
+}
+
+.entries-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  position: sticky; /* Encabezados pegajosos */
+  top: 0;
+}
+
+.entries-table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.text-right { text-align: right !important; }
+.text-center { text-align: center !important; }
+
+/* src/components/ReportView.css */
+
+/* --- ¡NUEVO! Bloque Responsivo --- */
+@media (max-width: 768px) {
+  .aging-summary {
+    grid-template-columns: 1fr; /* Apila la tarjeta de Total y la Gráfica */
+    gap: 1.5rem;
+  }
+}

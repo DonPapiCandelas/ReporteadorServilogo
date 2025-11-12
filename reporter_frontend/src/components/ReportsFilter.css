@@ -1,0 +1,155 @@
+/* src/components/ReportsFilter.css */
+.filter-bar {
+  display: flex;
+  align-items: flex-end; /* Alinea los items en la parte de abajo */
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group-customer {
+  flex-grow: 1; /* Hace que el dropdown de cliente ocupe el espacio */
+}
+
+.filter-group label {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+/* Estilos para el DatePicker */
+.date-picker {
+  width: 120px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+.date-picker:focus {
+  outline: none;
+  border-color: #2E86AB;
+  box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.2);
+}
+
+/* Estilos para React-Select */
+.customer-select {
+  min-width: 300px;
+}
+.select__control {
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  padding: 2px; /* Ajuste fino */
+}
+.select__control--is-focused {
+  border-color: #2E86AB !important;
+  box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.2) !important;
+}
+.select__placeholder {
+  color: #6b7280;
+}
+
+.run-report-button {
+  background-color: #2E86AB; /* Tu color primario */
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.5rem; /* 8px 24px */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  height: 38px; /* Misma altura que react-select */
+  transition: background-color 0.2s;
+}
+.run-report-button:hover {
+  background-color: #1E6A8C;
+}
+
+/* src/components/ReportsFilter.css */
+/* ... (todos tus estilos anteriores) ... */
+
+/* ¡NUEVO! Contenedor para los botones */
+.button-group {
+  display: flex;
+  gap: 0.5rem; /* Espacio entre botones */
+  align-items: flex-end; /* Alinea con los filtros */
+}
+
+/* ¡NUEVO! Estilo para el botón de descarga */
+.download-button {
+  background-color: #16a34a; /* Un verde para "éxito" */
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  height: 38px; /* Misma altura que el otro botón */
+  transition: background-color 0.2s;
+}
+.download-button:hover {
+  background-color: #15803d; /* Verde más oscuro */
+}
+
+/* src/components/ReportsFilter.css */
+/* ... (todos tus estilos anteriores) ... */
+
+/* Estilos específicos para los botones de descarga */
+.download-button.excel {
+  background-color: #16a34a; /* Verde */
+}
+.download-button.excel:hover {
+  background-color: #15803d;
+}
+
+/* ¡NUEVO ESTILO PARA EL BOTÓN DE PDF! */
+.download-button.pdf {
+  background-color: #dc2626; /* Rojo */
+}
+.download-button.pdf:hover {
+  background-color: #b91c1c; /* Rojo oscuro */
+}
+/* src/components/ReportsFilter.css */
+/* ... (tus estilos .excel y .pdf) ... */
+
+/* ¡NUEVO ESTILO PARA EL BOTÓN DE HTML! */
+.download-button.html {
+  background-color: #0ea5e9; /* Azul (sky) */
+}
+.download-button.html:hover {
+  background-color: #0284c7; /* Azul más oscuro */
+}
+/* src/components/ReportsFilter.css */
+
+/* --- ¡NUEVO! Bloque Responsivo --- */
+@media (max-width: 768px) {
+  .filter-bar {
+    flex-direction: column; /* Apila los filtros verticalmente */
+    align-items: stretch;   /* Estira los filtros al 100% del ancho */
+  }
+
+  .customer-select {
+    min-width: 0; /* Anula el 'min-width' del modo desktop */
+    width: 100%;
+  }
+
+  .button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 botones por fila */
+    gap: 0.5rem;
+  }
+
+  /* Hace que todos los botones llenen su celda de la grilla */
+  .button-group button { 
+    width: 100%;
+    padding: 0.75rem 1rem; /* Un poco más de espacio para tocar con el dedo */
+  }
+}
