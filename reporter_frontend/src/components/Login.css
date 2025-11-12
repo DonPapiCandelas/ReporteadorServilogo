@@ -112,3 +112,11 @@
 .link-button:hover {
   text-decoration: underline;
 }
+
+/* --- ¡NUEVO ESTILO PARA EL LOGO! --- */
+.login-logo {
+  display: block; /* Para poder centrarlo */
+  margin: 0 auto 1.5rem auto; /* centrado y con espacio abajo */
+  height: 80px; /* Ajusta este tamaño como prefieras */
+  width: auto; /* Mantiene la proporción */
+}
