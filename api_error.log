@@ -1187,3 +1187,136 @@ INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
 INFO:     Finished server process [8096]
+INFO:     Started server process [36240]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-11-12 00:06:23,822 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-12 00:06:23,830 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-12 00:06:23,831 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-12 00:06:29,585 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-12 00:06:29,851 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-12 00:06:29,856 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-12 00:06:29,861 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-12 00:06:29,890 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-12 00:06:30,286 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-12 00:06:33,962 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-12 00:06:34,114 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-12 00:28:01,219 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-12 00:28:01,223 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-12 00:28:01,248 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-12 00:28:01,355 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-12 00:29:47,616 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-12 00:29:47,620 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-12 00:29:47,639 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-12 00:29:47,799 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-12 00:29:55,939 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-12 00:29:56,041 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [36240]
+INFO:     Started server process [22120]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-11-21 06:59:31,755 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-21 06:59:31,770 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-21 06:59:31,770 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-21 06:59:37,102 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-21 06:59:37,339 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-21 06:59:37,340 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-21 06:59:44,035 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-21 06:59:44,260 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-21 06:59:44,266 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-21 06:59:44,271 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-21 06:59:44,304 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-21 06:59:44,788 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-21 06:59:48,453 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-21 06:59:48,649 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-21 07:00:04,994 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-21 07:00:05,483 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-21 07:00:30,309 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-pdf
+2025-11-21 07:00:30,436 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-pdf -> 200
+2025-11-21 07:03:45,014 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-21 07:03:45,383 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-21 07:03:46,308 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-html
+2025-11-21 07:03:46,372 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-html -> 200
+2025-11-21 20:15:04,757 [INFO] app.main: [API] REQ: GET /api/v1/ventas-producto/test
+2025-11-21 20:15:04,764 [INFO] app.main: [API] RES: GET /api/v1/ventas-producto/test -> 404
+2025-11-21 20:15:04,883 [INFO] app.main: [API] REQ: GET /favicon.ico
+2025-11-21 20:15:04,884 [INFO] app.main: [API] RES: GET /favicon.ico -> 404
+2025-11-21 20:15:10,918 [INFO] app.main: [API] REQ: GET /api/v1/ventas-producto/rows
+2025-11-21 20:15:10,918 [INFO] app.main: [API] RES: GET /api/v1/ventas-producto/rows -> 404
+2025-11-21 20:15:22,096 [INFO] app.main: [API] REQ: GET /api/v1/dashboard/kpis
+2025-11-21 20:15:22,096 [INFO] app.main: [API] RES: GET /api/v1/dashboard/kpis -> 404
+2025-11-21 20:15:29,916 [INFO] app.main: [API] REQ: GET /api/v1/ventas-producto/test
+2025-11-21 20:15:29,917 [INFO] app.main: [API] RES: GET /api/v1/ventas-producto/test -> 404
+2025-11-21 20:15:31,493 [INFO] app.main: [API] REQ: GET /api/v1/ventas-producto/test
+2025-11-21 20:15:31,494 [INFO] app.main: [API] RES: GET /api/v1/ventas-producto/test -> 404
+2025-11-21 20:18:06,465 [INFO] app.main: [API] REQ: GET /api/v1/ventas-producto/test
+2025-11-21 20:18:06,465 [INFO] app.main: [API] RES: GET /api/v1/ventas-producto/test -> 404
+2025-11-21 20:18:09,177 [INFO] app.main: [API] REQ: GET /api/v1/ventas-producto/test
+2025-11-21 20:18:09,178 [INFO] app.main: [API] RES: GET /api/v1/ventas-producto/test -> 404
+2025-11-21 20:18:14,290 [INFO] app.main: [API] REQ: GET /api/v1/ventas-producto/rows
+2025-11-21 20:18:14,291 [INFO] app.main: [API] RES: GET /api/v1/ventas-producto/rows -> 404
+2025-11-21 20:21:49,337 [INFO] app.main: [API] REQ: GET /api/v1/ventas-producto/rows
+2025-11-21 20:21:49,338 [INFO] app.main: [API] RES: GET /api/v1/ventas-producto/rows -> 404
+2025-11-21 20:22:33,329 [INFO] app.main: [API] REQ: GET /api/v1/ventas-producto/rows
+2025-11-21 20:22:33,329 [INFO] app.main: [API] RES: GET /api/v1/ventas-producto/rows -> 404
+2025-11-21 20:22:37,735 [INFO] app.main: [API] REQ: GET /
+2025-11-21 20:22:37,739 [INFO] app.main: [API] RES: GET / -> 200
+2025-11-21 20:22:48,308 [INFO] app.main: [API] REQ: GET /docs
+2025-11-21 20:22:48,309 [INFO] app.main: [API] RES: GET /docs -> 200
+2025-11-21 20:22:48,855 [INFO] app.main: [API] REQ: GET /openapi.json
+2025-11-21 20:22:48,922 [INFO] app.main: [API] RES: GET /openapi.json -> 200
+2025-11-21 20:24:36,991 [INFO] app.main: [API] REQ: GET /docs
+2025-11-21 20:24:36,992 [INFO] app.main: [API] RES: GET /docs -> 200
+2025-11-21 20:24:37,066 [INFO] app.main: [API] REQ: GET /openapi.json
+2025-11-21 20:24:37,066 [INFO] app.main: [API] RES: GET /openapi.json -> 200
+2025-11-21 20:24:45,293 [INFO] app.main: [API] REQ: GET /docs
+2025-11-21 20:24:45,293 [INFO] app.main: [API] RES: GET /docs -> 200
+2025-11-21 20:24:45,334 [INFO] app.main: [API] REQ: GET /openapi.json
+2025-11-21 20:24:45,335 [INFO] app.main: [API] RES: GET /openapi.json -> 200
+2025-11-21 20:25:13,692 [INFO] app.main: [API] REQ: GET /docs
+2025-11-21 20:25:13,692 [INFO] app.main: [API] RES: GET /docs -> 200
+2025-11-21 20:25:13,740 [INFO] app.main: [API] REQ: GET /openapi.json
+2025-11-21 20:25:13,741 [INFO] app.main: [API] RES: GET /openapi.json -> 200
+2025-11-21 20:25:15,376 [INFO] app.main: [API] REQ: GET /docs
+2025-11-21 20:25:15,376 [INFO] app.main: [API] RES: GET /docs -> 200
+2025-11-21 20:25:15,414 [INFO] app.main: [API] REQ: GET /openapi.json
+2025-11-21 20:25:15,415 [INFO] app.main: [API] RES: GET /openapi.json -> 200
+2025-11-24 09:22:36,860 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-24 09:22:36,910 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2025-11-24 09:22:36,911 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2025-11-24 09:22:44,435 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-24 09:22:44,709 [WARNING] app.main: [API] HTTPException: POST /api/token -> 401 Incorrect username or password
+2025-11-24 09:22:44,709 [INFO] app.main: [API] RES: POST /api/token -> 401
+2025-11-24 09:22:50,403 [INFO] app.main: [API] REQ: POST /api/token body=username=admin&password=********
+2025-11-24 09:22:50,646 [INFO] app.main: [API] RES: POST /api/token -> 200
+2025-11-24 09:22:50,652 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-24 09:22:50,658 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-24 09:22:50,680 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-24 09:22:51,135 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-24 09:22:57,796 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-24 09:22:57,929 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-24 09:22:59,201 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-24 09:22:59,361 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-24 10:38:00,305 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-24 10:38:00,717 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-24 11:02:15,061 [INFO] app.main: [API] REQ: GET /api/users/me
+2025-11-24 11:02:15,065 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2025-11-24 11:02:15,095 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2025-11-24 11:02:15,427 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2025-11-24 11:02:16,769 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-24 11:02:16,954 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-24 11:02:26,373 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-24 11:02:26,835 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2025-11-24 11:02:54,022 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2025-11-24 11:02:54,097 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2025-11-24 11:02:54,947 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2025-11-24 11:02:55,097 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [22120]

@@ -59,9 +59,6 @@ def _safe_excel_title(s: str) -> str:
         s = s.replace(ch, ' ')
     return (s[:31] or "Sheet").rstrip()
 
-# app/reports/report_builder.py
-# ... (después de la función _safe_excel_title)
-
 def fmt_date(v, out_fmt="%m/%d/%y"):
     if isinstance(v, (datetime.datetime, datetime.date)):
         return v.strftime(out_fmt)
@@ -82,18 +79,6 @@ def fmt_date_ordinal(d: datetime.date) -> str:
 def _rl_logo(logo_path, max_w=30 * mm, max_h=12 * mm):
     # Por ahora, no implementamos el logo_path
     return None
-    # try:
-    #     if logo_path and os.path.exists(logo_path):
-    #         img = RLImage(logo_path)
-    #         w, h = img.wrap(0, 0)
-    #         scale = min(max_w / w, max_h / h)
-    #         img.drawWidth = w * scale
-    #         img.drawHeight = h * scale
-    #         return img
-    # except Exception as e:
-    #     logging.warning(f"No se pudo insertar el logo de PDF: {e}")
-    #     pass
-    # return None
 
 def _pdf_header_footer(canv: rl_canvas.Canvas, doc):
     canv.saveState()
@@ -102,6 +87,7 @@ def _pdf_header_footer(canv: rl_canvas.Canvas, doc):
     canv.drawString(8 * mm, 8 * mm, f"Generado: {datetime.date.today():%Y-%m-%d}")
     canv.drawRightString(w - 8 * mm, 8 * mm, f"Página {doc.page}")
     canv.restoreState()
+
 # --- La Lógica de 'build_excel' (Adaptada) ---
 
 def create_excel_report(
@@ -116,90 +102,49 @@ def create_excel_report(
 
     as_of = filters['as_of']
     customer_name = filters['customer_name']
+    is_single_customer = filters.get('customer_id') is not None
+    
     all_entries = [entry for group in data.values() for entry in group.entries]
 
     wb = Workbook()
-    ws = wb.active
-    ws.title = "Main Report"
+    default_ws = wb.active
+    wb.remove(default_ws)
 
-    # --- Encabezado General ---
-    for r in range(1, 6):
-        for c in range(1, 15):
-            ws.cell(r, c).fill = fill(THEME["bg_soft"])
-    insert_logo(ws, "A1", logo_path)
-    ws.merge_cells("C1:N2")
-    t = ws["C1"]
-    t.value = "ACCOUNTS RECEIVABLE AGING REPORT"
-    t.font = Font(name="Segoe UI Semibold", size=18, color=THEME["primary"])
-    t.alignment = Alignment(horizontal="center", vertical="center")
-    ws["C4"].value = "AS OF:"
-    ws["C4"].font = Font(bold=True)
-    ws["D4"].value = as_of
-    ws["D4"].number_format = "mmmm d, yyyy"
-    ws["G4"].value = "CUSTOMER:"
-    ws["G4"].font = Font(bold=True)
-    ws["H4"].value = customer_name
-    for a in ("C4", "D4", "G4", "H4"):
-        ws[a].alignment = Alignment(horizontal="left", vertical="center")
-
-    headers = [
-        "CUSTOMER", "REFERENCE", "DOCUMENT", "INVOICE DATE", "NO.",
-        "ARRIVAL DATE", "DUE DATE", "CURRENCY", "FX RATE", "TOTAL AMOUNT",
-        "PAYMENTS", "BALANCE", "DAYS SINCE ARRIVAL",
-    ]
-    for i, h in enumerate(headers, start=1):
-        c = ws.cell(6, i, h)
-        c.font = Font(bold=True, color="FFFFFF")
-        c.alignment = Alignment(horizontal="center", vertical="center")
-        c.fill = fill(THEME["head"])
-        c.border = border_all()
-
-    # --- Filas (Main Report) ---
-    start = 7
-    for r, entry in enumerate(all_entries, start=start):
-        out = [
-            entry.customer_name, entry.reference, entry.module, entry.invoice_date,
-            entry.folio, entry.arrival_date, entry.due_date, entry.currency,
-            entry.fx_rate, entry.total, entry.paid, entry.balance, entry.days_since,
-        ]
-        for i, v in enumerate(out, start=1):
-            # Convertimos Pydantic models/datetimes a valores nativos
-            if isinstance(v, (datetime.datetime, datetime.date)):
-                ws.cell(r, i).value = v
-            elif isinstance(v, (int, float, decimal.Decimal)):
-                ws.cell(r, i).value = v
-            else:
-                ws.cell(r, i).value = str(v) if v is not None else ""
-
-
-    last = start + len(all_entries) - 1 if all_entries else start
-    if all_entries:
-        _apply_main_report_formats_excel(ws, start, last)
-
-    set_col_widths(ws, [28, 30, 14, 12, 8, 14, 14, 10, 10, 16, 16, 16, 14])
-
-    # ===== Hojas por moneda (usando 'data') =====
+    # ===== 1. Hojas por moneda (Currency Sheets) - PRIMERAS =====
     for cur, cur_group in data.items():
         cur_rows = cur_group.entries
 
         ws2 = wb.create_sheet(_safe_excel_title(f"CURRENCY {cur}"))
         insert_logo(ws2, "A1", logo_path)
-        ws2.merge_cells("C1:J1")
+        
+        merge_end = "J1" if is_single_customer else "K1"
+        merge_end_row2 = "J2" if is_single_customer else "K2"
+        
+        ws2.merge_cells(f"C1:{merge_end}")
         a1 = ws2["C1"]
         a1.value = f"Receivables Aging — {cur}"
         a1.font = Font(bold=True, size=16, color=THEME["primary"])
         a1.alignment = Alignment(horizontal="center")
-        ws2.merge_cells("C2:J2")
+        
+        ws2.merge_cells(f"C2:{merge_end_row2}")
         a2 = ws2["C2"]
         a2.value = f"As Of: {as_of:%m/%d/%Y} • Customer: {customer_name}"
         a2.font = Font(color=THEME["ink"])
         a2.alignment = Alignment(horizontal="center")
 
-        headers2 = [
-            "CUSTOMER", "REFERENCE", "DOCUMENT", "INVOICE DATE", "NO.",
-            "ARRIVAL DATE", "DUE DATE", "TOTAL AMOUNT", "PAYMENTS",
-            "BALANCE", "DAYS SINCE ARRIVAL",
-        ]
+        if is_single_customer:
+            headers2 = [
+                "REFERENCE", "DOCUMENT", "NO.", "INVOICE DATE", 
+                "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "BALANCE", 
+                "DUE DATE", "DAYS SINCE ARRIVAL"
+            ]
+        else:
+            headers2 = [
+                "CUSTOMER", "REFERENCE", "DOCUMENT", "NO.", "INVOICE DATE", 
+                "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "BALANCE", 
+                "DUE DATE", "DAYS SINCE ARRIVAL"
+            ]
+
         for i, h in enumerate(headers2, start=1):
             c = ws2.cell(4, i, h)
             c.font = Font(bold=True, color="FFFFFF")
@@ -209,11 +154,19 @@ def create_excel_report(
 
         r0 = 5
         for idx, entry in enumerate(cur_rows, start=r0):
-            out = [
-                entry.customer_name, entry.reference, entry.module, entry.invoice_date,
-                entry.folio, entry.arrival_date, entry.due_date, entry.total,
-                entry.paid, entry.balance, entry.days_since,
-            ]
+            if is_single_customer:
+                out = [
+                    entry.reference, entry.module, entry.folio, entry.invoice_date,
+                    entry.total, entry.arrival_date, entry.paid, entry.balance,
+                    entry.due_date, entry.days_since
+                ]
+            else:
+                out = [
+                    entry.customer_name, entry.reference, entry.module, entry.folio, entry.invoice_date,
+                    entry.total, entry.arrival_date, entry.paid, entry.balance,
+                    entry.due_date, entry.days_since
+                ]
+            
             for i, v in enumerate(out, start=1):
                 if isinstance(v, (datetime.datetime, datetime.date)):
                     ws2.cell(idx, i).value = v
@@ -224,10 +177,16 @@ def create_excel_report(
 
         if cur_rows:
             last2 = r0 + len(cur_rows) - 1
-            _apply_currency_sheet_formats_excel(ws2, r0, last2)
-            set_col_widths(ws2, [28, 30, 14, 12, 8, 14, 14, 18, 18, 18, 14])
+            _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_customer)
+            
+            if is_single_customer:
+                widths = [30, 14, 8, 12, 16, 14, 16, 16, 14, 14]
+            else:
+                widths = [28, 30, 14, 8, 12, 16, 14, 16, 16, 14, 14]
+            set_col_widths(ws2, widths)
 
-        # ===== Summary por moneda =====
+    # ===== 2. Hojas Summary (Summary Sheets) - SEGUNDAS =====
+    for cur, cur_group in data.items():
         ws3 = wb.create_sheet(_safe_excel_title(f"SUMMARY {cur}"))
         insert_logo(ws3, "A1", logo_path)
         ws3.merge_cells("C1:H1")
@@ -267,13 +226,70 @@ def create_excel_report(
             _apply_summary_formats_excel(ws3, 4, last3)
             set_col_widths(ws3, [30, 18, 18, 18, 12, 12, 12, 12])
 
-    # --- ¡CAMBIO CLAVE! Guardar en memoria, no en un archivo ---
+    # ===== 3. Main Report - AL FINAL =====
+    ws = wb.create_sheet("Main Report")
+    
+    for r in range(1, 6):
+        for c in range(1, 15):
+            ws.cell(r, c).fill = fill(THEME["bg_soft"])
+    insert_logo(ws, "A1", logo_path)
+    ws.merge_cells("C1:N2")
+    t = ws["C1"]
+    t.value = "ACCOUNTS RECEIVABLE AGING REPORT"
+    t.font = Font(name="Segoe UI Semibold", size=18, color=THEME["primary"])
+    t.alignment = Alignment(horizontal="center", vertical="center")
+    ws["C4"].value = "AS OF:"
+    ws["C4"].font = Font(bold=True)
+    ws["D4"].value = as_of
+    ws["D4"].number_format = "mmmm d, yyyy"
+    ws["G4"].value = "CUSTOMER:"
+    ws["G4"].font = Font(bold=True)
+    ws["H4"].value = customer_name
+    for a in ("C4", "D4", "G4", "H4"):
+        ws[a].alignment = Alignment(horizontal="left", vertical="center")
+
+    headers = [
+        "CUSTOMER", "REFERENCE", "DOCUMENT", "INVOICE DATE", "NO.",
+        "ARRIVAL DATE", "DUE DATE", "CURRENCY", "FX RATE", "TOTAL AMOUNT",
+        "PAYMENTS", "BALANCE", "DAYS SINCE ARRIVAL",
+    ]
+    for i, h in enumerate(headers, start=1):
+        c = ws.cell(6, i, h)
+        c.font = Font(bold=True, color="FFFFFF")
+        c.alignment = Alignment(horizontal="center", vertical="center")
+        c.fill = fill(THEME["head"])
+        c.border = border_all()
+
+    start = 7
+    for r, entry in enumerate(all_entries, start=start):
+        out = [
+            entry.customer_name, entry.reference, entry.module, entry.invoice_date,
+            entry.folio, entry.arrival_date, entry.due_date, entry.currency,
+            entry.fx_rate, entry.total, entry.paid, entry.balance, entry.days_since,
+        ]
+        for i, v in enumerate(out, start=1):
+            if isinstance(v, (datetime.datetime, datetime.date)):
+                ws.cell(r, i).value = v
+            elif isinstance(v, (int, float, decimal.Decimal)):
+                ws.cell(r, i).value = v
+            else:
+                ws.cell(r, i).value = str(v) if v is not None else ""
+
+    last = start + len(all_entries) - 1 if all_entries else start
+    if all_entries:
+        _apply_main_report_formats_excel(ws, start, last)
+
+    set_col_widths(ws, [28, 30, 14, 12, 8, 14, 14, 10, 10, 16, 16, 16, 14])
+
+    if len(wb.sheetnames) > 0:
+        wb.active = 0
+
     virtual_workbook = io.BytesIO()
     wb.save(virtual_workbook)
-    virtual_workbook.seek(0) # Rebobina el "puntero" del archivo al inicio
+    virtual_workbook.seek(0)
     return virtual_workbook
 
-# --- El resto de tus helpers de formato de Excel ---
+# --- Helpers de formato de Excel ---
 
 def _apply_main_report_formats_excel(ws, start, last):
     if start > last: return
@@ -310,37 +326,65 @@ def _apply_main_report_formats_excel(ws, start, last):
         CellIsRule(operator='greaterThan', formula=['45'], stopIfTrue=True, fill=overdue_fill)
     )
 
-def _apply_currency_sheet_formats_excel(ws2, r0, last2):
+def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_customer):
     if r0 > last2: return
+    
+    if is_single_customer:
+        date_cols = (4, 6, 9)
+        money_cols = (5, 7, 8)
+        int_cols = (10,)
+        total_cols = (5, 7, 8)
+        days_col = 10
+        last_col = 10
+        merge_range_end = 4
+    else:
+        date_cols = (5, 7, 10)
+        money_cols = (6, 8, 9)
+        int_cols = (11,)
+        total_cols = (6, 8, 9)
+        days_col = 11
+        last_col = 11
+        merge_range_end = 5
+
     for row in range(r0, last2 + 1):
-        ws2.cell(row, 4).number_format = "mm/dd/yyyy"
-        ws2.cell(row, 6).number_format = "mm/dd/yyyy"
-        ws2.cell(row, 7).number_format = "mm/dd/yyyy"
-        for col in (8, 9, 10):
+        for col in date_cols:
+            ws2.cell(row, col).number_format = "mm/dd/yyyy"
+        for col in money_cols:
             ws2.cell(row, col).number_format = "$#,##0.00"
-        ws2.cell(row, 11).number_format = "0"
+        for col in int_cols:
+            ws2.cell(row, col).number_format = "0"
+            
         ws2.cell(row, 1).alignment = Alignment(horizontal="left")
-        ws2.cell(row, 2).alignment = Alignment(horizontal="left")
-        for col in range(3, 12):
-            ws2.cell(row, col).alignment = Alignment(horizontal="center")
-        for col in range(1, 12):
+        if not is_single_customer:
+            ws2.cell(row, 2).alignment = Alignment(horizontal="left")
+        
+        for col in range(1, last_col + 1):
+            if col > (2 if not is_single_customer else 1):
+                ws2.cell(row, col).alignment = Alignment(horizontal="center")
             ws2.cell(row, col).border = border_all()
+
     tr2 = last2 + 1
-    ws2.merge_cells(f"A{tr2}:G{tr2}")
+    merge_char = chr(64 + merge_range_end)
+    ws2.merge_cells(f"A{tr2}:{merge_char}{tr2}")
     ws2.cell(tr2, 1).value = f"TOTALS ({ws2.title.split(' ', 1)[-1]}):"
     ws2.cell(tr2, 1).alignment = Alignment(horizontal="right")
-    for col in (8, 9, 10):
+    
+    for col in total_cols:
         ws2.cell(tr2, col).value = f"=SUM({chr(64 + col)}{r0}:{chr(64 + col)}{last2})"
         ws2.cell(tr2, col).number_format = "$#,##0.00"
         ws2.cell(tr2, col).font = Font(bold=True)
         ws2.cell(tr2, col).fill = fill(THEME["total"])
         ws2.cell(tr2, col).alignment = Alignment(horizontal="center")
         ws2.cell(tr2, col).border = border_all()
+        
     ws2.freeze_panes = "A5"
-    ws2.auto_filter.ref = f"A4:K{last2}"
+    last_col_char = chr(64 + last_col)
+    ws2.auto_filter.ref = f"A4:{last_col_char}{last2}"
+    
     overdue_fill = PatternFill("solid", fgColor="FDE68A")
+    days_col_char = chr(64 + days_col)
     ws2.conditional_formatting.add(
-        f"K{r0}:K{last2}",
+        f"{days_col_char}{r0}:{days_col_char}{last2}",
         CellIsRule(operator='greaterThan', formula=['45'], stopIfTrue=True, fill=overdue_fill)
     )
 
@@ -363,9 +407,6 @@ def _apply_summary_formats_excel(ws3, start, last):
         cell.fill = fill(THEME["total"])
         cell.alignment = Alignment(horizontal="center")
         cell.border = border_all()
-
-        # app/reports/report_builder.py
-# ... (después de la función _apply_summary_formats_excel)
 
 # --- NUEVA FUNCIÓN DE PDF ---
 
