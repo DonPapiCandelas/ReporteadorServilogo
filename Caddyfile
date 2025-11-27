@@ -1,4 +1,4 @@
-:80 {
+:8080 {
     # 1. Configura el logging para que escriba en la consola (en la terminal)
     log
 
