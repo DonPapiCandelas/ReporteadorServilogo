@@ -1,10 +1,11 @@
 // src/components/AdminConsole.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Layout from './Layout';
 import './AdminConsole.css';
 import { useAuth } from '../context/AuthContext';
-import Modal from './Modal'; // <-- ¡NUESTRO NUEVO MODAL!
-import './Login.css'; // <-- Reusamos los estilos de formulario
+import Modal from './Modal';
+import './Login.css';
 
 // (La función 'formatDateTime' es la misma, la omito por brevedad...)
 const formatDateTime = (isoString) => {
@@ -89,66 +90,66 @@ function AdminConsole() {
   const activeUsers = users.filter(u => u.is_active);
 
   return (
-    <div className="admin-container">
-      <h1>Admin Console</h1>
+    <Layout title="Administración de Usuarios">
+      <div className="admin-container">
+        <h1>Admin Console</h1>
 
-      <div className="admin-section">
-        <h2>Pending Approval ({pendingUsers.length})</h2>
-        {/* ... (sin cambios) ... */}
-        <UserTable 
-          users={pendingUsers} 
-          currentUser={currentUser}
-          onApprove={handleApprove}
-        />
-      </div>
-
-      <div className="admin-section">
-        <h2>Active Users ({activeUsers.length})</h2>
-        {/* ... (sin cambios) ... */}
-        <UserTable 
-          users={activeUsers} 
-          currentUser={currentUser}
-          onToggleStatus={handleToggleStatus}
-          onEditProfile={openEditProfileModal}     // <-- ¡Cableado!
-          onChangePassword={openPasswordModal} // <-- ¡Cableado!
-        />
-      </div>
-
-      {/* --- ¡NUESTRO MODAL RENDERIZADO! --- */}
-      <Modal 
-        isOpen={modalState.isOpen} 
-        onClose={closeModal}
-        title={modalState.mode === 'editProfile' ? 'Edit Profile' : 'Set New Password'}
-      >
-        {/* Renderizado condicional del contenido del modal */}
-        {modalState.mode === 'editProfile' && (
-          <EditProfileForm 
-            user={modalState.user} 
-            onSuccess={() => {
-              fetchUsers(); // Actualiza la tabla
-              closeModal(); // Cierra el modal
-            }}
-            onCancel={closeModal}
+        <div className="admin-section">
+          <h2>Pending Approval ({pendingUsers.length})</h2>
+          <UserTable
+            users={pendingUsers}
+            currentUser={currentUser}
+            onApprove={handleApprove}
           />
-        )}
+        </div>
 
-        {modalState.mode === 'changePassword' && (
-          <ChangePasswordForm
-            user={modalState.user}
-            onSuccess={closeModal} // Solo cierra el modal
-            onCancel={closeModal}
+        <div className="admin-section">
+          <h2>Active Users ({activeUsers.length})</h2>
+          <UserTable
+            users={activeUsers}
+            currentUser={currentUser}
+            onToggleStatus={handleToggleStatus}
+            onEditProfile={openEditProfileModal}
+            onChangePassword={openPasswordModal}
           />
-        )}
-      </Modal>
+        </div>
 
-    </div>
+        {/* --- ¡NUESTRO MODAL RENDERIZADO! --- */}
+        <Modal
+          isOpen={modalState.isOpen}
+          onClose={closeModal}
+          title={modalState.mode === 'editProfile' ? 'Edit Profile' : 'Set New Password'}
+        >
+          {/* Renderizado condicional del contenido del modal */}
+          {modalState.mode === 'editProfile' && (
+            <EditProfileForm
+              user={modalState.user}
+              onSuccess={() => {
+                fetchUsers(); // Actualiza la tabla
+                closeModal(); // Cierra el modal
+              }}
+              onCancel={closeModal}
+            />
+          )}
+
+          {modalState.mode === 'changePassword' && (
+            <ChangePasswordForm
+              user={modalState.user}
+              onSuccess={closeModal} // Solo cierra el modal
+              onCancel={closeModal}
+            />
+          )}
+        </Modal>
+
+      </div>
+    </Layout>
   );
 }
 
 // --- Sub-Componente de Tabla (¡ACTUALIZADO!) ---
 // (Actualizamos los onClick para que llamen a las nuevas funciones "open")
-function UserTable({ 
-  users, currentUser, onApprove, onToggleStatus, onEditProfile, onChangePassword 
+function UserTable({
+  users, currentUser, onApprove, onToggleStatus, onEditProfile, onChangePassword
 }) {
   if (users.length === 0) return <p>No users in this category.</p>;
 
@@ -162,7 +163,7 @@ function UserTable({
             <th>Full Name</th>
             <th>Status</th>
             <th>Last Login</th>
-            <th style={{width: '350px'}}>Actions</th>
+            <th style={{ width: '350px' }}>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -186,7 +187,7 @@ function UserTable({
                 )}
 
                 {onToggleStatus && (
-                  <button 
+                  <button
                     className={`btn-action ${user.is_active ? 'btn-block' : 'btn-unblock'}`}
                     onClick={() => onToggleStatus(user)}
                     disabled={user.id === currentUser.id}
@@ -195,7 +196,7 @@ function UserTable({
                   </button>
                 )}
                 {onEditProfile && (
-                   <button 
+                  <button
                     className="btn-action btn-edit"
                     onClick={() => onEditProfile(user)} // <-- ¡Llama al "abridor" del modal!
                   >
@@ -203,7 +204,7 @@ function UserTable({
                   </button>
                 )}
                 {onChangePassword && (
-                  <button 
+                  <button
                     className="btn-action btn-password"
                     onClick={() => onChangePassword(user)} // <-- ¡Llama al "abridor" del modal!
                   >
@@ -243,14 +244,14 @@ function EditProfileForm({ user, onSuccess, onCancel }) {
     <form onSubmit={handleSubmit} className="login-form">
       <div className="input-group">
         <label htmlFor="firstName">First Name</label>
-        <input 
+        <input
           type="text" id="firstName" value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
         />
       </div>
       <div className="input-group">
         <label htmlFor="lastName">Last Name</label>
-        <input 
+        <input
           type="text" id="lastName" value={lastName}
           onChange={(e) => setLastName(e.target.value)}
         />
@@ -293,7 +294,7 @@ function ChangePasswordForm({ user, onSuccess, onCancel }) {
       <p>You are setting a new password for <strong>{user.username}</strong>.</p>
       <div className="input-group">
         <label htmlFor="newPassword">New Password</label>
-        <input 
+        <input
           type="password" id="newPassword" value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoFocus

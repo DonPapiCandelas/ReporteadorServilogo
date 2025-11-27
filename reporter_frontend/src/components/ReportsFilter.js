@@ -5,18 +5,13 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from 'date-fns';
-
 import './ReportsFilter.css';
 
-
-// ¡NUEVO! Recibimos onDownloadHtml
 function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownloadHtml }) {
   const [asOfDate, setAsOfDate] = useState(new Date());
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-
   const [customerOptions, setCustomerOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -30,7 +25,6 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
         setIsLoading(false);
       } catch (err) {
         console.error("Error fetching customers:", err);
-        setError('Failed to load customer list.');
         setIsLoading(false);
       }
     };
@@ -49,14 +43,12 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
   const handleRunClick = () => { onRunReport(getFilters()); };
   const handleDownloadExcelClick = () => { onDownloadExcel(getFilters()); };
   const handleDownloadPdfClick = () => { onDownloadPdf(getFilters()); };
-
-  // ¡NUEVA FUNCIÓN!
   const handleDownloadHtmlClick = () => { onDownloadHtml(getFilters()); };
 
   return (
     <div className="filter-bar">
       <div className="filter-group">
-        <label htmlFor="asOfDate">As Of Date</label>
+        <label htmlFor="asOfDate">Cut-off Date</label>
         <DatePicker
           id="asOfDate"
           selected={asOfDate}
@@ -67,7 +59,7 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
       </div>
 
       <div className="filter-group filter-group-customer">
-        <label htmlFor="customer">Customer</label>
+        <label htmlFor="customer">Customer (Optional)</label>
         <Select
           id="customer"
           options={customerOptions}
@@ -76,7 +68,7 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
           isLoading={isLoading}
           isClearable={true}
           isSearchable={true}
-          placeholder={isLoading ? "Loading customers..." : "Select or type to search..."}
+          placeholder={isLoading ? "Loading..." : "Select Customer..."}
           className="customer-select"
           classNamePrefix="select"
         />
@@ -84,16 +76,15 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
 
       <div className="button-group">
         <button onClick={handleRunClick} className="run-report-button">
-          Run Report
+          Generate Report
         </button>
-        <button onClick={handleDownloadExcelClick} className="download-button excel">
-          Excel
+        <button onClick={handleDownloadExcelClick} className="download-button excel" title="Download Excel">
+          XLSX
         </button>
-        <button onClick={handleDownloadPdfClick} className="download-button pdf">
+        <button onClick={handleDownloadPdfClick} className="download-button pdf" title="Download PDF">
           PDF
         </button>
-        {/* --- ¡NUEVO BOTÓN DE DESCARGA DE HTML! --- */}
-        <button onClick={handleDownloadHtmlClick} className="download-button html">
+        <button onClick={handleDownloadHtmlClick} className="download-button html" title="Download HTML">
           HTML
         </button>
       </div>

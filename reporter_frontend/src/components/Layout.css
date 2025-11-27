@@ -1,0 +1,248 @@
+/* src/components/Layout.css */
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f3f4f6;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+}
+
+/* --- SIDEBAR BASE --- */
+.sidebar {
+    width: 260px;
+    background-color: #111827;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar.collapsed {
+    width: 80px;
+}
+
+/* Header */
+.sidebar-header {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #374151;
+    overflow: hidden;
+}
+
+/* Si está colapsado, centramos el logo */
+.sidebar.collapsed .sidebar-header {
+    justify-content: center;
+    padding: 0;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+}
+
+.logo-placeholder {
+    font-size: 1.5rem;
+}
+
+.brand-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-left: 10px;
+    color: #f9fafb;
+}
+
+/* Navegación */
+.sidebar-nav {
+    flex: 1;
+    padding: 20px 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: #9ca3af;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.2s;
+    height: 48px;
+}
+
+.nav-item:hover {
+    background-color: #374151;
+    color: white;
+}
+
+.nav-item.active {
+    background-color: #2563eb;
+    color: white;
+}
+
+.sidebar.collapsed .nav-item {
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.nav-item .icon {
+    font-size: 1.2rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+.nav-item .label {
+    margin-left: 12px;
+}
+
+/* --- FOOTER REDISEÑADO --- */
+.sidebar-footer {
+    padding: 15px;
+    background-color: #1f2937;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid #374151;
+}
+
+/* Estilo para el botón de Ocultar/Mostrar */
+.toggle-sidebar-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    /* Fondo transparente */
+    border: 1px dashed #4b5563;
+    /* Borde punteado sutil para diferenciarlo */
+    color: #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.toggle-sidebar-btn:hover {
+    background-color: #374151;
+    border-color: #6b7280;
+    color: white;
+}
+
+/* Centrar iconos en modo colapsado */
+.sidebar.collapsed .toggle-sidebar-btn,
+.sidebar.collapsed .logout-button {
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.toggle-sidebar-btn .icon {
+    font-size: 1.2rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+.toggle-sidebar-btn .label {
+    margin-left: 12px;
+}
+
+/* Línea divisoria */
+.footer-divider {
+    height: 1px;
+    background-color: #374151;
+    margin: 5px 0;
+}
+
+/* Info Usuario */
+.user-info {
+    margin-bottom: 5px;
+    padding-left: 5px;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* Botón Cerrar Sesión */
+.logout-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ef4444;
+    /* Rojo suave para destacar salir */
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.sidebar.collapsed .logout-button {
+    background-color: transparent;
+    /* En pequeño no queremos tanto rojo */
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+.logout-button:hover {
+    background-color: #dc2626;
+    color: white;
+}
+
+.logout-button .icon {
+    font-size: 1.1rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+.logout-button .label {
+    margin-left: 12px;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.top-header {
+    height: 64px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+}

@@ -1,25 +1,20 @@
 // src/components/ReportsPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { format } from 'date-fns';
+import Layout from './Layout';
 import ReportsFilter from './ReportsFilter';
-import ReportView from './ReportView';
+import ReportsSummary from './ReportsSummary';
+import ReportsDetails from './ReportsDetails';
 
-
-// Función genérica para manejar la descarga de archivos (¡sin cambios!)
 const downloadFile = async (url, filters, defaultFilename) => {
   try {
-    const response = await axios.post(
-      url,
-      filters,
-      { responseType: 'blob' }
-    );
+    const response = await axios.post(url, filters, { responseType: 'blob' });
     const contentDisposition = response.headers['content-disposition'];
     let filename = defaultFilename;
     if (contentDisposition) {
-      const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
-      if (filenameMatch && filenameMatch.length === 2) {
-        filename = filenameMatch[1];
-      }
+      const match = contentDisposition.match(/filename="([^"]+)"/);
+      if (match && match.length === 2) filename = match[1];
     }
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(new Blob([response.data]));
@@ -27,107 +22,125 @@ const downloadFile = async (url, filters, defaultFilename) => {
     document.body.appendChild(link);
     link.click();
     link.parentNode.removeChild(link);
-    window.URL.revokeObjectURL(link.href);
-    return null; // Éxito
-
+    return null;
   } catch (err) {
-    console.error("Error downloading file:", err);
-    if (err.response && err.response.data.type === 'application/json') {
-       try {
-          const errorJson = JSON.parse(await err.response.data.text());
-          return errorJson.detail || "Error downloading file.";
-       } catch (e) {
-          return "An error occurred while downloading the file.";
-       }
-    } else {
-       return "An error occurred while downloading the file.";
-    }
+    console.error("Download error:", err);
+    return "Error downloading file.";
   }
 };
 
 function ReportsPage() {
-  const [reportData, setReportData] = useState(null);
+  // Datos GLOBALES (Nunca cambian con el filtro manual)
+  const [globalSummaryData, setGlobalSummaryData] = useState(null);
+
+  // Datos FILTRADOS (Solo para Detalles)
+  const [filteredReportData, setFilteredReportData] = useState(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('summary');
 
+  // AL CARGAR: Obtener datos globales de TODOS los clientes
+  useEffect(() => {
+    const fetchGlobalData = async () => {
+      try {
+        const today = format(new Date(), 'yyyy-MM-dd');
+        const globalFilters = { as_of: today, customer_id: null, customer_name: 'All' };
+        const response = await axios.post('/api/reports/receivables-preview', globalFilters);
+        setGlobalSummaryData(response.data);
+      } catch (e) {
+        console.error("Error fetching global summary", e);
+      }
+    };
+    fetchGlobalData();
+  }, []);
+
+  // AL FILTRAR: Solo actualizar datos de DETALLES
   const handleRunReport = async (filters) => {
-    console.log("Running report preview with filters:", filters);
     setIsLoading(true);
     setError('');
-    setReportData(null); 
+    setFilteredReportData(null);
+
+    // Cambiar a pestaña Detalles automáticamente para ver el resultado
+    if (activeTab === 'summary') setActiveTab('details');
+
     try {
-      const response = await axios.post(
-        '/api/reports/receivables-preview',
-        filters
-      );
-      setReportData(response.data);
+      const response = await axios.post('/api/reports/receivables-preview', filters);
+      setFilteredReportData(response.data);
       setIsLoading(false);
     } catch (err) {
-      console.error("Error running report:", err);
-      if (err.response && err.response.data.detail) {
-        setError(err.response.data.detail);
-      } else {
-        setError('An unknown error occurred while running the report.');
-      }
+      setError(err.response?.data?.detail || 'Error running report');
       setIsLoading(false);
     }
   };
 
-  const handleDownloadExcel = async (filters) => {
-    setError('');
-    const downloadError = await downloadFile(
-      '/api/reports/receivables-download-excel',
-      filters,
-      "report.xlsx"
-    );
-    if (downloadError) setError(downloadError);
-  };
-
-  const handleDownloadPdf = async (filters) => {
-    setError('');
-    const downloadError = await downloadFile(
-      '/api/reports/receivables-download-pdf',
-      filters,
-      "report.pdf"
-    );
-    if (downloadError) setError(downloadError);
-  };
-
-  // --- ¡NUEVA LÓGICA DE DESCARGA DE HTML! ---
-  const handleDownloadHtml = async (filters) => {
-    setError('');
-    const downloadError = await downloadFile(
-      '/api/reports/receivables-download-html',
-      filters,
-      "report.html"
-    );
-    if (downloadError) setError(downloadError);
-  };
+  const handleDownloadExcel = (filters) => downloadFile('/api/reports/receivables-download-excel', filters, "report.xlsx");
+  const handleDownloadPdf = (filters) => downloadFile('/api/reports/receivables-download-pdf', filters, "report.pdf");
+  const handleDownloadHtml = (filters) => downloadFile('/api/reports/receivables-download-html', filters, "report.html");
 
   return (
-    <div className="reports-page-container">
-      <h1>Accounts Receivable Aging</h1>
+    <Layout title="Accounts Receivable">
 
-      {/* ¡Pasamos las CUATRO funciones! */}
-      <ReportsFilter 
-        onRunReport={handleRunReport} 
-        onDownloadExcel={handleDownloadExcel}
-        onDownloadPdf={handleDownloadPdf}
-        onDownloadHtml={handleDownloadHtml}
-      />
+      <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '20px' }}>
+        <ReportsFilter
+          onRunReport={handleRunReport}
+          onDownloadExcel={handleDownloadExcel}
+          onDownloadPdf={handleDownloadPdf}
+          onDownloadHtml={handleDownloadHtml}
+        />
+      </div>
 
       <div className="report-content">
-        {isLoading && (
-          <div className="loading-message">Loading report data...</div>
+        {isLoading && <div className="loading-message" style={{ padding: '20px', textAlign: 'center' }}>Loading data...</div>}
+        {error && <div className="error-message" style={{ color: 'red', padding: '10px' }}>{error}</div>}
+
+        {/* TABS */}
+        <div style={{ display: 'flex', borderBottom: '2px solid #e5e7eb', marginBottom: '20px' }}>
+          <button
+            onClick={() => setActiveTab('summary')}
+            style={{
+              padding: '12px 24px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold',
+              borderBottom: activeTab === 'summary' ? '3px solid #2563eb' : '3px solid transparent',
+              color: activeTab === 'summary' ? '#2563eb' : '#6b7280',
+            }}
+          >
+            Global Summary
+          </button>
+          <button
+            onClick={() => setActiveTab('details')}
+            style={{
+              padding: '12px 24px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold',
+              borderBottom: activeTab === 'details' ? '3px solid #2563eb' : '3px solid transparent',
+              color: activeTab === 'details' ? '#2563eb' : '#6b7280',
+            }}
+          >
+            Detailed Search
+          </button>
+        </div>
+
+        {/* CONTENT */}
+        {activeTab === 'summary' && (
+          /* Siempre usa globalSummaryData */
+          globalSummaryData ? (
+            <ReportsSummary reportData={globalSummaryData} />
+          ) : (
+            <div style={{ padding: 20 }}>Loading Global Summary...</div>
+          )
         )}
-        {error && (
-          <div className="error-message">{error}</div>
-        )}
-        {reportData && (
-          <ReportView reportData={reportData} />
+
+        {activeTab === 'details' && (
+          /* Usa filteredReportData */
+          filteredReportData ? (
+            <ReportsDetails reportData={filteredReportData} />
+          ) : (
+            <div style={{ padding: 40, textAlign: 'center', color: '#6b7280' }}>
+              Use the filters above and click "Generate Report" to see specific details.
+            </div>
+          )
         )}
       </div>
-    </div>
+
+    </Layout>
   );
 }
 
