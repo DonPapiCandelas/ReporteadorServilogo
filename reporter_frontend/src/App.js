@@ -6,6 +6,7 @@ import Login from './components/Login';
 import ReportsPage from './components/ReportsPage';
 import Register from './components/Register';
 import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
 import AdminConsole from './components/AdminConsole';
 
 function App() {
@@ -33,9 +34,9 @@ function App() {
       <Route
         path="/admin"
         element={
-          <PrivateRoute>
+          <AdminRoute>
             <AdminConsole />
-          </PrivateRoute>
+          </AdminRoute>
         }
       />
     </Routes>

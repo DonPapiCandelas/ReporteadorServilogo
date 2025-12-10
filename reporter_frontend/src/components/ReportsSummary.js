@@ -6,12 +6,10 @@ import {
     Treemap
 } from 'recharts';
 
-// Colores vivos para los mosaicos
-const COLORS_TREEMAP = ['#0ea5e9', '#22c55e', '#eab308', '#f97316', '#ef4444', '#a855f7', '#6366f1', '#14b8a6'];
-// Colores para el Pastel y Top 10
+// Colors for Pie Chart and Top 10
 const COLORS_PIE = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
 
-// Componente para dibujar cada Cuadro del Mosaico
+// --- TREEMAP TILE COMPONENT ---
 const CustomTreemapContent = (props) => {
     const { x, y, width, height, name, value, fill } = props;
 
@@ -23,12 +21,12 @@ const CustomTreemapContent = (props) => {
                 width={width}
                 height={height}
                 style={{
-                    fill: fill,
+                    fill: fill, // Uses calculated color (Red/Green)
                     stroke: '#fff',
-                    strokeWidth: 2, // Borde blanco para separar los mosaicos
+                    strokeWidth: 2,
                 }}
             />
-            {/* Texto solo si cabe bien */}
+            {/* Show text only if it fits comfortably */}
             {width > 35 && height > 25 && (
                 <foreignObject x={x} y={y} width={width} height={height}>
                     <div style={{
@@ -38,13 +36,35 @@ const CustomTreemapContent = (props) => {
                     }}>
                         <span style={{ fontWeight: 'bold', fontSize: width > 80 ? '11px' : '10px', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>{name}</span>
                         {width > 60 && height > 35 && (
-                            <span style={{ fontSize: width > 80 ? '10px' : '9px', marginTop: '2px', opacity: 0.95 }}>${value.toLocaleString()}</span>
+                            <span style={{ fontSize: width > 80 ? '10px' : '9px', marginTop: '2px', opacity: 0.95 }}>
+                                ${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                            </span>
                         )}
                     </div>
                 </foreignObject>
             )}
         </g>
     );
+};
+
+// --- CUSTOM TOOLTIP ---
+const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        return (
+            <div style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
+                <p style={{ fontWeight: 'bold', margin: '0 0 5px 0', color: '#333' }}>{data.name}</p>
+                <p style={{ margin: 0, fontSize: '0.9rem' }}>Balance: <b>${data.value.toLocaleString()}</b> <span style={{ fontSize: '0.8em', color: '#666' }}>({data.currency})</span></p>
+                {/* Risk Status */}
+                {data.riskPct !== undefined && (
+                    <p style={{ margin: '5px 0 0 0', fontWeight: 'bold', color: data.isRisky ? '#dc2626' : '#16a34a' }}>
+                        {data.isRisky ? '⚠️ HIGH RISK' : '✅ GOOD STANDING'} ({data.riskPct}%)
+                    </p>
+                )}
+            </div>
+        );
+    }
+    return null;
 };
 
 const ReportsSummary = ({ reportData }) => {
@@ -61,22 +81,42 @@ const ReportsSummary = ({ reportData }) => {
     });
     const totalNormalized = pieData.reduce((acc, item) => acc + item.normalizedValue, 0);
 
-    // --- 2. TREEMAP DATA (MOSAICOS) ---
-    // Recolectamos TODOS los clientes de todas las monedas
+    // --- 2. TREEMAP DATA (MOSAICS) ---
+    // Collect ALL customers and calculate color logic HERE
     let allClients = [];
     currencies.forEach((cur) => {
         const group = reportData.data_by_currency[cur];
-        const entries = Object.keys(group.aging_summary).map((c, index) => ({
-            name: c,
-            value: group.aging_summary[c].total_balance,
-            currency: cur,
-            // Asignamos color basado en el índice global acumulado para variar
-            fill: COLORS_TREEMAP[(index + allClients.length) % COLORS_TREEMAP.length]
-        }));
-        allClients = [...allClients, ...entries];
+
+        const entries = Object.keys(group.aging_summary).map((c) => {
+            const summary = group.aging_summary[c];
+
+            // --- TRAFFIC LIGHT LOGIC ---
+            const oldDebt = (summary.bucket_31_45 || 0) + (summary.bucket_45_plus || 0);
+            const total = summary.total_balance || 1;
+            const riskRatio = oldDebt / total;
+            const isRisky = riskRatio > 0.40; // 40% Rule
+
+            return {
+                name: c,
+                value: summary.total_balance,
+                currency: cur,
+                // Tooltip data
+                riskPct: (riskRatio * 100).toFixed(0),
+                isRisky: isRisky,
+                // Assign FINAL color here
+                fill: isRisky ? '#dc2626' : '#16a34a' // Red vs Green
+            };
+        });
+
+        // Filter out negative or zero balances to prevent chart errors
+        const validEntries = entries.filter(e => e.value > 1);
+        allClients = [...allClients, ...validEntries];
     });
 
-    // ¡ESTRUCTURA CORRECTA! Envolvemos en 'children' para forzar mosaicos cuadrados
+    // Sort by value so larger tiles appear top-left
+    allClients.sort((a, b) => b.value - a.value);
+
+    // Recharts Structure
     const treemapData = [{
         name: 'Portfolio',
         children: allClients
@@ -142,7 +182,7 @@ const ReportsSummary = ({ reportData }) => {
                     </div>
                 </div>
 
-                {/* Top 10 Bars (Se quedan porque te gustaron) */}
+                {/* Top 10 Bars */}
                 {currencies.map((cur, idx) => {
                     const group = reportData.data_by_currency[cur];
                     const customers = Object.keys(group.aging_summary).map(c => ({
@@ -155,7 +195,7 @@ const ReportsSummary = ({ reportData }) => {
 
                     return (
                         <div key={cur} style={{ background: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-                            <h3 style={{ fontSize: '0.95rem', fontWeight: '600', marginBottom: '10px', color: '#374151' }}>Top 10 Debtors ({cur})</h3>
+                            <h3 style={{ fontSize: '0.95rem', fontWeight: '600', marginBottom: '10px', color: '#374151' }}>Top 10 Customers ({cur})</h3>
                             <div style={{ height: '250px' }}>
                                 <ResponsiveContainer>
                                     <BarChart data={customers} layout="vertical" margin={{ left: 0, right: 35, bottom: 0, top: 0 }}>
@@ -174,22 +214,31 @@ const ReportsSummary = ({ reportData }) => {
                 })}
             </div>
 
-            {/* 4. TREEMAP GIGANTE Y ORDENADO (Mosaicos) */}
+            {/* 4. GIANT TREEMAP (With Red/Green logic) */}
             <div style={{ background: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '5px', color: '#374151' }}>Global Portfolio Heatmap</h3>
-                <p style={{ fontSize: '0.85rem', color: '#9ca3af', marginBottom: '20px' }}>Visual representation of all customer balances (Mosaics).</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <div>
+                        <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '2px', color: '#374151' }}>Global Portfolio Risk Map</h3>
+                        <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: 0 }}>All Customers</p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '15px', fontSize: '0.8rem' }}>
+                        <span style={{ color: '#dc2626', fontWeight: 'bold' }}>■ High Risk (>40% Overdue)</span>
+                        <span style={{ color: '#16a34a', fontWeight: 'bold' }}>■ Good Standing</span>
+                    </div>
+                </div>
 
+                {/* 600px Height */}
                 <div style={{ height: '600px', width: '100%' }}>
                     <ResponsiveContainer>
                         <Treemap
                             data={treemapData}
                             dataKey="value"
-                            ratio={4 / 3}
+                            // ratio={4 / 3} // Removed ratio to let Recharts optimize fill
                             stroke="#fff"
-                            fill="#8884d8"
+                            fill="#fff"
                             content={<CustomTreemapContent />}
                         >
-                            <Tooltip formatter={(value, name, props) => [`$${value.toLocaleString()}`, `${props.payload.name} (${props.payload.currency})`]} />
+                            <Tooltip content={<CustomTooltip />} />
                         </Treemap>
                     </ResponsiveContainer>
                 </div>

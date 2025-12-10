@@ -48,10 +48,10 @@ function ReportView({ reportData }) {
 
         // Pasamos los datos a nuestros sub-componentes
         return (
-          <CurrencySection 
-            key={currency} 
-            currency={currency} 
-            data={data} 
+          <CurrencySection
+            key={currency}
+            currency={currency}
+            data={data}
           />
         );
       })}
@@ -121,6 +121,7 @@ function AgingSummary({ data }) {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false, // <--- ¡IMPORTANTE! Para que respete la altura del contenedor
     plugins: {
       legend: { display: false },
       title: {
@@ -152,7 +153,7 @@ function AgingSummary({ data }) {
       </div>
 
       {/* La Gráfica de Barras */}
-      <div className="chart-container">
+      <div className="chart-container" style={{ height: '300px' }}>
         <Bar options={chartOptions} data={chartData} />
       </div>
     </div>

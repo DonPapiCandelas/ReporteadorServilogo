@@ -18,8 +18,8 @@ function Register() {
     setError('');
 
     try {
-      // Llama al endpoint de registro con los nuevos campos
-      await axios.post('/api/users/', {
+      // Llama al endpoint de registro público
+      await axios.post('/api/register', {
         username: username,
         password: password,
         first_name: firstName,
@@ -44,12 +44,12 @@ function Register() {
       <div className="login-container">
         <div className="login-box">
           <h1 className="login-title">Registration Submitted!</h1>
-          <p className="login-subtitle" style={{color: '#16a34a', fontWeight: 600}}>
+          <p className="login-subtitle" style={{ color: '#16a34a', fontWeight: 600 }}>
             Your account is pending approval.
             <br />
             An administrator will review your request shortly.
           </p>
-          <Link to="/login" className="login-button" style={{textAlign: 'center', textDecoration: 'none'}}>
+          <Link to="/login" className="login-button" style={{ textAlign: 'center', textDecoration: 'none' }}>
             Back to Login
           </Link>
         </div>

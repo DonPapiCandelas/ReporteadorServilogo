@@ -1,13 +1,10 @@
 // src/components/AdminConsole.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Layout from './Layout';
 import './AdminConsole.css';
 import { useAuth } from '../context/AuthContext';
-import Modal from './Modal';
-import './Login.css';
+import Layout from './Layout';
 
-// (La función 'formatDateTime' es la misma, la omito por brevedad...)
 const formatDateTime = (isoString) => {
   if (!isoString) return "Never";
   try {
@@ -20,197 +17,262 @@ const formatDateTime = (isoString) => {
 };
 
 function AdminConsole() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const { user: currentUser } = useAuth();
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // --- ¡NUEVO ESTADO PARA EL MODAL! ---
+  // Creation form
+  const [newUser, setNewUser] = useState({
+    username: '',
+    password: '',
+    first_name: '',
+    last_name: ''
+  });
+  const [creationMessage, setCreationMessage] = useState('');
+
+  // Modal state
   const [modalState, setModalState] = useState({
     isOpen: false,
-    mode: null, // 'editProfile' o 'changePassword'
-    user: null   // El usuario que estamos editando
+    mode: null, // 'editProfile' or 'changePassword'
+    user: null
   });
 
-  useEffect(() => { fetchUsers(); }, []);
-
   const fetchUsers = async () => {
-    setLoading(true);
     try {
       const response = await axios.get('/api/users/');
       setUsers(response.data);
-      setError('');
+      setIsLoading(false);
     } catch (err) {
-      setError('Failed to load users.');
+      setError('Error fetching users. Are you admin?');
+      setIsLoading(false);
     }
-    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  // Create user
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    setCreationMessage('');
+    try {
+      await axios.post('/api/users/', newUser);
+      setCreationMessage('User created successfully. Pending approval.');
+      setNewUser({ username: '', password: '', first_name: '', last_name: '' });
+      fetchUsers();
+    } catch (err) {
+      setCreationMessage('Error: ' + (err.response?.data?.detail || err.message));
+    }
+  };
+
+  // Approve user
+  const handleApprove = async (userId) => {
+    try {
+      await axios.put(`/api/users/${userId}/status?is_active=true`);
+      fetchUsers();
+    } catch (err) {
+      alert("Error approving user: " + (err.response?.data?.detail || err.message));
+    }
+  };
+
+  // Toggle status (activate/deactivate)
+  const handleToggleStatus = async (user) => {
+    const newStatus = !user.is_active;
+    try {
+      await axios.put(`/api/users/${user.id}/status?is_active=${newStatus}`);
+      fetchUsers();
+    } catch (err) {
+      alert("Error updating status: " + (err.response?.data?.detail || err.message));
+    }
+  };
+
+  // Delete user
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    try {
+      await axios.delete(`/api/users/${userId}`);
+      fetchUsers();
+    } catch (err) {
+      alert("Error deleting user: " + (err.response?.data?.detail || err.message));
+    }
+  };
+
+  // Toggle admin
+  const handleToggleAdmin = async (user) => {
+    const newStatus = !user.is_admin;
+    try {
+      await axios.put(`/api/users/${user.id}/role?is_admin=${newStatus}`);
+      fetchUsers();
+    } catch (err) {
+      alert("Error updating role: " + (err.response?.data?.detail || err.message));
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setNewUser({ ...newUser, [e.target.name]: e.target.value });
+  };
+
+  const openEditProfileModal = (user) => {
+    setModalState({ isOpen: true, mode: 'editProfile', user });
+  };
+
+  const openPasswordModal = (user) => {
+    setModalState({ isOpen: true, mode: 'changePassword', user });
   };
 
   const closeModal = () => {
     setModalState({ isOpen: false, mode: null, user: null });
   };
 
-  // --- Acciones del Administrador (¡ACTUALIZADAS!) ---
-
-  const handleApprove = async (userId) => {
-    // ... (sin cambios)
-    try {
-      await axios.put(`/api/users/${userId}/approve`);
-      fetchUsers();
-    } catch (err) {
-      alert('Error approving user.');
-    }
-  };
-
-  const handleToggleStatus = async (userToUpdate) => {
-    // ... (sin cambios)
-    const newStatus = !userToUpdate.is_active;
-    try {
-      await axios.put(`/api/users/${userToUpdate.id}/status`, { is_active: newStatus });
-      fetchUsers();
-    } catch (err) {
-      alert('Error updating user status.');
-    }
-  };
-
-  // ¡NUEVO! Estas funciones AHORA ABREN EL MODAL
-  const openEditProfileModal = (userToEdit) => {
-    setModalState({ isOpen: true, mode: 'editProfile', user: userToEdit });
-  };
-
-  const openPasswordModal = (userToEdit) => {
-    setModalState({ isOpen: true, mode: 'changePassword', user: userToEdit });
-  };
-
-  // --- Lógica de Renderizado ---
-  if (loading) return <div className="admin-container">Loading...</div>;
-  if (error) return <div className="admin-container error-message">{error}</div>;
+  if (isLoading) return <Layout title="Admin Console"><div>Loading users...</div></Layout>;
+  if (error) return <Layout title="Admin Console"><div className="error">{error}</div></Layout>;
 
   const pendingUsers = users.filter(u => !u.is_active);
   const activeUsers = users.filter(u => u.is_active);
 
   return (
-    <Layout title="Administración de Usuarios">
-      <div className="admin-container">
+    <Layout title="User Management">
+      <div className="admin-console-container" style={{ padding: '20px' }}>
         <h1>Admin Console</h1>
 
-        <div className="admin-section">
-          <h2>Pending Approval ({pendingUsers.length})</h2>
-          <UserTable
-            users={pendingUsers}
-            currentUser={currentUser}
-            onApprove={handleApprove}
-          />
+        {/* Creation form */}
+        <div className="create-user-section" style={{ background: '#f8fafc', padding: '20px', borderRadius: '8px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
+          <h3 style={{ marginTop: 0 }}>Register New User</h3>
+          <form onSubmit={handleCreateUser} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'end' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold' }}>Username</label>
+              <input name="username" value={newUser.username} onChange={handleInputChange} required style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold' }}>Password</label>
+              <input name="password" type="password" value={newUser.password} onChange={handleInputChange} required style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold' }}>First Name</label>
+              <input name="first_name" value={newUser.first_name} onChange={handleInputChange} style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold' }}>Last Name</label>
+              <input name="last_name" value={newUser.last_name} onChange={handleInputChange} style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+            </div>
+            <button type="submit" style={{ padding: '10px 20px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+              + Create User
+            </button>
+          </form>
+          {creationMessage && <p style={{ color: creationMessage.includes('Error') ? 'red' : 'green', marginTop: '10px' }}>{creationMessage}</p>}
         </div>
 
-        <div className="admin-section">
-          <h2>Active Users ({activeUsers.length})</h2>
-          <UserTable
-            users={activeUsers}
-            currentUser={currentUser}
-            onToggleStatus={handleToggleStatus}
-            onEditProfile={openEditProfileModal}
-            onChangePassword={openPasswordModal}
-          />
-        </div>
+        {/* Pending Users */}
+        {pendingUsers.length > 0 && (
+          <div style={{ marginBottom: '30px' }}>
+            <h3>Pending User Approvals ({pendingUsers.length})</h3>
+            <UserTable
+              users={pendingUsers}
+              currentUser={currentUser}
+              onApprove={handleApprove}
+              onDelete={handleDeleteUser}
+            />
+          </div>
+        )}
 
-        {/* --- ¡NUESTRO MODAL RENDERIZADO! --- */}
-        <Modal
-          isOpen={modalState.isOpen}
-          onClose={closeModal}
-          title={modalState.mode === 'editProfile' ? 'Edit Profile' : 'Set New Password'}
-        >
-          {/* Renderizado condicional del contenido del modal */}
+        {/* Active Users */}
+        <h3>Active Users ({activeUsers.length})</h3>
+        <UserTable
+          users={activeUsers}
+          currentUser={currentUser}
+          onToggleStatus={handleToggleStatus}
+          onToggleAdmin={handleToggleAdmin}
+          onEditProfile={openEditProfileModal}
+          onChangePassword={openPasswordModal}
+          onDelete={handleDeleteUser}
+        />
+
+        {/* Modal */}
+        <Modal isOpen={modalState.isOpen} onClose={closeModal} title={modalState.mode === 'editProfile' ? 'Edit Profile' : 'Change Password'}>
           {modalState.mode === 'editProfile' && (
-            <EditProfileForm
-              user={modalState.user}
-              onSuccess={() => {
-                fetchUsers(); // Actualiza la tabla
-                closeModal(); // Cierra el modal
-              }}
-              onCancel={closeModal}
-            />
+            <EditProfileForm user={modalState.user} onSuccess={() => { fetchUsers(); closeModal(); }} onCancel={closeModal} />
           )}
-
           {modalState.mode === 'changePassword' && (
-            <ChangePasswordForm
-              user={modalState.user}
-              onSuccess={closeModal} // Solo cierra el modal
-              onCancel={closeModal}
-            />
+            <ChangePasswordForm user={modalState.user} onSuccess={closeModal} onCancel={closeModal} />
           )}
         </Modal>
-
       </div>
     </Layout>
   );
 }
 
-// --- Sub-Componente de Tabla (¡ACTUALIZADO!) ---
-// (Actualizamos los onClick para que llamen a las nuevas funciones "open")
-function UserTable({
-  users, currentUser, onApprove, onToggleStatus, onEditProfile, onChangePassword
-}) {
+// User table
+function UserTable({ users, currentUser, onApprove, onToggleStatus, onToggleAdmin, onEditProfile, onChangePassword, onDelete }) {
   if (users.length === 0) return <p>No users in this category.</p>;
 
   return (
-    <div className="table-container">
-      <table className="admin-users-table">
+    <div className="table-responsive">
+      <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <thead>
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Full Name</th>
-            <th>Status</th>
-            <th>Last Login</th>
-            <th style={{ width: '350px' }}>Actions</th>
+          <tr style={{ background: '#e2e8f0', textAlign: 'left' }}>
+            <th style={{ padding: '12px' }}>ID</th>
+            <th style={{ padding: '12px' }}>Username</th>
+            <th style={{ padding: '12px' }}>Full Name</th>
+            <th style={{ padding: '12px' }}>Status</th>
+            <th style={{ padding: '12px' }}>Last Login</th>
+            <th style={{ padding: '12px', textAlign: 'center' }}>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.username} {user.is_admin ? ' (Admin)' : ''}</td>
-              <td>{user.first_name} {user.last_name}</td>
-              <td>
-                <span className={`status ${user.is_active ? 'status-active' : 'status-pending'}`}>
-                  {user.is_active ? 'Active' : 'Pending'}
-                </span>
+          {users.map(u => (
+            <tr key={u.id} style={{ borderBottom: '1px solid #eee' }}>
+              <td style={{ padding: '12px' }}>{u.id}</td>
+              <td style={{ padding: '12px', fontWeight: 'bold' }}>
+                {u.username} {u.is_admin && <span style={{ color: '#dc2626', fontSize: '0.75rem' }}>(Admin)</span>}
               </td>
-              <td>{formatDateTime(user.last_login)}</td>
-              <td className="actions-cell">
+              <td style={{ padding: '12px' }}>{u.first_name} {u.last_name}</td>
+              <td style={{ padding: '12px' }}>
+                {u.is_active ? (
+                  <span style={{ background: '#dcfce7', color: '#166534', padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' }}>Active</span>
+                ) : (
+                  <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' }}>Pending</span>
+                )}
+              </td>
+              <td style={{ padding: '12px', fontSize: '0.85rem' }}>{formatDateTime(u.last_login)}</td>
+              <td style={{ padding: '12px', textAlign: 'center' }}>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
 
-                {onApprove && (
-                  <button className="btn-action btn-approve" onClick={() => onApprove(user.id)}>
-                    Approve
-                  </button>
-                )}
+                  {onApprove && (
+                    <button onClick={() => onApprove(u.id)} style={{ padding: '6px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
+                      Approve
+                    </button>
+                  )}
 
-                {onToggleStatus && (
-                  <button
-                    className={`btn-action ${user.is_active ? 'btn-block' : 'btn-unblock'}`}
-                    onClick={() => onToggleStatus(user)}
-                    disabled={user.id === currentUser.id}
-                  >
-                    {user.is_active ? 'Block' : 'Unblock'}
+                  {onToggleStatus && (
+                    <button onClick={() => onToggleStatus(u)} disabled={u.id === currentUser.id} style={{ padding: '6px 12px', background: u.is_active ? '#f59e0b' : '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', opacity: u.id === currentUser.id ? 0.5 : 1 }}>
+                      {u.is_active ? 'Deactivate' : 'Activate'}
+                    </button>
+                  )}
+
+                  {onToggleAdmin && (
+                    <button onClick={() => onToggleAdmin(u)} disabled={u.id === currentUser.id} style={{ padding: '6px 12px', background: u.is_admin ? '#6b7280' : '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', opacity: u.id === currentUser.id ? 0.5 : 1 }}>
+                      {u.is_admin ? 'Remove Admin' : 'Make Admin'}
+                    </button>
+                  )}
+
+                  {onEditProfile && (
+                    <button onClick={() => onEditProfile(u)} style={{ padding: '6px 12px', background: '#8b5cf6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
+                      Edit Profile
+                    </button>
+                  )}
+
+                  {onChangePassword && (
+                    <button onClick={() => onChangePassword(u)} style={{ padding: '6px 12px', background: '#ec4899', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
+                      Change Password
+                    </button>
+                  )}
+
+                  <button onClick={() => onDelete(u.id)} disabled={u.id === currentUser.id} style={{ padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', opacity: u.id === currentUser.id ? 0.5 : 1 }}>
+                    Delete
                   </button>
-                )}
-                {onEditProfile && (
-                  <button
-                    className="btn-action btn-edit"
-                    onClick={() => onEditProfile(user)} // <-- ¡Llama al "abridor" del modal!
-                  >
-                    Edit Profile
-                  </button>
-                )}
-                {onChangePassword && (
-                  <button
-                    className="btn-action btn-password"
-                    onClick={() => onChangePassword(user)} // <-- ¡Llama al "abridor" del modal!
-                  >
-                    Set Password
-                  </button>
-                )}
+                </div>
               </td>
             </tr>
           ))}
@@ -220,7 +282,21 @@ function UserTable({
   );
 }
 
-// --- ¡NUEVO SUB-COMPONENTE: Formulario de Editar Perfil! ---
+// Modal Component
+function Modal({ isOpen, onClose, title, children }) {
+  if (!isOpen) return null;
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }} onClick={onClose}>
+      <div style={{ background: 'white', padding: '30px', borderRadius: '8px', minWidth: '400px', maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
+        <h2 style={{ marginTop: 0 }}>{title}</h2>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// Edit profile form
 function EditProfileForm({ user, onSuccess, onCancel }) {
   const [firstName, setFirstName] = useState(user.first_name || '');
   const [lastName, setLastName] = useState(user.last_name || '');
@@ -230,42 +306,37 @@ function EditProfileForm({ user, onSuccess, onCancel }) {
     e.preventDefault();
     setError('');
     try {
-      await axios.put(
-        `/api/users/${user.id}/profile`,
-        { first_name: firstName, last_name: lastName }
-      );
-      onSuccess(); // Llama a la función de éxito (refresca y cierra)
+      await axios.put(`/api/users/${user.id}/profile?first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}`);
+      onSuccess();
     } catch (err) {
-      setError('Failed to update profile.');
+      setError('Error updating profile: ' + (err.response?.data?.detail || err.message));
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="login-form">
-      <div className="input-group">
-        <label htmlFor="firstName">First Name</label>
-        <input
-          type="text" id="firstName" value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
+    <form onSubmit={handleSubmit}>
+      <div style={{ marginBottom: '15px' }}>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>First Name</label>
+        <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
       </div>
-      <div className="input-group">
-        <label htmlFor="lastName">Last Name</label>
-        <input
-          type="text" id="lastName" value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
+      <div style={{ marginBottom: '15px' }}>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Last Name</label>
+        <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
       </div>
-      {error && <p className="error-message">{error}</p>}
-      <div className="form-actions">
-        <button type="button" className="btn-secondary" onClick={onCancel}>Cancel</button>
-        <button type="submit" className="btn-primary">Save Changes</button>
+      {error && <p style={{ color: 'red', fontSize: '0.9rem' }}>{error}</p>}
+      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+        <button type="button" onClick={onCancel} style={{ padding: '10px 20px', background: '#6b7280', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+          Cancel
+        </button>
+        <button type="submit" style={{ padding: '10px 20px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+          Save
+        </button>
       </div>
     </form>
   );
 }
 
-// --- ¡NUEVO SUB-COMPONENTE: Formulario de Cambiar Contraseña! ---
+// Change password form
 function ChangePasswordForm({ user, onSuccess, onCancel }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -273,37 +344,34 @@ function ChangePasswordForm({ user, onSuccess, onCancel }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password.trim() === '') {
-      setError('Password cannot be empty.');
+      setError('Password cannot be empty');
       return;
     }
     setError('');
     try {
-      await axios.put(
-        `/api/users/${user.id}/password`,
-        { new_password: password }
-      );
-      alert('Password updated successfully!');
-      onSuccess(); // Llama a la función de éxito (cierra el modal)
+      await axios.put(`/api/users/${user.id}/password?new_password=${encodeURIComponent(password)}`);
+      alert('Password updated successfully');
+      onSuccess();
     } catch (err) {
-      setError('Failed to update password.');
+      setError('Error updating password: ' + (err.response?.data?.detail || err.message));
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="login-form">
-      <p>You are setting a new password for <strong>{user.username}</strong>.</p>
-      <div className="input-group">
-        <label htmlFor="newPassword">New Password</label>
-        <input
-          type="password" id="newPassword" value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          autoFocus
-        />
+    <form onSubmit={handleSubmit}>
+      <p>Set new password for <strong>{user.username}</strong>:</p>
+      <div style={{ marginBottom: '15px' }}>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>New Password</label>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
       </div>
-      {error && <p className="error-message">{error}</p>}
-      <div className="form-actions">
-        <button type="button" className="btn-secondary" onClick={onCancel}>Cancel</button>
-        <button type="submit" className="btn-primary">Set Password</button>
+      {error && <p style={{ color: 'red', fontSize: '0.9rem' }}>{error}</p>}
+      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+        <button type="button" onClick={onCancel} style={{ padding: '10px 20px', background: '#6b7280', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+          Cancel
+        </button>
+        <button type="submit" style={{ padding: '10px 20px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+          Set Password
+        </button>
       </div>
     </form>
   );

@@ -20,7 +20,7 @@ SqlServerConnDep = Annotated[pyodbc.Connection, Depends(get_sql_server_conn)]
 # --- Lógica de SQL (Directa de tu script) ---
 def _get_sql_base() -> str:
     # ¡Mucho más limpio! Ahora toda la lógica vive en SQL.
-    return "SELECT * FROM zzReporteSaldoDocuments"
+    return "SELECT * FROM eSaldoDocuments"
 
 def fetch_report_data(
     conn: pyodbc.Connection, 
@@ -28,7 +28,7 @@ def fetch_report_data(
     customer_id: int | None
 ) -> List[pyodbc.Row]:
 
-    sql = _get_sql_base() # Esto ahora es "SELECT * FROM zzReporteSaldoDocuments"
+    sql = _get_sql_base() # Esto ahora es "SELECT * FROM eSaldoDocuments"
     params = []
 
     # ¡IMPORTANTE! Añadimos 'WHERE' por primera vez

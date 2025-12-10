@@ -1,4 +1,3 @@
-/* src/components/ReportView.css */
 .report-view-container {
   display: flex;
   flex-direction: column;
@@ -14,8 +13,10 @@
 }
 
 .currency-title {
-  font-size: 1.5rem; /* 24px */
-  color: #2E86AB; /* Tu color primario */
+  font-size: 1.5rem;
+  /* 24px */
+  color: #2E86AB;
+  /* Tu color primario */
   margin-top: 0;
   border-bottom: 2px solid #f3f4f6;
   padding-bottom: 1rem;
@@ -23,7 +24,8 @@
 
 .aging-summary {
   display: grid;
-  grid-template-columns: 300px 1fr; /* Columna para el total, columna para la gráfica */
+  grid-template-columns: 300px 1fr;
+  /* Columna para el total, columna para la gráfica */
   gap: 2rem;
   align-items: flex-start;
 }
@@ -39,24 +41,29 @@
 }
 
 .total-balance-card span {
-  font-size: 1rem; /* 16px */
+  font-size: 1rem;
+  /* 16px */
   font-weight: 600;
   color: #374151;
   text-align: center;
 }
 
 .total-balance-card strong {
-  font-size: 2.25rem; /* 36px */
+  font-size: 2.25rem;
+  /* 36px */
   font-weight: 700;
   color: #2E86AB;
 }
 
 .chart-container {
   width: 100%;
+  min-width: 0;
+  /* IMPORTANTE: Permite que Chart.js se encoja dentro de un Grid/Flex */
 }
 
 .table-title {
-  font-size: 1.25rem; /* 20px */
+  font-size: 1.25rem;
+  /* 20px */
   color: #111827;
   margin-top: 2.5rem;
   margin-bottom: 1rem;
@@ -64,8 +71,10 @@
 
 .table-container {
   max-height: 500px;
-  overflow-y: auto;   /* Scroll vertical para listas largas */
-  overflow-x: auto;   /* ¡NUEVO! Scroll horizontal para tablas anchas */
+  overflow-y: auto;
+  /* Scroll vertical para listas largas */
+  overflow-x: auto;
+  /* ¡NUEVO! Scroll horizontal para tablas anchas */
   border: 1px solid #e5e7eb;
   border-radius: 6px;
 }
@@ -80,14 +89,16 @@
   border-bottom: 1px solid #e5e7eb;
   padding: 0.75rem 1rem;
   text-align: left;
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem;
+  /* 14px */
 }
 
 .entries-table th {
   background-color: #f9fafb;
   font-weight: 600;
   color: #374151;
-  position: sticky; /* Encabezados pegajosos */
+  position: sticky;
+  /* Encabezados pegajosos */
   top: 0;
 }
 
@@ -95,15 +106,21 @@
   background-color: #f9fafb;
 }
 
-.text-right { text-align: right !important; }
-.text-center { text-align: center !important; }
+.text-right {
+  text-align: right !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
 
 /* src/components/ReportView.css */
 
 /* --- ¡NUEVO! Bloque Responsivo --- */
-@media (max-width: 768px) {
+@media (max-width: 1280px) {
   .aging-summary {
-    grid-template-columns: 1fr; /* Apila la tarjeta de Total y la Gráfica */
+    grid-template-columns: 1fr;
+    /* Apila la tarjeta de Total y la Gráfica */
     gap: 1.5rem;
   }
 }

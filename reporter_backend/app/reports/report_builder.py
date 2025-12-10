@@ -386,7 +386,7 @@ def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_custome
     tr2 = last2 + 1
     merge_char = chr(64 + merge_range_end)
     ws2.merge_cells(f"A{tr2}:{merge_char}{tr2}")
-    ws2.cell(tr2, 1).value = f"TOTALS ({ws2.title.split(' ', 1)[-1]}):"
+    ws2.cell(tr2, 1).value = f"TOTAL ({ws2.title.split(' ', 1)[-1]}):"
     ws2.cell(tr2, 1).alignment = Alignment(horizontal="right")
     
     for col in total_cols:
@@ -916,7 +916,7 @@ def create_html_report(
         if is_single_customer:
             # Colspan 4 (0-3) para label "TOTALS:"
             parts.append(
-                f"<tr class='tot'><td colspan='4' style='text-align:right'>TOTALS ({cur}):</td>"
+                f"<tr class='tot'><td colspan='4' style='text-align:right'>TOTAL ({cur}):</td>"
                 f"<td class='num'>{cur_total:,.2f}</td>"
                 f"<td></td>" # Arrival Date placeholder
                 f"<td class='num'>{cur_pays:,.2f}</td>"
@@ -926,7 +926,7 @@ def create_html_report(
         else:
             # Colspan 5 (0-4) para label "TOTALS:"
             parts.append(
-                f"<tr class='tot'><td colspan='5' style='text-align:right'>TOTALS ({cur}):</td>"
+                f"<tr class='tot'><td colspan='5' style='text-align:right'>TOTAL ({cur}):</td>"
                 f"<td class='num'>{cur_total:,.2f}</td>"
                 f"<td></td>" # Arrival Date placeholder
                 f"<td class='num'>{cur_pays:,.2f}</td>"

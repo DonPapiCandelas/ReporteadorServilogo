@@ -1,60 +1,38 @@
-import os
-from dotenv import load_dotenv
-# app/security.py
-from fastapi import Depends, HTTPException, status, APIRouter
+# reporter_backend/app/security.py
+from datetime import datetime, timedelta
+from typing import Optional, List, Annotated
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from passlib.context import CryptContext
-# ¡Añadimos timezone!
-from datetime import datetime, timedelta, timezone 
-from typing import Optional, Annotated, List
-
-from . import schemas, crud, models
-from .database import SessionLocal
 from sqlalchemy.orm import Session
-load_dotenv()
-# --- Router ---
-router = APIRouter(tags=["Auth & Admin"])
+from passlib.context import CryptContext
+import os
 
-# --- Configuración (sin cambios) ---
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-# ... (el resto de la configuración sin cambios) ...
-SECRET_KEY = os.environ.get("SECRET_KEY", "un-secreto-por-defecto-si-falla")
+from . import crud, models, schemas, database
+
+# Configuración
+SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey_change_me")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 8
+ACCESS_TOKEN_EXPIRE_MINUTES = 480
 
-# --- Funciones Helper (sin cambios) ---
-def verify_password(plain_password: str, hashed_password: str) -> bool:
+router = APIRouter()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
+
+def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
-# ... (get_password_hash, create_access_token sin cambios) ...
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
+        expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# --- Dependencias (Guardias) (sin cambios) ---
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
-
-def get_db_session():
-    db = SessionLocal()
-    try: 
-        yield db
-    finally: 
-        db.close()
-
-DbSessionDep = Annotated[Session, Depends(get_db_session)]
-TokenDep = Annotated[str, Depends(oauth2_scheme)]
-
-def get_current_user(token: TokenDep, db: DbSessionDep) -> models.User:
-    # ... (sin cambios)
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -65,44 +43,23 @@ def get_current_user(token: TokenDep, db: DbSessionDep) -> models.User:
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_data = schemas.TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = crud.get_user_by_username(db, username=token_data.username)
+    
+    user = crud.get_user_by_username(db, username=username)
     if user is None:
         raise credentials_exception
     return user
 
-def get_current_active_user(
-    current_user: Annotated[models.User, Depends(get_current_user)]
-) -> models.User:
-    # ... (sin cambios)
+def get_current_active_user(current_user: models.User = Depends(get_current_user)):
     if not current_user.is_active:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user")
+        raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-def get_current_admin_user(
-    current_user: Annotated[models.User, Depends(get_current_active_user)]
-) -> models.User:
-    # ... (sin cambios)
-    if not current_user.is_admin:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="The user doesn't have enough privileges"
-        )
-    return current_user
-
-# --- Alias (sin cambios) ---
 CurrentUser = Annotated[models.User, Depends(get_current_active_user)]
-AdminUser = Annotated[models.User, Depends(get_current_admin_user)]
-
-# --- ENDPOINTS ---
 
 @router.post("/token", response_model=schemas.Token)
-def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db: DbSessionDep
-):
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     user = crud.get_user_by_username(db, username=form_data.username)
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
@@ -111,93 +68,127 @@ def login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    if not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Account not activated. Please wait for administrator approval.",
-        )
-        
-    # --- ¡NUEVA LÓGICA! ---
-    # Si el login es exitoso, actualiza la hora de 'last_login'
-    user.last_login = datetime.now(timezone.utc)
+    user.last_login = datetime.utcnow()
     db.commit()
-    # --- FIN DE LA NUEVA LÓGICA ---
-        
-    access_token = create_access_token(data={"sub": user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
 
-# ... (El resto de endpoints: /users/me, /users/, /approve, etc. se quedan
-#      exactamente igual que en el archivo anterior) ...
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "username": user.username,
+        "is_admin": user.is_admin
+    }
 
-@router.get("/users/me", response_model=schemas.User)
-def read_users_me(current_user: CurrentUser):
-    return current_user
-
-@router.post("/users/", response_model=schemas.User)
-def register_user(
-    user: schemas.UserCreate, 
-    db: DbSessionDep
-):
+@router.post("/register", response_model=schemas.User)
+async def register_user(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
+    """Endpoint público para registro - no requiere autenticación"""
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already registered"
-        )
+        raise HTTPException(status_code=400, detail="Username already registered")
     return crud.create_user(db=db, user=user)
 
+@router.get("/users/me", response_model=schemas.User)
+async def read_users_me(current_user: models.User = Depends(get_current_active_user)):
+    return current_user
+
 @router.get("/users/", response_model=List[schemas.User])
-def read_users(
-    admin: AdminUser,
-    db: DbSessionDep
-) -> List[schemas.User]:
-    return crud.get_users(db)
+def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db), current_user: models.User = Depends(get_current_active_user)):
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    users = db.query(models.User).offset(skip).limit(limit).all()
+    return users
 
-@router.put("/users/{user_id}/approve", response_model=schemas.User)
-def approve_user(
-    user_id: int, 
-    admin: AdminUser,
-    db: DbSessionDep
-):
-    db_user = crud.get_user_by_id(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return crud.update_user_status(db=db, user=db_user, is_active=True)
+@router.post("/users/", response_model=schemas.User)
+def create_user(user: schemas.UserCreate, db: Session = Depends(database.get_db), current_user: models.User = Depends(get_current_active_user)):
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+        
+    db_user = crud.get_user_by_username(db, username=user.username)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    return crud.create_user(db=db, user=user)
 
-@router.put("/users/{user_id}/status", response_model=schemas.User)
-def update_user_active_status(
-    user_id: int, 
-    status_update: schemas.UserStatusUpdate, 
-    admin: AdminUser,
-    db: DbSessionDep
+@router.delete("/users/{user_id}")
+def delete_user_endpoint(
+    user_id: int,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_active_user)
 ):
-    db_user = crud.get_user_by_id(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return crud.update_user_status(db=db, user=db_user, is_active=status_update.is_active)
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    if current_user.id == user_id:
+        raise HTTPException(status_code=400, detail="Cannot delete yourself")
 
-@router.put("/users/{user_id}/profile", response_model=schemas.User)
-def update_user_profile_by_admin(
-    user_id: int, 
-    profile: schemas.UserProfileUpdate,
-    admin: AdminUser,
-    db: DbSessionDep
-):
-    db_user = crud.get_user_by_id(db, user_id=user_id)
-    if db_user is None:
+    success = crud.delete_user(db,user_id)
+    if not success:
         raise HTTPException(status_code=404, detail="User not found")
-    return crud.update_user_profile(db=db, user=db_user, profile=profile)
+    return {"status": "deleted"}
 
-@router.put("/users/{user_id}/password", response_model=schemas.User)
-def admin_change_user_password(
-    user_id: int, 
-    password_change: schemas.UserPasswordChange, 
-    admin: AdminUser,
-    db: DbSessionDep
+@router.put("/users/{user_id}/role")
+def update_user_role_endpoint(
+    user_id: int,
+    is_admin: bool, 
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_active_user)
 ):
-    db_user = crud.get_user_by_id(db, user_id=user_id)
-    if db_user is None:
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    if current_user.id == user_id and is_admin is False:
+        raise HTTPException(status_code=400, detail="Cannot remove admin rights from yourself")
+
+    user = crud.update_user_role(db, user_id, is_admin)
+    if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return crud.update_user_password(
-        db=db, user=db_user, new_password=password_change.new_password
-    )
+    return {"status": "updated", "is_admin": user.is_admin}
+
+@router.put("/users/{user_id}/status")
+def update_user_status_endpoint(
+    user_id: int,
+    is_active: bool,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    user = crud.update_user_status(db, user_id, is_active)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"status": "updated", "is_active": user.is_active}
+
+@router.put("/users/{user_id}/profile")
+def update_user_profile_endpoint(
+    user_id: int,
+    first_name: str,
+    last_name: str,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    user = crud.update_user_profile(db, user_id, first_name, last_name)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"status": "updated"}
+
+@router.put("/users/{user_id}/password")
+def update_user_password_endpoint(
+    user_id: int,
+    new_password: str,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    user = crud.update_user_password(db, user_id, new_password)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"status": "password_updated"}

@@ -1,6 +1,7 @@
 /* src/components/ReportsFilter.css */
 .filter-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end; /* Alinea los items en la parte de abajo */
   gap: 1rem;
   padding: 1.5rem;
