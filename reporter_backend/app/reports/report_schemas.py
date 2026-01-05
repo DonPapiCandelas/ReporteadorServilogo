@@ -1,6 +1,6 @@
 # app/reports/report_schemas.py
 from pydantic import BaseModel, ConfigDict
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 import datetime
 
 # Es la versión Pydantic de tu dataclass 'ReceivableEntry'
@@ -8,7 +8,7 @@ class ReceivableEntry(BaseModel):
     customer_name: str
     module: Optional[str] = None
     invoice_date: datetime.date
-    folio: Optional[str] = None    # <-- ¡AQUÍ ESTÁ LA CORRECCIÓN!
+    folio: Optional[str] = None
     arrival_date: datetime.date
     due_date: datetime.date
     reference: Optional[str] = None
@@ -18,6 +18,8 @@ class ReceivableEntry(BaseModel):
     total: float
     paid: float
     balance: float
+    po_balance: float = 0.0
+    real_balance: float = 0.0
     days_since: int
     aging_bucket: str
 
@@ -35,24 +37,26 @@ class AgingSummary(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class CustomerCreditInfo(BaseModel):
+    credit_limit: float
+    payment_terms: str
+    currency: str
+
 # Es la versión Pydantic de tu dataclass 'CurrencyGroup'
 class CurrencyGroup(BaseModel):
     currency: str
-    entries: List[ReceivableEntry]
-    totals: Dict[str, float]
-    aging_summary: Dict[str, AgingSummary] # { 'customer_name': AgingSummary }
+    customer_name: Optional[str] = "(All Customers)"
+    entries: List[ReceivableEntry] = []
+    totals: Dict[str, float] = {}
+    aging_summary: Dict[str, AgingSummary] = {}
 
     model_config = ConfigDict(from_attributes=True)
 
-# Este será el modelo de respuesta de nuestro endpoint de preview
-class ReceivablesReportData(BaseModel):
-    # La clave será la moneda (ej. "USD", "MXN")
-    data_by_currency: Dict[str, CurrencyGroup]
-
-    model_config = ConfigDict(from_attributes=True)
-
-# Este será el modelo de ENTRADA (los filtros que envía React)
 class ReportFilters(BaseModel):
     as_of: datetime.date
     customer_id: Optional[int] = None
-    customer_name: Optional[str] = "(All Customers)"
+    customer_name: str = "All Customers"
+
+class ReceivablesReportData(BaseModel):
+    data_by_currency: Dict[str, CurrencyGroup]
+    customer_credit_info: Optional[CustomerCreditInfo] = None

@@ -3,13 +3,13 @@ import pyodbc
 import datetime
 from typing import List, Dict, Any, Annotated
 from collections import defaultdict
-from fastapi import Depends, HTTPException, APIRouter # <-- ¡APIRouter!
+from fastapi import Depends, HTTPException, APIRouter
 
 # Importamos nuestros conectores y esquemas
 from ..sql_server_conn import get_sql_server_conn, fetch_all
-from .report_schemas import ReceivableEntry, AgingSummary, CurrencyGroup, ReportFilters, ReceivablesReportData
+from .report_schemas import ReceivableEntry, AgingSummary, CurrencyGroup, ReportFilters, ReceivablesReportData, CustomerCreditInfo
 from ..schemas import CustomerFilterItem
-from ..security import CurrentUser # ¡Importamos el guardia de seguridad!
+from ..security import CurrentUser
 
 # --- ¡NUEVO! Creamos un Router ---
 router = APIRouter(tags=["Reports"])
@@ -19,8 +19,7 @@ SqlServerConnDep = Annotated[pyodbc.Connection, Depends(get_sql_server_conn)]
 
 # --- Lógica de SQL (Directa de tu script) ---
 def _get_sql_base() -> str:
-    # ¡Mucho más limpio! Ahora toda la lógica vive en SQL.
-    return "SELECT * FROM eSaldoDocuments"
+    return "SELECT * FROM zzReporteSaldoDocuments"
 
 def fetch_report_data(
     conn: pyodbc.Connection, 
@@ -28,17 +27,13 @@ def fetch_report_data(
     customer_id: int | None
 ) -> List[pyodbc.Row]:
 
-    sql = _get_sql_base() # Esto ahora es "SELECT * FROM eSaldoDocuments"
+    sql = _get_sql_base()
     params = []
 
-    # ¡IMPORTANTE! Añadimos 'WHERE' por primera vez
-    # Usamos los nombres de columna de tu Vista
     sql += " WHERE InvoiceDate < DATEADD(day,1,?) "
     params.append(as_of)
 
     if customer_id:
-        # Asumiendo que tu Vista expone la columna 'BusinessEntityID'
-        # Si no lo hace, ¡asegúrate de añadirla a tu Vista!
         sql += " AND BusinessEntityID = ? " 
         params.append(customer_id)
 
@@ -46,9 +41,33 @@ def fetch_report_data(
 
     return fetch_all(conn, sql, params)
 
+def fetch_customer_credit_info(conn: pyodbc.Connection, customer_id: int) -> CustomerCreditInfo | None:
+    """
+    Fetches credit limit and payment terms for a specific customer.
+    """
+    sql = """
+        SELECT TOP 1 
+            c.CreditLimit, 
+            t.PaymentTermName 
+        FROM dbo.orgCustomer c
+        LEFT OUTER JOIN dbo.engPaymentTerm t ON c.PaymentTermID = t.PaymentTermID
+        WHERE c.BusinessEntityID = ?
+    """
+    try:
+        rows = fetch_all(conn, sql, [customer_id])
+        if rows:
+            row = rows[0]
+            return CustomerCreditInfo(
+                credit_limit=float(row.CreditLimit or 0.0),
+                payment_terms=row.PaymentTermName or "N/A",
+                currency="USD" # Hardcoded for now as per screenshot/request ambiguity
+            )
+    except Exception as e:
+        print(f"Error fetching credit info: {e}")
+    return None
+
 # --- Lógica de Procesamiento (Directa de tu script) ---
 def _calculate_days_since(as_of: datetime.date, arrival: datetime.date) -> int:
-    # ... (idéntico) ...
     if not isinstance(as_of, datetime.date) or not isinstance(arrival, datetime.date):
         return 0
     try:
@@ -61,7 +80,6 @@ def process_report_data(
     raw_data: List[pyodbc.Row], 
     as_of: datetime.date
 ) -> Dict[str, CurrencyGroup]:
-    # ... (idéntico) ...
     processed_entries: List[ReceivableEntry] = []
     for row in raw_data:
         entry = ReceivableEntry(
@@ -82,6 +100,15 @@ def process_report_data(
             aging_bucket="N/A"
         )
         entry.days_since = _calculate_days_since(as_of, entry.arrival_date)
+        
+        # Calculate P.O. Balance vs Real Balance
+        if entry.module == "Sales Order":
+            entry.po_balance = entry.balance
+            entry.real_balance = 0.0
+        else:
+            entry.po_balance = 0.0
+            entry.real_balance = entry.balance
+
         d = entry.days_since
         if d <= 0: entry.aging_bucket = "Not Due"
         elif 0 <= d <= 21: entry.aging_bucket = "0-21"
@@ -98,6 +125,8 @@ def process_report_data(
             "total": sum(e.total for e in cur_entries),
             "paid": sum(e.paid for e in cur_entries),
             "balance": sum(e.balance for e in cur_entries),
+            "po_balance": sum(e.po_balance for e in cur_entries),
+            "real_balance": sum(e.real_balance for e in cur_entries),
         }
         aging_by_customer = defaultdict(AgingSummary)
         for e in cur_entries:
@@ -119,7 +148,7 @@ def process_report_data(
         )
     return final_data
 
-# --- ¡NUEVO! ENDPOINTS DEFINIDOS CON DECORADORES ---
+# --- Endpoints ---
 
 @router.get("/filters/customers", response_model=List[CustomerFilterItem])
 def get_customer_list(
@@ -150,7 +179,15 @@ def run_receivables_report(
         processed_data = process_report_data(
             raw_data=raw_data, as_of=filters.as_of
         )
-        return ReceivablesReportData(data_by_currency=processed_data)
+        
+        credit_info = None
+        if filters.customer_id:
+            credit_info = fetch_customer_credit_info(sql_conn, filters.customer_id)
+            
+        return ReceivablesReportData(
+            data_by_currency=processed_data,
+            customer_credit_info=credit_info
+        )
     except Exception as e:
         raise e
 
@@ -170,7 +207,17 @@ def download_receivables_report_excel(
         if not raw_data:
             raise HTTPException(status_code=404, detail="No data found for selected filters.")
         processed_data = process_report_data(raw_data=raw_data, as_of=filters.as_of)
-        excel_file_stream = report_builder.create_excel_report(data=processed_data, logo_path="", filters=filters.model_dump())
+        
+        credit_info = None
+        if filters.customer_id:
+            credit_info = fetch_customer_credit_info(sql_conn, filters.customer_id)
+            
+        excel_file_stream = report_builder.create_excel_report(
+            data=processed_data, 
+            logo_path="", 
+            filters=filters.model_dump(),
+            credit_info=credit_info
+        )
         date_str = filters.as_of.strftime('%Y%m%d')
         filename = f"Accounts_Receivable_Aging_{date_str}.xlsx"
         return StreamingResponse(
@@ -193,7 +240,17 @@ def download_receivables_report_pdf(
         if not raw_data:
             raise HTTPException(status_code=404, detail="No data found for selected filters.")
         processed_data = process_report_data(raw_data=raw_data, as_of=filters.as_of)
-        pdf_file_stream = report_builder.create_pdf_report(data=processed_data, logo_path="", filters=filters.model_dump())
+        
+        credit_info = None
+        if filters.customer_id:
+            credit_info = fetch_customer_credit_info(sql_conn, filters.customer_id)
+
+        pdf_file_stream = report_builder.create_pdf_report(
+            data=processed_data, 
+            logo_path="", 
+            filters=filters.model_dump(),
+            credit_info=credit_info
+        )
         date_str = filters.as_of.strftime('%Y%m%d')
         filename = f"Accounts_Receivable_Aging_{date_str}.pdf"
         return StreamingResponse(
@@ -216,7 +273,17 @@ def download_receivables_report_html(
         if not raw_data:
             raise HTTPException(status_code=404, detail="No data found for selected filters.")
         processed_data = process_report_data(raw_data=raw_data, as_of=filters.as_of)
-        html_file_stream = report_builder.create_html_report(data=processed_data, logo_path="", filters=filters.model_dump())
+        
+        credit_info = None
+        if filters.customer_id:
+            credit_info = fetch_customer_credit_info(sql_conn, filters.customer_id)
+
+        html_file_stream = report_builder.create_html_report(
+            data=processed_data, 
+            logo_path="", 
+            filters=filters.model_dump(),
+            credit_info=credit_info
+        )
         date_str = filters.as_of.strftime('%Y%m%d')
         filename = f"Accounts_Receivable_Aging_{date_str}.html"
         return StreamingResponse(

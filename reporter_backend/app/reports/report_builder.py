@@ -15,7 +15,7 @@ from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas as rl_canvas
 
 # Importamos los esquemas que definimos
-from .report_schemas import CurrencyGroup, AgingSummary
+from .report_schemas import CurrencyGroup, AgingSummary, CustomerCreditInfo
 
 # --- Tus Helpers de Estilo Originales ---
 THEME = {
@@ -40,18 +40,7 @@ def set_col_widths(ws, widths):
         ws.column_dimensions[chr(64 + i)].width = w
 
 def insert_logo(ws, tl_cell, logo_path, max_w=170, max_h=42):
-    # Por ahora, no implementamos el logo_path, pero dejamos la función
     pass
-    # try:
-    #     if not logo_path or not Path(logo_path).exists():
-    #         return
-    #     img = XLImage(logo_path)
-    #     scale = min(max_w / img.width, max_h / img.height, 1.0)
-    #     img.width = int(img.width * scale)
-    #     img.height = int(img.height * scale)
-    #     ws.add_image(img, tl_cell)
-    # except Exception as e:
-    #     logging.warning(f"No se pudo insertar el logo de Excel: {e}")
 
 def _safe_excel_title(s: str) -> str:
     bad = '[]:*?/\\'
@@ -77,7 +66,6 @@ def fmt_date_ordinal(d: datetime.date) -> str:
     return f"{d.strftime('%B')} {_ordinal(d.day)}, {d.year}"
 
 def _rl_logo(logo_path, max_w=30 * mm, max_h=12 * mm):
-    # Por ahora, no implementamos el logo_path
     return None
 
 def _pdf_header_footer(canv: rl_canvas.Canvas, doc):
@@ -92,8 +80,9 @@ def _pdf_header_footer(canv: rl_canvas.Canvas, doc):
 
 def create_excel_report(
     data: Dict[str, CurrencyGroup], 
-    logo_path: str, # Aún no lo usamos, pero lo pasamos
-    filters: dict
+    logo_path: str, 
+    filters: dict,
+    credit_info: CustomerCreditInfo | None = None
 ) -> io.BytesIO:
     """
     Toma los datos procesados y construye un archivo Excel EN MEMORIA.
@@ -117,8 +106,8 @@ def create_excel_report(
         ws2 = wb.create_sheet(_safe_excel_title(f"CURRENCY {cur}"))
         insert_logo(ws2, "A1", logo_path)
         
-        merge_end = "J1" if is_single_customer else "K1"
-        merge_end_row2 = "J2" if is_single_customer else "K2"
+        merge_end = "K1" if is_single_customer else "L1"
+        merge_end_row2 = "K2" if is_single_customer else "L2"
         
         ws2.merge_cells(f"C1:{merge_end}")
         a1 = ws2["C1"]
@@ -132,38 +121,46 @@ def create_excel_report(
         a2.font = Font(color=THEME["ink"])
         a2.alignment = Alignment(horizontal="center")
 
+        start_row = 4
+        if credit_info and is_single_customer:
+            # Add Credit Info
+            ws2.cell(3, 1).value = f"Limit Credit: ${credit_info.credit_limit:,.2f}"
+            ws2.cell(4, 1).value = f"Credit Days: {credit_info.payment_terms}"
+            ws2.cell(5, 1).value = f"Currency: {credit_info.currency}"
+            start_row = 7 # Push table down
+
         if is_single_customer:
             headers2 = [
                 "REFERENCE", "DOCUMENT", "NO.", "INVOICE DATE", 
-                "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "BALANCE", 
+                "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "P.O. BALANCE", "REAL BALANCE", 
                 "DUE DATE", "DAYS SINCE ARRIVAL"
             ]
         else:
             headers2 = [
                 "CUSTOMER", "REFERENCE", "DOCUMENT", "NO.", "INVOICE DATE", 
-                "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "BALANCE", 
+                "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "P.O. BALANCE", "REAL BALANCE", 
                 "DUE DATE", "DAYS SINCE ARRIVAL"
             ]
 
         for i, h in enumerate(headers2, start=1):
-            c = ws2.cell(4, i, h)
+            c = ws2.cell(start_row, i, h)
             c.font = Font(bold=True, color="FFFFFF")
             c.alignment = Alignment(horizontal="center")
             c.fill = fill(THEME["head"])
             c.border = border_all()
 
-        r0 = 5
+        r0 = start_row + 1
         for idx, entry in enumerate(cur_rows, start=r0):
             if is_single_customer:
                 out = [
                     entry.reference, entry.module, entry.folio, entry.invoice_date,
-                    entry.total, entry.arrival_date, entry.paid, entry.balance,
+                    entry.total, entry.arrival_date, entry.paid, entry.po_balance, entry.real_balance,
                     entry.due_date, entry.days_since
                 ]
             else:
                 out = [
                     entry.customer_name, entry.reference, entry.module, entry.folio, entry.invoice_date,
-                    entry.total, entry.arrival_date, entry.paid, entry.balance,
+                    entry.total, entry.arrival_date, entry.paid, entry.po_balance, entry.real_balance,
                     entry.due_date, entry.days_since
                 ]
             
@@ -177,12 +174,13 @@ def create_excel_report(
 
         if cur_rows:
             last2 = r0 + len(cur_rows) - 1
-            _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_customer)
+            # PASS header_row=start_row HERE
+            _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_customer, header_row=start_row)
             
             if is_single_customer:
-                widths = [30, 14, 8, 12, 16, 14, 16, 16, 14, 14]
+                widths = [30, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14]
             else:
-                widths = [28, 30, 14, 8, 12, 16, 14, 16, 16, 14, 14]
+                widths = [28, 30, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14]
             set_col_widths(ws2, widths)
 
     # ===== 2. Hojas Summary (Summary Sheets) - SEGUNDAS =====
@@ -199,17 +197,10 @@ def create_excel_report(
         s2.value = f"As Of: {as_of:%m/%d/%Y} • Customer: {customer_name}"
         s2.alignment = Alignment(horizontal="center")
 
-        if is_single_customer:
-            hdr = [
-                "TOTAL BALANCE", "NOT YET DUE", "OVERDUE",
-                "0-21", "22-30", "31-45", "45+ DAYS",
-            ]
-        else:
-            hdr = [
-                "CUSTOMER", "TOTAL BALANCE", "NOT YET DUE", "OVERDUE",
-                "0-21", "22-30", "31-45", "45+ DAYS",
-            ]
-
+        hdr = [
+            "CUSTOMER", "TOTAL BALANCE", "NOT YET DUE", "OVERDUE",
+            "0-21", "22-30", "31-45", "45+ DAYS",
+        ]
         for i, h in enumerate(hdr, start=1):
             c = ws3.cell(3, i, h)
             c.font = Font(bold=True, color="FFFFFF")
@@ -219,32 +210,19 @@ def create_excel_report(
 
         r = 4
         for cust, agg in sorted(cur_group.aging_summary.items()):
-            col_idx = 1
-            if not is_single_customer:
-                ws3.cell(r, col_idx).value = cust
-                col_idx += 1
-            
+            ws3.cell(r, 1).value = cust
             vals = [
                 agg.total_balance, agg.not_yet_due, agg.overdue,
                 agg.bucket_0_21, agg.bucket_22_30, agg.bucket_31_45, agg.bucket_45_plus
             ]
-            for v in vals:
-                ws3.cell(r, col_idx).value = v
-                col_idx += 1
+            for i, v in enumerate(vals, start=2):
+                ws3.cell(r, i).value = v
             r += 1
 
         if r > 4:
             last3 = r - 1
-            # Ajustamos el rango de columnas según si hay cliente o no
-            start_col_fmt = 1 if is_single_customer else 2
-            end_col_fmt = 7 if is_single_customer else 8
-            
-            _apply_summary_formats_excel(ws3, 4, last3, is_single_customer)
-            
-            if is_single_customer:
-                set_col_widths(ws3, [18, 18, 18, 12, 12, 12, 12])
-            else:
-                set_col_widths(ws3, [30, 18, 18, 18, 12, 12, 12, 12])
+            _apply_summary_formats_excel(ws3, 4, last3)
+            set_col_widths(ws3, [30, 18, 18, 18, 12, 12, 12, 12])
 
     # ===== 3. Main Report - AL FINAL =====
     ws = wb.create_sheet("Main Report")
@@ -346,24 +324,24 @@ def _apply_main_report_formats_excel(ws, start, last):
         CellIsRule(operator='greaterThan', formula=['45'], stopIfTrue=True, fill=overdue_fill)
     )
 
-def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_customer):
+def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_customer, header_row=4):
     if r0 > last2: return
     
     if is_single_customer:
-        date_cols = (4, 6, 9)
-        money_cols = (5, 7, 8)
-        int_cols = (10,)
-        total_cols = (5, 7, 8)
-        days_col = 10
-        last_col = 10
-        merge_range_end = 4
-    else:
-        date_cols = (5, 7, 10)
-        money_cols = (6, 8, 9)
+        date_cols = (4, 6, 10)
+        money_cols = (5, 7, 8, 9)
         int_cols = (11,)
-        total_cols = (6, 8, 9)
+        total_cols = (5, 7, 8, 9)
         days_col = 11
         last_col = 11
+        merge_range_end = 4
+    else:
+        date_cols = (5, 7, 11)
+        money_cols = (6, 8, 9, 10)
+        int_cols = (12,)
+        total_cols = (6, 8, 9, 10)
+        days_col = 12
+        last_col = 12
         merge_range_end = 5
 
     for row in range(r0, last2 + 1):
@@ -386,7 +364,7 @@ def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_custome
     tr2 = last2 + 1
     merge_char = chr(64 + merge_range_end)
     ws2.merge_cells(f"A{tr2}:{merge_char}{tr2}")
-    ws2.cell(tr2, 1).value = f"TOTAL ({ws2.title.split(' ', 1)[-1]}):"
+    ws2.cell(tr2, 1).value = f"TOTALS ({ws2.title.split(' ', 1)[-1]}):"
     ws2.cell(tr2, 1).alignment = Alignment(horizontal="right")
     
     for col in total_cols:
@@ -397,9 +375,9 @@ def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_custome
         ws2.cell(tr2, col).alignment = Alignment(horizontal="center")
         ws2.cell(tr2, col).border = border_all()
         
-    ws2.freeze_panes = "A5"
+    ws2.freeze_panes = f"A{header_row + 1}"
     last_col_char = chr(64 + last_col)
-    ws2.auto_filter.ref = f"A4:{last_col_char}{last2}"
+    ws2.auto_filter.ref = f"A{header_row}:{last_col_char}{last2}"
     
     overdue_fill = PatternFill("solid", fgColor="FDE68A")
     days_col_char = chr(64 + days_col)
@@ -408,60 +386,17 @@ def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_custome
         CellIsRule(operator='greaterThan', formula=['45'], stopIfTrue=True, fill=overdue_fill)
     )
 
-def _apply_summary_formats_excel(ws3, start, last, is_single_customer=False):
-    # Definir columnas según si hay cliente o no
-    if is_single_customer:
-        money_cols = range(1, 8) # 1 to 7
-        total_cols = range(1, 8) # 1 to 7
-        border_cols = range(1, 8)
-    else:
-        money_cols = range(2, 9) # 2 to 8
-        total_cols = range(2, 9) # 2 to 8
-        border_cols = range(1, 9)
-
+def _apply_summary_formats_excel(ws3, start, last):
     for row in range(start, last + 1):
-        if not is_single_customer:
-            ws3.cell(row, 1).alignment = Alignment(horizontal="left")
-        
-        for col in money_cols:
+        ws3.cell(row, 1).alignment = Alignment(horizontal="left")
+        for col in range(2, 9):
             ws3.cell(row, col).number_format = "$#,##0.00"
             ws3.cell(row, col).alignment = Alignment(horizontal="center")
-        
-        for col in border_cols:
+        for col in range(1, 9):
             ws3.cell(row, col).border = border_all()
-
     ws3[f"A{last + 1}"].value = "TOTALS:"
     ws3[f"A{last + 1}"].font = Font(bold=True)
-    
-    # Si es single customer, TOTALS está en A (col 1), pero los valores también empiezan en col 1?
-    # No, si es single customer, la col 1 es Total Balance.
-    # Entonces "TOTALS:" debería ir en una fila antes o en una celda separada?
-    # En el diseño original, TOTALS iba en A (Customer column).
-    # Si quitamos Customer, la col 1 es Total Balance.
-    # Entonces no podemos poner "TOTALS:" en A{last+1} si ahí va un número.
-    # Pero wait, la fila de totales es una fila APARTE.
-    # En la fila de totales, queremos sumar las columnas.
-    # Si es single customer, col 1 es Total Balance.
-    # Donde ponemos la etiqueta "TOTALS:"?
-    # Quizás no ponemos etiqueta o la ponemos en un header superior?
-    # O insertamos una fila antes?
-    # En el código original:
-    # ws3[f"A{last + 1}"].value = "TOTALS:"
-    # Y luego itera col 2..8 para poner las sumas.
-    # Si es single customer, col 1..7 son sumas.
-    # Entonces "TOTALS:" sobrescribiría la suma de Total Balance si lo ponemos en A{last+1}.
-    # Solución: Poner "TOTALS:" en una celda combinada o simplemente omitirlo en la misma celda, 
-    # o moverlo a la izquierda si hubiera espacio (no hay).
-    # O quizás ponerlo en la fila anterior?
-    # Vamos a dejarlo sin etiqueta "TOTALS:" en la celda de datos, o ponerlo en el header?
-    # Mejor: Si es single customer, NO ponemos etiqueta "TOTALS:" en la columna 1, porque ahí va un dato.
-    # Simplemente ponemos los totales.
-    
-    if not is_single_customer:
-        ws3[f"A{last + 1}"].value = "TOTALS:"
-        ws3[f"A{last + 1}"].font = Font(bold=True)
-
-    for col in total_cols:
+    for col in range(2, 9):
         L = chr(64 + col)
         cell = ws3[f"{L}{last + 1}"]
         cell.value = f"=SUM({L}{start}:{L}{last})"
@@ -475,8 +410,9 @@ def _apply_summary_formats_excel(ws3, start, last, is_single_customer=False):
 
 def create_pdf_report(
     data: Dict[str, CurrencyGroup], 
-    logo_path: str, # Aún no lo usamos
-    filters: dict
+    logo_path: str, 
+    filters: dict,
+    credit_info: CustomerCreditInfo | None = None
 ) -> io.BytesIO:
     """
     Toma los datos procesados y construye un archivo PDF EN MEMORIA.
@@ -485,8 +421,6 @@ def create_pdf_report(
 
     as_of = filters['as_of']
     customer_name = filters['customer_name']
-    # Detectar si es un solo cliente
-    is_single_customer = filters.get('customer_id') is not None
 
     # --- ¡CAMBIO CLAVE! Guardar en memoria ---
     buffer = io.BytesIO()
@@ -501,6 +435,9 @@ def create_pdf_report(
     )
     meta_style = ParagraphStyle(
         "Meta", parent=styles["Normal"], fontSize=7, textColor=colors.HexColor("#6B7280"), spaceAfter=4 * mm
+    )
+    credit_style = ParagraphStyle(
+        "Credit", parent=styles["Normal"], fontSize=8, textColor=colors.HexColor("#1F2937"), spaceAfter=2 * mm
     )
 
     story = []
@@ -525,43 +462,29 @@ def create_pdf_report(
                 meta_style,
             )
         )
+        
+        if credit_info:
+            story.append(Paragraph(f"<b>Limit Credit:</b> ${credit_info.credit_limit:,.2f}", credit_style))
+            story.append(Paragraph(f"<b>Credit Days:</b> {credit_info.payment_terms}", credit_style))
+            story.append(Paragraph(f"<b>Currency:</b> {credit_info.currency}", credit_style))
+            story.append(Spacer(2 * mm, 0))
 
-        # --- Definición de Columnas (Currency) ---
-        if is_single_customer:
-            # Sin columna Customer
-            # Excel Order: REFERENCE, DOCUMENT, NO., INVOICE DATE, TOTAL AMOUNT, ARRIVAL DATE, PAYMENTS, BALANCE, DUE DATE, DAYS SINCE ARRIVAL
-            headers = [
-                "REFERENCE", "DOC", "NO.", "INV\nDATE", "TOTAL", "ARR\nDATE",
-                "PAYMT", "BALANCE", "DUE\nDATE", "DAYS",
-            ]
-            # Ajustamos anchos
-            widths = [80, 14, 12, 14, 25, 14, 22, 26, 14, 18] 
-        else:
-            # Excel Order: CUSTOMER, REFERENCE, DOCUMENT, NO., INVOICE DATE, TOTAL AMOUNT, ARRIVAL DATE, PAYMENTS, BALANCE, DUE DATE, DAYS SINCE ARRIVAL
-            headers = [
-                "CUSTOMER", "REFERENCE", "DOC", "NO.", "INV\nDATE", "TOTAL", "ARR\nDATE",
-                "PAYMT", "BALANCE", "DUE\nDATE", "DAYS",
-            ]
-            widths = [50, 60, 14, 12, 14, 25, 14, 22, 26, 14, 18]
+        headers = [
+            "CUSTOMER", "REFERENCE", "DOC", "INV\nDATE", "NO.", "ARR\nDATE",
+            "DUE\nDATE", "TOTAL", "PAYMT", "P.O.\nBAL", "REAL\nBAL", "DAYS",
+        ]
+        widths = [45, 55, 14, 14, 12, 14, 14, 25, 22, 22, 22, 18] # mm
 
         tbl_data = [headers]
         for entry in cur_group.entries:
-            row_vals = []
-            
-            # 1. Customer (Solo si NO es single customer)
-            if not is_single_customer:
-                customer_display = entry.customer_name or ""
-                if len(customer_display) > 25:
-                    customer_display = customer_display[:25] + "\n" + customer_display[25:45]
-                row_vals.append(customer_display)
+            customer_display = entry.customer_name or ""
+            if len(customer_display) > 25:
+                customer_display = customer_display[:25] + "\n" + customer_display[25:45]
 
-            # 2. Reference
             reference_display = entry.reference or ""
             if len(reference_display) > 30:
                 reference_display = reference_display[:30] + "\n" + reference_display[30:55]
-            row_vals.append(reference_display)
 
-            # 3. Doc Type
             doc_abbr = (
                 "Inv" if entry.module == "Invoice"
                 else "CrNote" if entry.module == "Credit Note"
@@ -569,173 +492,70 @@ def create_pdf_report(
                 else "Pmt" if entry.module == "Customer Payment"
                 else (entry.module or "")[:5]
             )
-            row_vals.append(doc_abbr)
-
-            # 4. No. (Folio)
-            row_vals.append(str(entry.folio or ""))
-
-            # 5. Invoice Date
-            row_vals.append(fmt_date(entry.invoice_date, "%m/%d/%y"))
-
-            # 6. Total Amount
-            row_vals.append(f"{entry.total:,.2f}")
-
-            # 7. Arrival Date
-            row_vals.append(fmt_date(entry.arrival_date, "%m/%d/%y"))
-
-            # 8. Payments
-            row_vals.append(f"{entry.paid:,.2f}")
-
-            # 9. Balance
-            row_vals.append(f"{entry.balance:,.2f}")
-
-            # 10. Due Date
-            row_vals.append(fmt_date(entry.due_date, "%m/%d/%y"))
-
-            # 11. Days
-            row_vals.append(str(entry.days_since))
-            
-            tbl_data.append(row_vals)
+            tbl_data.append([
+                customer_display,
+                reference_display,
+                doc_abbr,
+                fmt_date(entry.invoice_date, "%m/%d/%y"),
+                str(entry.folio or ""),
+                fmt_date(entry.arrival_date, "%m/%d/%y"),
+                fmt_date(entry.due_date, "%m/%d/%y"),
+                f"{entry.total:,.2f}",
+                f"{entry.paid:,.2f}",
+                f"{entry.po_balance:,.2f}",
+                f"{entry.real_balance:,.2f}",
+                str(entry.days_since),
+            ])
 
         t = Table(tbl_data, colWidths=[w * mm for w in widths], repeatRows=1, splitByRow=True)
-        
-        # Estilos dinámicos según columnas
-        # Indices de columnas numéricas (Total, Pmt, Bal) dependen de si hay Customer o no
-        # Si is_single_customer: 
-        #   0: Ref, 1: Doc, 2: No, 3: InvDate, 4: Total, 5: ArrDate, 6: Pmt, 7: Bal, 8: DueDate, 9: Days
-        #   Align Left: 0 (Ref)
-        #   Align Center: 1, 2, 3, 5, 8, 9
-        #   Align Right: 4, 6, 7
-        
-        # Si NO single customer:
-        #   0: Cust, 1: Ref, 2: Doc, 3: No, 4: InvDate, 5: Total, 6: ArrDate, 7: Pmt, 8: Bal, 9: DueDate, 10: Days
-        #   Align Left: 0, 1
-        #   Align Center: 2, 3, 4, 6, 9, 10
-        #   Align Right: 5, 7, 8
-        
-        style_cmds = [
+        t.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), head_color),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
             ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 6),
             ("FONT", (0, 1), (-1, -1), "Helvetica", 6),
             ("GRID", (0, 0), (-1, -1), 0.25, line_color),
+            ("ALIGN", (2, 1), (6, -1), "CENTER"),
+            ("ALIGN", (7, 1), (-1, -1), "RIGHT"),
+            ("ALIGN", (0, 1), (1, -1), "LEFT"),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, alt_color]),
             ("LINEBELOW", (0, 0), (-1, 0), 1, colors.white),
-        ]
-
-        if is_single_customer:
-            # Left: Ref
-            style_cmds.append(("ALIGN", (0, 1), (0, -1), "LEFT"))
-            # Center: Doc, No, InvDate
-            style_cmds.append(("ALIGN", (1, 1), (3, -1), "CENTER"))
-            # Right: Total
-            style_cmds.append(("ALIGN", (4, 1), (4, -1), "RIGHT"))
-            # Center: ArrDate
-            style_cmds.append(("ALIGN", (5, 1), (5, -1), "CENTER"))
-            # Right: Pmt, Bal
-            style_cmds.append(("ALIGN", (6, 1), (7, -1), "RIGHT"))
-            # Center: DueDate, Days
-            style_cmds.append(("ALIGN", (8, 1), (9, -1), "CENTER"))
-        else:
-            # Left: Cust, Ref
-            style_cmds.append(("ALIGN", (0, 1), (1, -1), "LEFT"))
-            # Center: Doc, No, InvDate
-            style_cmds.append(("ALIGN", (2, 1), (4, -1), "CENTER"))
-            # Right: Total
-            style_cmds.append(("ALIGN", (5, 1), (5, -1), "RIGHT"))
-            # Center: ArrDate
-            style_cmds.append(("ALIGN", (6, 1), (6, -1), "CENTER"))
-            # Right: Pmt, Bal
-            style_cmds.append(("ALIGN", (7, 1), (8, -1), "RIGHT"))
-            # Center: DueDate, Days
-            style_cmds.append(("ALIGN", (9, 1), (10, -1), "CENTER"))
-
-        t.setStyle(TableStyle(style_cmds))
+        ]))
         story.append(t)
 
-        # --- Totales Currency ---
         cur_total = cur_group.totals['total']
         cur_pays = cur_group.totals['paid']
-        cur_bal = cur_group.totals['balance']
-        
-        # Totales deben alinearse con las columnas Total, Pmt, Balance
-        # Single: Total=4, Pmt=6, Bal=7. (Hay hueco en 5 ArrDate)
-        # Multi: Total=5, Pmt=7, Bal=8. (Hay hueco en 6 ArrDate)
-        
-        if is_single_customer:
-            # Row length = 10
-            # Indices: 0,1,2,3 (Empty), 4 (Total), 5 (Empty), 6 (Pmt), 7 (Bal), 8,9 (Empty)
-            # Label "TOTALS:" en 3 (InvDate column? No, mejor en 0-3 merged)
-            totals_row_vals = [""] * 10
-            totals_row_vals[3] = "TOTALS:" # En la columna previa a Total
-            totals_row_vals[4] = f"{cur_total:,.2f}"
-            totals_row_vals[6] = f"{cur_pays:,.2f}"
-            totals_row_vals[7] = f"{cur_bal:,.2f}"
-            
-            span_range = (0, 3)
-            label_idx = 3
-            # Backgrounds en 4, 6, 7? O todo el bloque?
-            # Excel suele poner background en los totales.
-            # Vamos a poner background en 4, 6, 7
-            bg_indices = [4, 6, 7]
-        else:
-            # Row length = 11
-            # Indices: 0,1,2,3,4 (Empty), 5 (Total), 6 (Empty), 7 (Pmt), 8 (Bal), 9,10 (Empty)
-            totals_row_vals = [""] * 11
-            totals_row_vals[4] = "TOTALS:"
-            totals_row_vals[5] = f"{cur_total:,.2f}"
-            totals_row_vals[7] = f"{cur_pays:,.2f}"
-            totals_row_vals[8] = f"{cur_bal:,.2f}"
-            
-            span_range = (0, 4)
-            label_idx = 4
-            bg_indices = [5, 7, 8]
-
-        tt = Table([totals_row_vals], colWidths=[w * mm for w in widths])
-        
-        tt_cmds = [
-            ("SPAN", (span_range[0], 0), (span_range[1], 0)),
-            ("ALIGN", (label_idx, 0), (label_idx, 0), "RIGHT"),
-            ("FONT", (label_idx, 0), (label_idx, 0), "Helvetica-Bold", 6),
-        ]
-        for idx_bg in bg_indices:
-            tt_cmds.append(("BACKGROUND", (idx_bg, 0), (idx_bg, 0), total_color))
-            tt_cmds.append(("FONT", (idx_bg, 0), (idx_bg, 0), "Helvetica-Bold", 6))
-            tt_cmds.append(("ALIGN", (idx_bg, 0), (idx_bg, 0), "RIGHT"))
-            
-        tt.setStyle(TableStyle(tt_cmds))
+        cur_po_bal = cur_group.totals['po_balance']
+        cur_real_bal = cur_group.totals['real_balance']
+        totals_row = [["", "", "", "", "", "", "TOTALS:", f"{cur_total:,.2f}", f"{cur_pays:,.2f}", f"{cur_po_bal:,.2f}", f"{cur_real_bal:,.2f}", ""]]
+        tt = Table(totals_row, colWidths=[w * mm for w in widths])
+        tt.setStyle(TableStyle([
+            ("SPAN", (0, 0), (6, 0)),
+            ("ALIGN", (6, 0), (6, 0), "RIGHT"),
+            ("BACKGROUND", (7, 0), (10, 0), total_color),
+            ("FONT", (6, 0), (10, 0), "Helvetica-Bold", 6),
+            ("ALIGN", (7, 0), (10, 0), "RIGHT"),
+        ]))
         story.append(tt)
         story.append(Spacer(0, 6 * mm))
 
-        # --- Summary Table ---
         story.append(Paragraph(f"SUMMARY — {cur}", title_style))
-        
-        if is_single_customer:
-            hdr_summary = ["TOTAL BALANCE", "NOT DUE", "OVERDUE", "0-21", "22-30", "31-45", "45+"]
-            widths_summary = [40, 30, 30, 30, 30, 30, 30]
-        else:
-            hdr_summary = ["CUSTOMER", "TOTAL", "NOT DUE", "OVERDUE", "0-21", "22-30", "31-45", "45+"]
-            widths_summary = [65, 30, 30, 30, 30, 30, 30, 30]
+        hdr_summary = ["CUSTOMER", "TOTAL", "NOT DUE", "OVERDUE", "0-21", "22-30", "31-45", "45+"]
+        widths_summary = [65, 30, 30, 30, 30, 30, 30, 30]
 
         tbl_summary = [hdr_summary]
 
-        grand_agg = AgingSummary(total_balance=0.0)
+        grand_agg = AgingSummary(total_balance=0.0) # Iniciamos con nuestro esquema
 
         for cust, agg in sorted(cur_group.aging_summary.items()):
-            row_s = []
-            if not is_single_customer:
-                cust_display = cust or ""
-                if len(cust_display) > 30:
-                    cust_display = cust_display[:30] + "\n" + cust_display[30:50]
-                row_s.append(cust_display)
-            
+            cust_display = cust or ""
+            if len(cust_display) > 30:
+                cust_display = cust_display[:30] + "\n" + cust_display[30:50]
             vals = [
                 agg.total_balance, agg.not_yet_due, agg.overdue,
                 agg.bucket_0_21, agg.bucket_22_30, agg.bucket_31_45, agg.bucket_45_plus
             ]
-            row_s.extend([f"{v:,.2f}" for v in vals])
-            tbl_summary.append(row_s)
+            tbl_summary.append([cust_display] + [f"{v:,.2f}" for v in vals])
 
             grand_agg.total_balance += agg.total_balance
             grand_agg.not_yet_due += agg.not_yet_due
@@ -746,55 +566,31 @@ def create_pdf_report(
             grand_agg.bucket_45_plus += agg.bucket_45_plus
 
         t_summary = Table(tbl_summary, colWidths=[w * mm for w in widths_summary], repeatRows=1, splitByRow=True)
-        
-        # Estilos Summary
-        # Si single customer: todo son números, alinear derecha.
-        # Si no: primera col es texto (izq), resto números (der).
-        align_start = 0 if is_single_customer else 1
-        
-        summary_style_cmds = [
+        t_summary.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), head_color),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
             ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 6),
             ("FONT", (0, 1), (-1, -1), "Helvetica", 6),
             ("GRID", (0, 0), (-1, -1), 0.25, line_color),
-            ("ALIGN", (align_start, 1), (-1, -1), "RIGHT"),
+            ("ALIGN", (1, 1), (-1, -1), "RIGHT"),
+            ("ALIGN", (0, 1), (0, -1), "LEFT"),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, alt_color]),
-        ]
-        
-        if not is_single_customer:
-            summary_style_cmds.append(("ALIGN", (0, 1), (align_start - 1, -1), "LEFT"))
-
-        t_summary.setStyle(TableStyle(summary_style_cmds))
+        ]))
         story.append(t_summary)
 
-        # --- Totales Summary ---
         total_vals = [
             grand_agg.total_balance, grand_agg.not_yet_due, grand_agg.overdue,
             grand_agg.bucket_0_21, grand_agg.bucket_22_30, grand_agg.bucket_31_45, grand_agg.bucket_45_plus
         ]
-        
-        if is_single_customer:
-            # Solo valores
-            total_summary_row = [[f"{v:,.2f}" for v in total_vals]]
-            tsr_style = [
-                ("ALIGN", (0, 0), (-1, -1), "RIGHT"),
-                ("BACKGROUND", (0, 0), (-1, -1), total_color),
-                ("FONT", (0, 0), (-1, -1), "Helvetica-Bold", 6),
-            ]
-        else:
-            # "TOTALS:" + valores
-            total_summary_row = [["TOTALS:"] + [f"{v:,.2f}" for v in total_vals]]
-            tsr_style = [
-                ("ALIGN", (0, 0), (0, 0), "RIGHT"),
-                ("BACKGROUND", (0, 0), (-1, -1), total_color),
-                ("FONT", (0, 0), (-1, -1), "Helvetica-Bold", 6),
-                ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
-            ]
-
+        total_summary_row = [["TOTALS:"] + [f"{v:,.2f}" for v in total_vals]]
         tsr = Table(total_summary_row, colWidths=[w * mm for w in widths_summary])
-        tsr.setStyle(TableStyle(tsr_style))
+        tsr.setStyle(TableStyle([
+            ("ALIGN", (0, 0), (0, 0), "RIGHT"),
+            ("BACKGROUND", (0, 0), (-1, -1), total_color),
+            ("FONT", (0, 0), (-1, -1), "Helvetica-Bold", 6),
+            ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+        ]))
         story.append(tsr)
 
     doc.build(story, onFirstPage=_pdf_header_footer, onLaterPages=_pdf_header_footer)
@@ -803,15 +599,13 @@ def create_pdf_report(
     buffer.seek(0)
     return buffer
 
-# app/reports/report_builder.py
-# ... (después de la función create_pdf_report)
-
 # --- NUEVA FUNCIÓN DE HTML ---
 
 def create_html_report(
     data: Dict[str, CurrencyGroup], 
-    logo_path: str, # Aún no lo usamos
-    filters: dict
+    logo_path: str, 
+    filters: dict,
+    credit_info: CustomerCreditInfo | None = None
 ) -> io.BytesIO:
     """
     Toma los datos procesados y construye un archivo HTML EN MEMORIA.
@@ -840,6 +634,8 @@ def create_html_report(
       .tot td{background:var(--s);color:#fff;font-weight:700}
       .meta{background:var(--pL);padding:10px;border-radius:6px;margin:10px 0 18px;display:flex;gap:24px}
       .meta b{color:var(--p)}
+      .credit-info { margin-bottom: 20px; font-size: 14px; }
+      .credit-info div { margin-bottom: 4px; }
     </style>
     """
 
@@ -857,104 +653,54 @@ def create_html_report(
                 <div>Customer: <b>{customer_name}</b></div>
                 <div>Total Records: <b>{len(all_entries)}</b></div></div>"""
     parts.append(meta)
-
-    # Detectar si es un solo cliente
-    is_single_customer = filters.get('customer_id') is not None
+    
+    if credit_info:
+        parts.append(f"""
+        <div class="credit-info">
+            <div><b>Limit Credit:</b> ${credit_info.credit_limit:,.2f}</div>
+            <div><b>Credit Days:</b> {credit_info.payment_terms}</div>
+            <div><b>Currency:</b> {credit_info.currency}</div>
+        </div>
+        """)
 
     for cur, cur_group in data.items():
         parts.append(f"<h2>Currency — {cur}</h2>")
-        
-        if is_single_customer:
-            # Excel Order: REFERENCE, DOCUMENT, NO., INVOICE DATE, TOTAL AMOUNT, ARRIVAL DATE, PAYMENTS, BALANCE, DUE DATE, DAYS SINCE ARRIVAL
-            thead = (
-                "<thead><tr>"
-                "<th>REFERENCE</th><th>DOCUMENT</th><th>NO.</th><th>INVOICE DATE</th>"
-                "<th>TOTAL AMOUNT</th><th>ARRIVAL DATE</th><th>PAYMENTS</th><th>BALANCE</th>"
-                "<th>DUE DATE</th><th>DAYS SINCE ARRIVAL</th>"
-                "</tr></thead>"
-            )
-        else:
-            # Excel Order: CUSTOMER, REFERENCE, DOCUMENT, NO., INVOICE DATE, TOTAL AMOUNT, ARRIVAL DATE, PAYMENTS, BALANCE, DUE DATE, DAYS SINCE ARRIVAL
-            thead = (
-                "<thead><tr>"
-                "<th>CUSTOMER</th><th>REFERENCE</th><th>DOCUMENT</th><th>NO.</th><th>INVOICE DATE</th>"
-                "<th>TOTAL AMOUNT</th><th>ARRIVAL DATE</th><th>PAYMENTS</th><th>BALANCE</th>"
-                "<th>DUE DATE</th><th>DAYS SINCE ARRIVAL</th>"
-                "</tr></thead>"
-            )
-
-        parts.append(f"<table>{thead}<tbody>")
-        
+        parts.append(
+            "<table><thead><tr>"
+            "<th>CUSTOMER</th><th>REFERENCE</th><th>DOCUMENT</th><th>INVOICE DATE</th><th>NO.</th>"
+            "<th>ARRIVAL DATE</th><th>DUE DATE</th><th>TOTAL AMOUNT</th><th>PAYMENTS</th><th>P.O. BALANCE</th><th>REAL BALANCE</th><th>DAYS SINCE ARRIVAL</th>"
+            "</tr></thead><tbody>"
+        )
         for entry in cur_group.entries:
-            row_html = "<tr>"
-            
-            if not is_single_customer:
-                row_html += f"<td>{entry.customer_name or ''}</td>"
-            
-            row_html += f"<td>{entry.reference or ''}</td>"
-            row_html += f"<td class='center'>{entry.module or ''}</td>"
-            row_html += f"<td class='center'>{entry.folio or ''}</td>"
-            row_html += f"<td class='center'>{fmt_date(entry.invoice_date)}</td>"
-            row_html += f"<td class='num'>{entry.total:,.2f}</td>"
-            row_html += f"<td class='center'>{fmt_date(entry.arrival_date)}</td>"
-            row_html += f"<td class='num'>{entry.paid:,.2f}</td>"
-            row_html += f"<td class='num'>{entry.balance:,.2f}</td>"
-            row_html += f"<td class='center'>{fmt_date(entry.due_date)}</td>"
-            row_html += f"<td class='num' style='text-align:center'>{entry.days_since}</td>"
-            
-            row_html += "</tr>"
-            parts.append(row_html)
+            parts.append(
+                f"<tr><td>{entry.customer_name or ''}</td><td>{entry.reference or ''}</td><td class='center'>{entry.module or ''}</td>"
+                f"<td class='center'>{fmt_date(entry.invoice_date)}</td><td class='center'>{entry.folio or ''}</td>"
+                f"<td class='center'>{fmt_date(entry.arrival_date)}</td><td class='center'>{fmt_date(entry.due_date)}</td>"
+                f"<td class='num'>{entry.total:,.2f}</td>"
+                f"<td class='num'>{entry.paid:,.2f}</td>"
+                f"<td class='num'>{entry.po_balance:,.2f}</td>"
+                f"<td class='num'>{entry.real_balance:,.2f}</td>"
+                f"<td class='num' style='text-align:center'>{entry.days_since}</td></tr>"
+            )
 
         cur_total = cur_group.totals['total']
         cur_pays = cur_group.totals['paid']
-        cur_bal = cur_group.totals['balance']
-        
-        # Totales Row
-        # Single: Total=col 5 (index 4), Pmt=col 7 (6), Bal=col 8 (7).
-        # Multi: Total=col 6 (index 5), Pmt=col 8 (7), Bal=col 9 (8).
-        
-        if is_single_customer:
-            # Colspan 4 (0-3) para label "TOTALS:"
-            parts.append(
-                f"<tr class='tot'><td colspan='4' style='text-align:right'>TOTAL ({cur}):</td>"
-                f"<td class='num'>{cur_total:,.2f}</td>"
-                f"<td></td>" # Arrival Date placeholder
-                f"<td class='num'>{cur_pays:,.2f}</td>"
-                f"<td class='num'>{cur_bal:,.2f}</td>"
-                f"<td></td><td></td></tr>" # Due Date, Days placeholders
-            )
-        else:
-            # Colspan 5 (0-4) para label "TOTALS:"
-            parts.append(
-                f"<tr class='tot'><td colspan='5' style='text-align:right'>TOTAL ({cur}):</td>"
-                f"<td class='num'>{cur_total:,.2f}</td>"
-                f"<td></td>" # Arrival Date placeholder
-                f"<td class='num'>{cur_pays:,.2f}</td>"
-                f"<td class='num'>{cur_bal:,.2f}</td>"
-                f"<td></td><td></td></tr>" # Due Date, Days placeholders
-            )
-            
+        cur_po_bal = cur_group.totals['po_balance']
+        cur_real_bal = cur_group.totals['real_balance']
+        parts.append(
+            f"<tr class='tot'><td colspan='7' style='text-align:right'>TOTALS ({cur}):</td>"
+            f"<td class='num'>{cur_total:,.2f}</td>"
+            f"<td class='num'>{cur_pays:,.2f}</td>"
+            f"<td class='num'>{cur_po_bal:,.2f}</td>"
+            f"<td class='num'>{cur_real_bal:,.2f}</td><td></td></tr>"
+        )
         parts.append("</tbody></table>")
-        
-        # --- Summary Table HTML ---
+
         parts.append(f"<h2>Summary — {cur}</h2>")
-        
-        if is_single_customer:
-            thead_sum = (
-                "<thead><tr>"
-                "<th>TOTAL BALANCE</th><th>NOT YET DUE</th><th>OVERDUE</th>"
-                "<th>0-21</th><th>22-30</th><th>31-45</th><th>45+ DAYS</th>"
-                "</tr></thead>"
-            )
-        else:
-            thead_sum = (
-                "<thead><tr>"
-                "<th>CUSTOMER</th><th>TOTAL BALANCE</th><th>NOT YET DUE</th><th>OVERDUE</th>"
-                "<th>0-21</th><th>22-30</th><th>31-45</th><th>45+ DAYS</th>"
-                "</tr></thead>"
-            )
-            
-        parts.append(f"<table>{thead_sum}<tbody>")
+        parts.append(
+            "<table><thead><tr><th>CUSTOMER</th><th>TOTAL BALANCE</th><th>NOT YET DUE</th><th>OVERDUE</th>"
+            "<th>0-21</th><th>22-30</th><th>31-45</th><th>45+ DAYS</th></tr></thead><tbody>"
+        )
 
         # (Usamos un dict simple para los totales, ya que no necesitamos el objeto Pydantic)
         grand_agg = {"total_balance": 0.0, "not_yet_due": 0.0, "overdue": 0.0, "bucket_0_21": 0.0, "bucket_22_30": 0.0, "bucket_31_45": 0.0, "bucket_45_plus": 0.0}
@@ -964,12 +710,7 @@ def create_html_report(
                 agg.total_balance, agg.not_yet_due, agg.overdue,
                 agg.bucket_0_21, agg.bucket_22_30, agg.bucket_31_45, agg.bucket_45_plus
             ]
-            row_html = "<tr>"
-            if not is_single_customer:
-                row_html += "<td>" + (k or "") + "</td>"
-            
-            row_html += "".join(f"<td class='num'>{v:,.2f}</td>" for v in vals) + "</tr>"
-            parts.append(row_html)
+            parts.append("<tr><td>" + (k or "") + "</td>" + "".join(f"<td class='num'>{v:,.2f}</td>" for v in vals) + "</tr>")
 
             grand_agg["total_balance"] += agg.total_balance
             grand_agg["not_yet_due"] += agg.not_yet_due
@@ -983,20 +724,11 @@ def create_html_report(
             grand_agg["total_balance"], grand_agg["not_yet_due"], grand_agg["overdue"],
             grand_agg["bucket_0_21"], grand_agg["bucket_22_30"], grand_agg["bucket_31_45"], grand_agg["bucket_45_plus"]
         ]
-        
-        if is_single_customer:
-            parts.append(
-                "<tr class='tot'>"
-                + "".join(f"<td class='num'>{v:,.2f}</td>" for v in tot)
-                + "</tr>"
-            )
-        else:
-            parts.append(
-                "<tr class='tot'><td>TOTALS:</td>"
-                + "".join(f"<td class='num'>{v:,.2f}</td>" for v in tot)
-                + "</tr>"
-            )
-            
+        parts.append(
+            "<tr class='tot'><td>TOTALS:</td>"
+            + "".join(f"<td class='num'>{v:,.2f}</td>" for v in tot)
+            + "</tr>"
+        )
         parts.append("</tbody></table>")
 
     parts.append("</body></html>")

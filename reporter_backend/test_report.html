@@ -1,0 +1,34 @@
+<!doctype html><html><head><meta charset="utf-8"><title>AR Aging</title>
+    <style>
+      :root{--p:#2E86AB;--pL:#F0F9FF;--s:#A7C957;--ink:#1F2937;--muted:#6B7280;--line:#D1D5DB;--alt:#F8F9FA}
+      body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;color:var(--ink);margin:0;padding:24px}
+      .header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--p);padding-bottom:16px;margin-bottom:20px}
+      .title{color:var(--p);font-size:24px;font-weight:700;margin:0}
+      .sub{color:var(--muted);margin:4px 0 0 0}
+      .logo{height:46px}
+      h2{color:var(--p)}
+      table{width:100%;border-collapse:collapse;font-size:12px;margin:12px 0 28px}
+      thead th{background:var(--p);color:#fff;text-transform:uppercase;font-size:11px;padding:8px;border:1px solid var(--p)}
+      tbody td{padding:8px;border-bottom:1px solid var(--line)}
+      tbody tr:nth-child(even){background:var(--alt)}
+      .num{font-variant-numeric:tabular-nums; text-align:right;}
+      .center{text-align:center;}
+      .tot td{background:var(--s);color:#fff;font-weight:700}
+      .meta{background:var(--pL);padding:10px;border-radius:6px;margin:10px 0 18px;display:flex;gap:24px}
+      .meta b{color:var(--p)}
+      .credit-info { margin-bottom: 20px; font-size: 14px; }
+      .credit-info div { margin-bottom: 4px; }
+    </style>
+    </head><body>
+        <div class="header"><div style="flex:1;text-align:center">
+          <div class="title">ACCOUNTS RECEIVABLE AGING</div>
+          <div class="sub">Detailed Accounts Receivable Analysis</div>
+        </div><div style="width:80px"></div></div><div class="meta"><div>As Of: <b>March 1st, 2023</b></div>
+                <div>Customer: <b>Test Customer</b></div>
+                <div>Total Records: <b>2</b></div></div>
+        <div class="credit-info">
+            <div><b>Limit Credit:</b> $50,000.00</div>
+            <div><b>Credit Days:</b> Net 30</div>
+            <div><b>Currency:</b> USD</div>
+        </div>
+        <h2>Currency — USD</h2><table><thead><tr><th>CUSTOMER</th><th>REFERENCE</th><th>DOCUMENT</th><th>INVOICE DATE</th><th>NO.</th><th>ARRIVAL DATE</th><th>DUE DATE</th><th>TOTAL AMOUNT</th><th>PAYMENTS</th><th>P.O. BALANCE</th><th>REAL BALANCE</th><th>DAYS SINCE ARRIVAL</th></tr></thead><tbody><tr><td>Test Customer</td><td>REF-001</td><td class='center'>Invoice</td><td class='center'>01/01/23</td><td class='center'>INV-001</td><td class='center'>01/05/23</td><td class='center'>02/05/23</td><td class='num'>116.00</td><td class='num'>0.00</td><td class='num'>0.00</td><td class='num'>116.00</td><td class='num' style='text-align:center'>30</td></tr><tr><td>Test Customer</td><td>REF-002</td><td class='center'>Sales Order</td><td class='center'>02/01/23</td><td class='center'>SO-001</td><td class='center'>02/05/23</td><td class='center'>03/05/23</td><td class='num'>232.00</td><td class='num'>0.00</td><td class='num'>232.00</td><td class='num'>0.00</td><td class='num' style='text-align:center'>10</td></tr><tr class='tot'><td colspan='7' style='text-align:right'>TOTALS (USD):</td><td class='num'>348.00</td><td class='num'>0.00</td><td class='num'>232.00</td><td class='num'>116.00</td><td></td></tr></tbody></table><h2>Summary — USD</h2><table><thead><tr><th>CUSTOMER</th><th>TOTAL BALANCE</th><th>NOT YET DUE</th><th>OVERDUE</th><th>0-21</th><th>22-30</th><th>31-45</th><th>45+ DAYS</th></tr></thead><tbody><tr><td>Test Customer</td><td class='num'>348.00</td><td class='num'>0.00</td><td class='num'>0.00</td><td class='num'>232.00</td><td class='num'>116.00</td><td class='num'>0.00</td><td class='num'>0.00</td></tr><tr class='tot'><td>TOTALS:</td><td class='num'>348.00</td><td class='num'>0.00</td><td class='num'>0.00</td><td class='num'>232.00</td><td class='num'>116.00</td><td class='num'>0.00</td><td class='num'>0.00</td></tr></tbody></table></body></html>
