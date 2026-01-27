@@ -151,8 +151,6 @@ const ReportsSummary = ({ reportData }) => {
                         <StatCard
                             label={`Total AR (${cur})`}
                             value={`$${reportData.data_by_currency[cur].totals.balance.toLocaleString()}`}
-                            trend="up" // Placeholder trend
-                            trendValue="+2.5%" // Placeholder value
                             color={['primary', 'success', 'warning', 'danger'][idx % 4]}
                         />
                     </div>
