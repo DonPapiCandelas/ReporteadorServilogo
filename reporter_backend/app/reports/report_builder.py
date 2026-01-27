@@ -106,8 +106,8 @@ def create_excel_report(
         ws2 = wb.create_sheet(_safe_excel_title(f"CURRENCY {cur}"))
         insert_logo(ws2, "A1", logo_path)
         
-        merge_end = "K1" if is_single_customer else "L1"
-        merge_end_row2 = "K2" if is_single_customer else "L2"
+        merge_end = "L1" if is_single_customer else "M1"
+        merge_end_row2 = "L2" if is_single_customer else "M2"
         
         ws2.merge_cells(f"C1:{merge_end}")
         a1 = ws2["C1"]
@@ -131,13 +131,13 @@ def create_excel_report(
 
         if is_single_customer:
             headers2 = [
-                "REFERENCE", "DOCUMENT", "NO.", "INVOICE DATE", 
+                "REFERENCE", "PO", "DOCUMENT", "NO.", "INVOICE DATE", 
                 "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "P.O. BALANCE", "REAL BALANCE", 
                 "DUE DATE", "DAYS SINCE ARRIVAL"
             ]
         else:
             headers2 = [
-                "CUSTOMER", "REFERENCE", "DOCUMENT", "NO.", "INVOICE DATE", 
+                "CUSTOMER", "REFERENCE", "PO", "DOCUMENT", "NO.", "INVOICE DATE", 
                 "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "P.O. BALANCE", "REAL BALANCE", 
                 "DUE DATE", "DAYS SINCE ARRIVAL"
             ]
@@ -153,13 +153,13 @@ def create_excel_report(
         for idx, entry in enumerate(cur_rows, start=r0):
             if is_single_customer:
                 out = [
-                    entry.reference, entry.module, entry.folio, entry.invoice_date,
+                    entry.reference, entry.po, entry.module, entry.folio, entry.invoice_date,
                     entry.total, entry.arrival_date, entry.paid, entry.po_balance, entry.real_balance,
                     entry.due_date, entry.days_since
                 ]
             else:
                 out = [
-                    entry.customer_name, entry.reference, entry.module, entry.folio, entry.invoice_date,
+                    entry.customer_name, entry.reference, entry.po, entry.module, entry.folio, entry.invoice_date,
                     entry.total, entry.arrival_date, entry.paid, entry.po_balance, entry.real_balance,
                     entry.due_date, entry.days_since
                 ]
@@ -178,9 +178,11 @@ def create_excel_report(
             _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_customer, header_row=start_row)
             
             if is_single_customer:
-                widths = [30, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14]
+                # Adjusted widths for new PO column (index 1)
+                widths = [30, 20, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14]
             else:
-                widths = [28, 30, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14]
+                # Adjusted widths for new PO column (index 2)
+                widths = [28, 30, 20, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14]
             set_col_widths(ws2, widths)
 
     # ===== 2. Hojas Summary (Summary Sheets) - SEGUNDAS =====
@@ -328,14 +330,7 @@ def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_custome
     if r0 > last2: return
     
     if is_single_customer:
-        date_cols = (4, 6, 10)
-        money_cols = (5, 7, 8, 9)
-        int_cols = (11,)
-        total_cols = (5, 7, 8, 9)
-        days_col = 11
-        last_col = 11
-        merge_range_end = 4
-    else:
+        # Columns shifted by 1 due to PO
         date_cols = (5, 7, 11)
         money_cols = (6, 8, 9, 10)
         int_cols = (12,)
@@ -343,6 +338,15 @@ def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_custome
         days_col = 12
         last_col = 12
         merge_range_end = 5
+    else:
+        # Columns shifted by 1 due to PO
+        date_cols = (6, 8, 12)
+        money_cols = (7, 9, 10, 11)
+        int_cols = (13,)
+        total_cols = (7, 9, 10, 11)
+        days_col = 13
+        last_col = 13
+        merge_range_end = 6
 
     for row in range(r0, last2 + 1):
         for col in date_cols:
@@ -470,10 +474,11 @@ def create_pdf_report(
             story.append(Spacer(2 * mm, 0))
 
         headers = [
-            "CUSTOMER", "REFERENCE", "DOC", "INV\nDATE", "NO.", "ARR\nDATE",
+            "CUSTOMER", "REFERENCE", "PO", "DOC", "INV\nDATE", "NO.", "ARR\nDATE",
             "DUE\nDATE", "TOTAL", "PAYMT", "P.O.\nBAL", "REAL\nBAL", "DAYS",
         ]
-        widths = [45, 55, 14, 14, 12, 14, 14, 25, 22, 22, 22, 18] # mm
+        # Adjusted widths for PO column
+        widths = [40, 45, 25, 14, 14, 12, 14, 14, 25, 22, 22, 22, 18] # mm
 
         tbl_data = [headers]
         for entry in cur_group.entries:
@@ -482,8 +487,12 @@ def create_pdf_report(
                 customer_display = customer_display[:25] + "\n" + customer_display[25:45]
 
             reference_display = entry.reference or ""
-            if len(reference_display) > 30:
-                reference_display = reference_display[:30] + "\n" + reference_display[30:55]
+            if len(reference_display) > 25:
+                reference_display = reference_display[:25] + "\n" + reference_display[25:45]
+            
+            po_display = entry.po or ""
+            if len(po_display) > 15:
+                po_display = po_display[:15] + "\n" + po_display[15:30]
 
             doc_abbr = (
                 "Inv" if entry.module == "Invoice"
@@ -495,6 +504,7 @@ def create_pdf_report(
             tbl_data.append([
                 customer_display,
                 reference_display,
+                po_display,
                 doc_abbr,
                 fmt_date(entry.invoice_date, "%m/%d/%y"),
                 str(entry.folio or ""),
@@ -514,9 +524,9 @@ def create_pdf_report(
             ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 6),
             ("FONT", (0, 1), (-1, -1), "Helvetica", 6),
             ("GRID", (0, 0), (-1, -1), 0.25, line_color),
-            ("ALIGN", (2, 1), (6, -1), "CENTER"),
-            ("ALIGN", (7, 1), (-1, -1), "RIGHT"),
-            ("ALIGN", (0, 1), (1, -1), "LEFT"),
+            ("ALIGN", (3, 1), (7, -1), "CENTER"), # Adjusted indices
+            ("ALIGN", (8, 1), (-1, -1), "RIGHT"), # Adjusted indices
+            ("ALIGN", (0, 1), (2, -1), "LEFT"), # Adjusted indices
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, alt_color]),
             ("LINEBELOW", (0, 0), (-1, 0), 1, colors.white),
@@ -527,14 +537,15 @@ def create_pdf_report(
         cur_pays = cur_group.totals['paid']
         cur_po_bal = cur_group.totals['po_balance']
         cur_real_bal = cur_group.totals['real_balance']
-        totals_row = [["", "", "", "", "", "", "TOTALS:", f"{cur_total:,.2f}", f"{cur_pays:,.2f}", f"{cur_po_bal:,.2f}", f"{cur_real_bal:,.2f}", ""]]
+        # Adjusted totals row for extra column
+        totals_row = [["", "", "", "", "", "", "", "TOTALS:", f"{cur_total:,.2f}", f"{cur_pays:,.2f}", f"{cur_po_bal:,.2f}", f"{cur_real_bal:,.2f}", ""]]
         tt = Table(totals_row, colWidths=[w * mm for w in widths])
         tt.setStyle(TableStyle([
-            ("SPAN", (0, 0), (6, 0)),
-            ("ALIGN", (6, 0), (6, 0), "RIGHT"),
-            ("BACKGROUND", (7, 0), (10, 0), total_color),
-            ("FONT", (6, 0), (10, 0), "Helvetica-Bold", 6),
-            ("ALIGN", (7, 0), (10, 0), "RIGHT"),
+            ("SPAN", (0, 0), (7, 0)),
+            ("ALIGN", (7, 0), (7, 0), "RIGHT"),
+            ("BACKGROUND", (8, 0), (11, 0), total_color),
+            ("FONT", (7, 0), (11, 0), "Helvetica-Bold", 6),
+            ("ALIGN", (8, 0), (11, 0), "RIGHT"),
         ]))
         story.append(tt)
         story.append(Spacer(0, 6 * mm))
@@ -667,13 +678,13 @@ def create_html_report(
         parts.append(f"<h2>Currency — {cur}</h2>")
         parts.append(
             "<table><thead><tr>"
-            "<th>CUSTOMER</th><th>REFERENCE</th><th>DOCUMENT</th><th>INVOICE DATE</th><th>NO.</th>"
+            "<th>CUSTOMER</th><th>REFERENCE</th><th>PO</th><th>DOCUMENT</th><th>INVOICE DATE</th><th>NO.</th>"
             "<th>ARRIVAL DATE</th><th>DUE DATE</th><th>TOTAL AMOUNT</th><th>PAYMENTS</th><th>P.O. BALANCE</th><th>REAL BALANCE</th><th>DAYS SINCE ARRIVAL</th>"
             "</tr></thead><tbody>"
         )
         for entry in cur_group.entries:
             parts.append(
-                f"<tr><td>{entry.customer_name or ''}</td><td>{entry.reference or ''}</td><td class='center'>{entry.module or ''}</td>"
+                f"<tr><td>{entry.customer_name or ''}</td><td>{entry.reference or ''}</td><td>{entry.po or ''}</td><td class='center'>{entry.module or ''}</td>"
                 f"<td class='center'>{fmt_date(entry.invoice_date)}</td><td class='center'>{entry.folio or ''}</td>"
                 f"<td class='center'>{fmt_date(entry.arrival_date)}</td><td class='center'>{fmt_date(entry.due_date)}</td>"
                 f"<td class='num'>{entry.total:,.2f}</td>"
@@ -688,7 +699,7 @@ def create_html_report(
         cur_po_bal = cur_group.totals['po_balance']
         cur_real_bal = cur_group.totals['real_balance']
         parts.append(
-            f"<tr class='tot'><td colspan='7' style='text-align:right'>TOTALS ({cur}):</td>"
+            f"<tr class='tot'><td colspan='8' style='text-align:right'>TOTALS ({cur}):</td>"
             f"<td class='num'>{cur_total:,.2f}</td>"
             f"<td class='num'>{cur_pays:,.2f}</td>"
             f"<td class='num'>{cur_po_bal:,.2f}</td>"

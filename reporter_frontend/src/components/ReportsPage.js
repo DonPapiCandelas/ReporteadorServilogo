@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import Layout from './Layout';
+import MainLayout from './MainLayout';
 import ReportsFilter from './ReportsFilter';
 import ReportsSummary from './ReportsSummary';
 import ReportsDetails from './ReportsDetails';
@@ -79,9 +79,10 @@ function ReportsPage() {
   const handleDownloadHtml = (filters) => downloadFile('/api/reports/receivables-download-html', filters, "report.html");
 
   return (
-    <Layout title="Accounts Receivable">
+    <MainLayout title="Accounts Receivable">
 
-      <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '20px' }}>
+      {/* Filters Section */}
+      <div className="bg-surface border border-border rounded-md p-4 mb-4 shadow-sm">
         <ReportsFilter
           onRunReport={handleRunReport}
           onDownloadExcel={handleDownloadExcel}
@@ -91,28 +92,26 @@ function ReportsPage() {
       </div>
 
       <div className="report-content">
-        {isLoading && <div className="loading-message" style={{ padding: '20px', textAlign: 'center' }}>Loading data...</div>}
-        {error && <div className="error-message" style={{ color: 'red', padding: '10px' }}>{error}</div>}
+        {isLoading && <div className="text-center p-4 text-primary font-mono animate-pulse">Loading data...</div>}
+        {error && <div className="text-danger p-2 border border-danger/20 bg-danger/10 rounded mb-4">{error}</div>}
 
         {/* TABS */}
-        <div style={{ display: 'flex', borderBottom: '2px solid #e5e7eb', marginBottom: '20px' }}>
+        <div className="flex items-center bg-surface border border-border p-1 rounded-md w-fit mb-4">
           <button
             onClick={() => setActiveTab('summary')}
-            style={{
-              padding: '12px 24px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold',
-              borderBottom: activeTab === 'summary' ? '3px solid #2563eb' : '3px solid transparent',
-              color: activeTab === 'summary' ? '#2563eb' : '#6b7280',
-            }}
+            className={`px-4 py-1.5 text-[11px] font-bold rounded-[4px] transition-colors uppercase tracking-wider ${activeTab === 'summary'
+                ? 'bg-primary text-white shadow-sm'
+                : 'text-text-sub hover:text-white'
+              }`}
           >
             Global Summary
           </button>
           <button
             onClick={() => setActiveTab('details')}
-            style={{
-              padding: '12px 24px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold',
-              borderBottom: activeTab === 'details' ? '3px solid #2563eb' : '3px solid transparent',
-              color: activeTab === 'details' ? '#2563eb' : '#6b7280',
-            }}
+            className={`px-4 py-1.5 text-[11px] font-bold rounded-[4px] transition-colors uppercase tracking-wider ${activeTab === 'details'
+                ? 'bg-primary text-white shadow-sm'
+                : 'text-text-sub hover:text-white'
+              }`}
           >
             Detailed Search
           </button>
@@ -124,7 +123,7 @@ function ReportsPage() {
           globalSummaryData ? (
             <ReportsSummary reportData={globalSummaryData} />
           ) : (
-            <div style={{ padding: 20 }}>Loading Global Summary...</div>
+            <div className="p-4 text-text-sub font-mono text-sm">Loading Global Summary...</div>
           )
         )}
 
@@ -133,14 +132,14 @@ function ReportsPage() {
           filteredReportData ? (
             <ReportsDetails reportData={filteredReportData} />
           ) : (
-            <div style={{ padding: 40, textAlign: 'center', color: '#6b7280' }}>
-              Use the filters above and click "Generate Report" to see specific details.
+            <div className="p-8 text-center border border-dashed border-border rounded-lg">
+              <p className="text-text-sub text-sm">Use the filters above and click "Generate Report" to see specific details.</p>
             </div>
           )
         )}
       </div>
 
-    </Layout>
+    </MainLayout>
   );
 }
 

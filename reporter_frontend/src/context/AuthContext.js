@@ -1,62 +1,101 @@
 // src/context/AuthContext.js
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
+
+const DEFAULT_COMPANY = 'growers_union';
+const FALLBACK_COMPANIES = [
+  { key: 'growers_union', name: 'Growers Union' },
+  { key: 'sofresco', name: 'Sofresco GmbH' },
+];
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('userToken'));
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // --- Empresa seleccionada ---
+  const [companyKey, setCompanyKeyState] = useState(localStorage.getItem('companyKey') || DEFAULT_COMPANY);
+  const [companies, setCompanies] = useState([]);
+
+  const setCompanyKey = useCallback((newKey) => {
+    const key = newKey || DEFAULT_COMPANY;
+    localStorage.setItem('companyKey', key);
+    setCompanyKeyState(key);
+  }, []);
+
+  const loadCompanies = useCallback(async () => {
+    try {
+      const res = await axios.get('/api/companies');
+      const list = Array.isArray(res.data) ? res.data : [];
+      setCompanies(list.length ? list : FALLBACK_COMPANIES);
+
+      // si la empresa guardada ya no existe, usamos la primera
+      const exists = list.some(c => c.key === (localStorage.getItem('companyKey') || companyKey));
+      if (!exists && list.length) {
+        setCompanyKey(list[0].key);
+      }
+    } catch (e) {
+      console.warn('No se pudieron cargar empresas desde /api/companies, usando fallback.', e);
+      setCompanies(FALLBACK_COMPANIES);
+    }
+  }, [companyKey, setCompanyKey]);
+
   useEffect(() => {
-    // 1. EL INTERCEPTOR MÁGICO
-    // Este código se ejecuta antes de CADA petición que haga tu app
+    // Interceptor que se ejecuta antes de CADA petición
     const requestInterceptor = axios.interceptors.request.use(
       (config) => {
-        // Busca el token actualizado en localStorage justo antes de enviar
         const currentToken = localStorage.getItem('userToken');
         if (currentToken) {
           config.headers.Authorization = `Bearer ${currentToken}`;
         }
+
+        // Multi-empresa: manda la empresa seleccionada
+        const currentCompany = localStorage.getItem('companyKey') || DEFAULT_COMPANY;
+        config.headers['X-Company'] = currentCompany;
+
         return config;
       },
       (error) => Promise.reject(error)
     );
 
-    // 2. Verificar si ya estamos logueados al iniciar
     const initAuth = async () => {
       const storedToken = localStorage.getItem('userToken');
       if (storedToken) {
         try {
-          // Ya no necesitamos configurar defaults aquí, el interceptor lo hará
           const response = await axios.get('/api/users/me');
           setUser(response.data);
           setToken(storedToken);
+          await loadCompanies();
           console.log("Sesión restaurada:", response.data.username);
         } catch (error) {
           console.log("Sesión expirada o inválida");
           logout();
         }
+      } else {
+        // sin sesión, igual deja lista de empresas para el selector
+        setCompanies(FALLBACK_COMPANIES);
       }
       setLoading(false);
     };
 
     initAuth();
 
-    // Limpieza: quitamos el interceptor si el componente se desmonta
     return () => {
       axios.interceptors.request.eject(requestInterceptor);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const login = async (accessToken) => {
     localStorage.setItem('userToken', accessToken);
     setToken(accessToken);
-    // Verificamos inmediatamente para obtener los datos del usuario
+
     try {
       const response = await axios.get('/api/users/me');
       setUser(response.data);
+      await loadCompanies();
     } catch (e) {
       console.error("Error al obtener datos de usuario tras login", e);
     }
@@ -66,7 +105,6 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('userToken');
     setToken(null);
     setUser(null);
-    // Recargar la página para limpiar cualquier estado basura en memoria
     window.location.href = '/login';
   };
 
@@ -74,7 +112,13 @@ export function AuthProvider({ children }) {
     token,
     user,
     login,
-    logout
+    logout,
+
+    // multi-empresa
+    companyKey,
+    setCompanyKey,
+    companies,
+    reloadCompanies: loadCompanies,
   };
 
   if (loading) {

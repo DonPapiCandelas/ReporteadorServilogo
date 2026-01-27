@@ -1,8 +1,7 @@
 // src/components/Register.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // Para el enlace "Back to Login"
-import './Login.css'; // Reutilizaremos los estilos del login
+import { Link } from 'react-router-dom';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -11,24 +10,20 @@ function Register() {
   const [lastName, setLastName] = useState('');
 
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false); // ¡Nuevo estado de éxito!
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
 
     try {
-      // Llama al endpoint de registro público
       await axios.post('/api/register', {
         username: username,
         password: password,
         first_name: firstName,
         last_name: lastName
       });
-
-      // ¡Éxito!
       setSuccess(true);
-
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.detail || 'Registration failed.');
@@ -38,18 +33,19 @@ function Register() {
     }
   };
 
-  // Si el registro fue exitoso, muestra solo el mensaje
   if (success) {
     return (
-      <div className="login-container">
-        <div className="login-box">
-          <h1 className="login-title">Registration Submitted!</h1>
-          <p className="login-subtitle" style={{ color: '#16a34a', fontWeight: 600 }}>
-            Your account is pending approval.
-            <br />
+      <div className="min-h-screen flex items-center justify-center bg-background text-text-main font-sans">
+        <div className="w-full max-w-md p-8 bg-surface border border-border rounded-lg shadow-xl text-center">
+          <div className="inline-flex items-center justify-center size-12 rounded bg-success text-white mb-4">
+            <span className="material-symbols-outlined text-2xl">check</span>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white mb-2">Registration Submitted!</h1>
+          <p className="text-sm text-text-sub mb-6">
+            Your account is pending approval.<br />
             An administrator will review your request shortly.
           </p>
-          <Link to="/login" className="login-button" style={{ textAlign: 'center', textDecoration: 'none' }}>
+          <Link to="/login" className="inline-block px-6 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded transition-colors">
             Back to Login
           </Link>
         </div>
@@ -57,56 +53,69 @@ function Register() {
     );
   }
 
-  // Si no, muestra el formulario de registro
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h1 className="login-title">Create Account</h1>
-        <p className="login-subtitle">Fill in your details to register</p>
+    <div className="min-h-screen flex items-center justify-center bg-background text-text-main font-sans">
+      <div className="w-full max-w-md p-8 bg-surface border border-border rounded-lg shadow-xl">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold tracking-tight text-white">Create Account</h1>
+          <p className="text-sm text-text-sub mt-2">Fill in your details to register</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-group">
-            <label htmlFor="firstName">First Name</label>
-            <input
-              type="text" id="firstName" value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-            />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="firstName" className="block text-xs font-bold text-text-sub uppercase tracking-wider mb-2">First Name</label>
+              <input
+                type="text" id="firstName" value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                className="w-full bg-background border border-border rounded px-4 py-2 text-sm text-text-main focus:border-primary outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label htmlFor="lastName" className="block text-xs font-bold text-text-sub uppercase tracking-wider mb-2">Last Name</label>
+              <input
+                type="text" id="lastName" value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                className="w-full bg-background border border-border rounded px-4 py-2 text-sm text-text-main focus:border-primary outline-none transition-colors"
+              />
+            </div>
           </div>
-          <div className="input-group">
-            <label htmlFor="lastName">Last Name</label>
-            <input
-              type="text" id="lastName" value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="input-group">
-            <label htmlFor="username">Username</label>
+          <div>
+            <label htmlFor="username" className="block text-xs font-bold text-text-sub uppercase tracking-wider mb-2">Username</label>
             <input
               type="text" id="username" value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              className="w-full bg-background border border-border rounded px-4 py-2 text-sm text-text-main focus:border-primary outline-none transition-colors"
             />
           </div>
-          <div className="input-group">
-            <label htmlFor="password">Password</label>
+          <div>
+            <label htmlFor="password" className="block text-xs font-bold text-text-sub uppercase tracking-wider mb-2">Password</label>
             <input
               type="password" id="password" value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="w-full bg-background border border-border rounded px-4 py-2 text-sm text-text-main focus:border-primary outline-none transition-colors"
             />
           </div>
 
-          {error && (<p className="error-message">{error}</p>)}
+          {error && (
+            <div className="p-3 bg-danger/10 border border-danger/20 rounded text-danger text-sm text-center">
+              {error}
+            </div>
+          )}
 
-          <button type="submit" className="login-button">
+          <button type="submit" className="w-full py-2.5 bg-primary hover:bg-primary-dark text-white font-bold rounded transition-colors shadow-lg shadow-primary/20 mt-2">
             Register
           </button>
 
-          <Link to="/login" className="link-button">
-            Already have an account? Login
-          </Link>
+          <div className="text-center mt-4">
+            <Link to="/login" className="text-sm text-primary hover:text-primary-dark transition-colors">
+              Already have an account? Login
+            </Link>
+          </div>
         </form>
       </div>
     </div>

@@ -5,6 +5,7 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList,
     Treemap
 } from 'recharts';
+import StatCard from './Dashboard/StatCard';
 
 // Colors for Pie Chart and Top 10
 const COLORS_PIE = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
@@ -22,7 +23,7 @@ const CustomTreemapContent = (props) => {
                 height={height}
                 style={{
                     fill: fill, // Uses calculated color (Red/Green)
-                    stroke: '#fff',
+                    stroke: '#121921', // Dark border matching surface
                     strokeWidth: 2,
                 }}
             />
@@ -52,12 +53,12 @@ const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
         const data = payload[0].payload;
         return (
-            <div style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
-                <p style={{ fontWeight: 'bold', margin: '0 0 5px 0', color: '#333' }}>{data.name}</p>
-                <p style={{ margin: 0, fontSize: '0.9rem' }}>Balance: <b>${data.value.toLocaleString()}</b> <span style={{ fontSize: '0.8em', color: '#666' }}>({data.currency})</span></p>
+            <div className="bg-surface border border-border p-2 rounded shadow-lg z-50">
+                <p className="font-bold text-text-main text-xs mb-1">{data.name}</p>
+                <p className="text-xs text-text-sub">Balance: <b className="text-white">${data.value.toLocaleString()}</b> <span className="text-[10px]">({data.currency})</span></p>
                 {/* Risk Status */}
                 {data.riskPct !== undefined && (
-                    <p style={{ margin: '5px 0 0 0', fontWeight: 'bold', color: data.isRisky ? '#dc2626' : '#16a34a' }}>
+                    <p className={`text-[10px] font-bold mt-1 ${data.isRisky ? 'text-danger' : 'text-success'}`}>
                         {data.isRisky ? '⚠️ HIGH RISK' : '✅ GOOD STANDING'} ({data.riskPct}%)
                     </p>
                 )}
@@ -104,7 +105,7 @@ const ReportsSummary = ({ reportData }) => {
                 riskPct: (riskRatio * 100).toFixed(0),
                 isRisky: isRisky,
                 // Assign FINAL color here
-                fill: isRisky ? '#dc2626' : '#16a34a' // Red vs Green
+                fill: isRisky ? '#f43f5e' : '#10b981' // Red vs Green (Tailwind colors)
             };
         });
 
@@ -125,56 +126,70 @@ const ReportsSummary = ({ reportData }) => {
     const handleRateChange = (cur, val) => setRates(prev => ({ ...prev, [cur]: parseFloat(val) || 0 }));
 
     return (
-        <div className="summary-container" style={{ display: 'flex', flexDirection: 'column', gap: '25px', padding: '10px' }}>
+        <div className="space-y-6">
 
             {/* 1. INPUTS RATES */}
-            <div style={{ background: '#f8fafc', padding: '10px 15px', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
-                <span style={{ fontWeight: 'bold', color: '#475569', fontSize: '0.85rem' }}>Display Rates:</span>
+            <div className="bg-surface border border-border p-3 rounded-md flex items-center gap-4 flex-wrap">
+                <span className="font-bold text-text-sub text-xs uppercase tracking-wider">Display Rates:</span>
                 {currencies.map(cur => (
-                    <div key={cur} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#64748b' }}>{cur}:</label>
-                        <input type="number" value={rates[cur]} onChange={(e) => handleRateChange(cur, e.target.value)} style={{ width: '50px', padding: '4px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '0.8rem' }} />
+                    <div key={cur} className="flex items-center gap-2">
+                        <label className="text-[10px] font-bold text-text-sub">{cur}:</label>
+                        <input
+                            type="number"
+                            value={rates[cur]}
+                            onChange={(e) => handleRateChange(cur, e.target.value)}
+                            className="w-16 bg-background border border-border rounded px-2 py-1 text-[10px] text-text-main focus:border-primary outline-none"
+                        />
                     </div>
                 ))}
             </div>
 
             {/* 2. KPI CARDS */}
-            <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {currencies.map((cur, idx) => (
-                    <div key={cur} style={{
-                        flex: 1, minWidth: '180px', background: 'white', padding: '15px 20px', borderRadius: '8px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderLeft: `4px solid ${COLORS_PIE[idx % COLORS_PIE.length]}`
-                    }}>
-                        <h4 style={{ margin: 0, color: '#6b7280', fontSize: '0.75rem', textTransform: 'uppercase' }}>Total AR ({cur})</h4>
-                        <p style={{ margin: '5px 0 0 0', fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>
-                            ${reportData.data_by_currency[cur].totals.balance.toLocaleString()}
-                        </p>
+                    <div key={cur} className="h-32">
+                        <StatCard
+                            label={`Total AR (${cur})`}
+                            value={`$${reportData.data_by_currency[cur].totals.balance.toLocaleString()}`}
+                            trend="up" // Placeholder trend
+                            trendValue="+2.5%" // Placeholder value
+                            color={['primary', 'success', 'warning', 'danger'][idx % 4]}
+                        />
                     </div>
                 ))}
             </div>
 
             {/* 3. PIE + TOP 10 BARS */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 500px))', gap: '20px', justifyContent: 'start' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
                 {/* Pie Chart */}
-                <div style={{ background: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-                    <h3 style={{ fontSize: '0.95rem', fontWeight: '600', marginBottom: '10px', color: '#374151' }}>Currency Exposure</h3>
-                    <div style={{ height: '250px', display: 'flex', alignItems: 'center' }}>
+                <div className="card-dense">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-text-sub mb-4">Currency Exposure</h3>
+                    <div className="h-64 flex items-center">
                         <ResponsiveContainer width="50%">
                             <PieChart>
-                                <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="normalizedValue" paddingAngle={4}>
+                                <Pie
+                                    data={pieData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={50}
+                                    outerRadius={80}
+                                    dataKey="normalizedValue"
+                                    paddingAngle={4}
+                                    stroke="none"
+                                >
                                     {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS_PIE[index % COLORS_PIE.length]} />)}
                                 </Pie>
-                                <Tooltip formatter={(val, name, props) => [`$${props.payload.originalAmount.toLocaleString()}`, name]} />
+                                <Tooltip content={<CustomTooltip />} />
                             </PieChart>
                         </ResponsiveContainer>
-                        <div style={{ width: '50%', fontSize: '0.75rem', paddingLeft: '10px' }}>
+                        <div className="w-1/2 pl-4 text-[10px]">
                             {pieData.map((item, index) => (
-                                <div key={item.name} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #e5e7eb' }}>
+                                <div key={item.name} className="mb-2 flex justify-between border-b border-border/50 pb-1">
                                     <span style={{ color: COLORS_PIE[index % COLORS_PIE.length], fontWeight: 'bold' }}>{item.name}</span>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <span>{totalNormalized > 0 ? ((item.normalizedValue / totalNormalized) * 100).toFixed(1) : 0}%</span>
-                                        <div style={{ color: '#9ca3af', fontSize: '0.7rem' }}>${item.originalAmount.toLocaleString()}</div>
+                                    <div className="text-right">
+                                        <span className="text-text-main font-mono">{totalNormalized > 0 ? ((item.normalizedValue / totalNormalized) * 100).toFixed(1) : 0}%</span>
+                                        <div className="text-text-sub text-[9px]">${item.originalAmount.toLocaleString()}</div>
                                     </div>
                                 </div>
                             ))}
@@ -194,17 +209,21 @@ const ReportsSummary = ({ reportData }) => {
                     if (customers.length === 0) return null;
 
                     return (
-                        <div key={cur} style={{ background: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-                            <h3 style={{ fontSize: '0.95rem', fontWeight: '600', marginBottom: '10px', color: '#374151' }}>Top 10 Customers ({cur})</h3>
-                            <div style={{ height: '250px' }}>
+                        <div key={cur} className="card-dense">
+                            <h3 className="text-xs font-bold uppercase tracking-widest text-text-sub mb-4">Top 10 Customers ({cur})</h3>
+                            <div className="h-64">
                                 <ResponsiveContainer>
                                     <BarChart data={customers} layout="vertical" margin={{ left: 0, right: 35, bottom: 0, top: 0 }}>
-                                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#2d3a4b" />
                                         <XAxis type="number" hide />
-                                        <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 10, fill: '#64748b' }} />
-                                        <Tooltip cursor={{ fill: '#f8fafc' }} formatter={(val) => `$${val.toLocaleString()}`} />
+                                        <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                                        <Tooltip
+                                            cursor={{ fill: '#1e2936' }}
+                                            contentStyle={{ backgroundColor: '#121921', borderColor: '#2d3a4b', color: '#e2e8f0' }}
+                                            formatter={(val) => [`$${val.toLocaleString()}`, 'Balance']}
+                                        />
                                         <Bar dataKey="value" fill={COLORS_PIE[idx % COLORS_PIE.length]} radius={[0, 4, 4, 0]} barSize={15}>
-                                            <LabelList dataKey="value" position="right" formatter={(val) => `$${val.toLocaleString()}`} fontSize={9} fill="#64748b" />
+                                            <LabelList dataKey="value" position="right" formatter={(val) => `$${val.toLocaleString()}`} fontSize={9} fill="#94a3b8" />
                                         </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
@@ -215,25 +234,24 @@ const ReportsSummary = ({ reportData }) => {
             </div>
 
             {/* 4. GIANT TREEMAP (With Red/Green logic) */}
-            <div style={{ background: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <div className="card-dense">
+                <div className="flex justify-between items-center mb-4">
                     <div>
-                        <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '2px', color: '#374151' }}>Global Portfolio Risk Map</h3>
-                        <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: 0 }}>All Customers</p>
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-text-sub">Global Portfolio Risk Map</h3>
+                        <p className="text-[10px] text-text-sub font-mono mt-0.5">All Customers</p>
                     </div>
-                    <div style={{ display: 'flex', gap: '15px', fontSize: '0.8rem' }}>
-                        <span style={{ color: '#dc2626', fontWeight: 'bold' }}>■ High Risk (>40% Overdue)</span>
-                        <span style={{ color: '#16a34a', fontWeight: 'bold' }}>■ Good Standing</span>
+                    <div className="flex gap-4 text-[10px]">
+                        <span className="text-danger font-bold flex items-center gap-1"><span className="size-2 bg-danger rounded-sm"></span> High Risk (>40% Overdue)</span>
+                        <span className="text-success font-bold flex items-center gap-1"><span className="size-2 bg-success rounded-sm"></span> Good Standing</span>
                     </div>
                 </div>
 
                 {/* 600px Height */}
-                <div style={{ height: '600px', width: '100%' }}>
+                <div className="h-[600px] w-full">
                     <ResponsiveContainer>
                         <Treemap
                             data={treemapData}
                             dataKey="value"
-                            // ratio={4 / 3} // Removed ratio to let Recharts optimize fill
                             stroke="#fff"
                             fill="#fff"
                             content={<CustomTreemapContent />}

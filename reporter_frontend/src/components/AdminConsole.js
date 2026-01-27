@@ -1,9 +1,8 @@
 // src/components/AdminConsole.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './AdminConsole.css';
 import { useAuth } from '../context/AuthContext';
-import Layout from './Layout';
+import MainLayout from './MainLayout';
 
 const formatDateTime = (isoString) => {
   if (!isoString) return "Never";
@@ -126,48 +125,47 @@ function AdminConsole() {
     setModalState({ isOpen: false, mode: null, user: null });
   };
 
-  if (isLoading) return <Layout title="Admin Console"><div>Loading users...</div></Layout>;
-  if (error) return <Layout title="Admin Console"><div className="error">{error}</div></Layout>;
+  if (isLoading) return <MainLayout title="Admin Console"><div className="text-primary p-4">Loading users...</div></MainLayout>;
+  if (error) return <MainLayout title="Admin Console"><div className="text-danger p-4">{error}</div></MainLayout>;
 
   const pendingUsers = users.filter(u => !u.is_active);
   const activeUsers = users.filter(u => u.is_active);
 
   return (
-    <Layout title="User Management">
-      <div className="admin-console-container" style={{ padding: '20px' }}>
-        <h1>Admin Console</h1>
+    <MainLayout title="User Management">
+      <div className="space-y-6">
 
         {/* Creation form */}
-        <div className="create-user-section" style={{ background: '#f8fafc', padding: '20px', borderRadius: '8px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
-          <h3 style={{ marginTop: 0 }}>Register New User</h3>
-          <form onSubmit={handleCreateUser} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'end' }}>
+        <div className="bg-surface border border-border rounded-md p-4">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-text-sub mb-4">Register New User</h3>
+          <form onSubmit={handleCreateUser} className="flex flex-wrap items-end gap-4">
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold' }}>Username</label>
-              <input name="username" value={newUser.username} onChange={handleInputChange} required style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+              <label className="block text-[10px] font-bold text-text-sub mb-1">Username</label>
+              <input name="username" value={newUser.username} onChange={handleInputChange} required className="bg-background border border-border rounded px-3 py-1.5 text-xs text-text-main focus:border-primary outline-none" />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold' }}>Password</label>
-              <input name="password" type="password" value={newUser.password} onChange={handleInputChange} required style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+              <label className="block text-[10px] font-bold text-text-sub mb-1">Password</label>
+              <input name="password" type="password" value={newUser.password} onChange={handleInputChange} required className="bg-background border border-border rounded px-3 py-1.5 text-xs text-text-main focus:border-primary outline-none" />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold' }}>First Name</label>
-              <input name="first_name" value={newUser.first_name} onChange={handleInputChange} style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+              <label className="block text-[10px] font-bold text-text-sub mb-1">First Name</label>
+              <input name="first_name" value={newUser.first_name} onChange={handleInputChange} className="bg-background border border-border rounded px-3 py-1.5 text-xs text-text-main focus:border-primary outline-none" />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold' }}>Last Name</label>
-              <input name="last_name" value={newUser.last_name} onChange={handleInputChange} style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+              <label className="block text-[10px] font-bold text-text-sub mb-1">Last Name</label>
+              <input name="last_name" value={newUser.last_name} onChange={handleInputChange} className="bg-background border border-border rounded px-3 py-1.5 text-xs text-text-main focus:border-primary outline-none" />
             </div>
-            <button type="submit" style={{ padding: '10px 20px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+            <button type="submit" className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded transition-colors">
               + Create User
             </button>
           </form>
-          {creationMessage && <p style={{ color: creationMessage.includes('Error') ? 'red' : 'green', marginTop: '10px' }}>{creationMessage}</p>}
+          {creationMessage && <p className={`text-xs mt-2 ${creationMessage.includes('Error') ? 'text-danger' : 'text-success'}`}>{creationMessage}</p>}
         </div>
 
         {/* Pending Users */}
         {pendingUsers.length > 0 && (
-          <div style={{ marginBottom: '30px' }}>
-            <h3>Pending User Approvals ({pendingUsers.length})</h3>
+          <div className="bg-surface border border-border rounded-md p-4">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-warning mb-4">Pending User Approvals ({pendingUsers.length})</h3>
             <UserTable
               users={pendingUsers}
               currentUser={currentUser}
@@ -178,16 +176,18 @@ function AdminConsole() {
         )}
 
         {/* Active Users */}
-        <h3>Active Users ({activeUsers.length})</h3>
-        <UserTable
-          users={activeUsers}
-          currentUser={currentUser}
-          onToggleStatus={handleToggleStatus}
-          onToggleAdmin={handleToggleAdmin}
-          onEditProfile={openEditProfileModal}
-          onChangePassword={openPasswordModal}
-          onDelete={handleDeleteUser}
-        />
+        <div className="bg-surface border border-border rounded-md p-4">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-success mb-4">Active Users ({activeUsers.length})</h3>
+          <UserTable
+            users={activeUsers}
+            currentUser={currentUser}
+            onToggleStatus={handleToggleStatus}
+            onToggleAdmin={handleToggleAdmin}
+            onEditProfile={openEditProfileModal}
+            onChangePassword={openPasswordModal}
+            onDelete={handleDeleteUser}
+          />
+        </div>
 
         {/* Modal */}
         <Modal isOpen={modalState.isOpen} onClose={closeModal} title={modalState.mode === 'editProfile' ? 'Edit Profile' : 'Change Password'}>
@@ -199,78 +199,78 @@ function AdminConsole() {
           )}
         </Modal>
       </div>
-    </Layout>
+    </MainLayout>
   );
 }
 
 // User table
 function UserTable({ users, currentUser, onApprove, onToggleStatus, onToggleAdmin, onEditProfile, onChangePassword, onDelete }) {
-  if (users.length === 0) return <p>No users in this category.</p>;
+  if (users.length === 0) return <p className="text-text-sub text-xs">No users in this category.</p>;
 
   return (
-    <div className="table-responsive">
-      <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+    <div className="overflow-x-auto">
+      <table className="w-full mini-table">
         <thead>
-          <tr style={{ background: '#e2e8f0', textAlign: 'left' }}>
-            <th style={{ padding: '12px' }}>ID</th>
-            <th style={{ padding: '12px' }}>Username</th>
-            <th style={{ padding: '12px' }}>Full Name</th>
-            <th style={{ padding: '12px' }}>Status</th>
-            <th style={{ padding: '12px' }}>Last Login</th>
-            <th style={{ padding: '12px', textAlign: 'center' }}>Actions</th>
+          <tr>
+            <th className="px-3 py-2">ID</th>
+            <th className="px-3 py-2">Username</th>
+            <th className="px-3 py-2">Full Name</th>
+            <th className="px-3 py-2">Status</th>
+            <th className="px-3 py-2">Last Login</th>
+            <th className="px-3 py-2 text-center">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-border">
           {users.map(u => (
-            <tr key={u.id} style={{ borderBottom: '1px solid #eee' }}>
-              <td style={{ padding: '12px' }}>{u.id}</td>
-              <td style={{ padding: '12px', fontWeight: 'bold' }}>
-                {u.username} {u.is_admin && <span style={{ color: '#dc2626', fontSize: '0.75rem' }}>(Admin)</span>}
+            <tr key={u.id} className="hover:bg-surface-lighter/50 transition-colors">
+              <td className="px-3 py-2 text-text-sub">{u.id}</td>
+              <td className="px-3 py-2 font-bold text-text-main">
+                {u.username} {u.is_admin && <span className="text-danger text-[9px] ml-1">(Admin)</span>}
               </td>
-              <td style={{ padding: '12px' }}>{u.first_name} {u.last_name}</td>
-              <td style={{ padding: '12px' }}>
+              <td className="px-3 py-2 text-text-sub">{u.first_name} {u.last_name}</td>
+              <td className="px-3 py-2">
                 {u.is_active ? (
-                  <span style={{ background: '#dcfce7', color: '#166534', padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' }}>Active</span>
+                  <span className="bg-success/20 text-success px-2 py-0.5 rounded-full text-[9px] font-bold">Active</span>
                 ) : (
-                  <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' }}>Pending</span>
+                  <span className="bg-warning/20 text-warning px-2 py-0.5 rounded-full text-[9px] font-bold">Pending</span>
                 )}
               </td>
-              <td style={{ padding: '12px', fontSize: '0.85rem' }}>{formatDateTime(u.last_login)}</td>
-              <td style={{ padding: '12px', textAlign: 'center' }}>
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <td className="px-3 py-2 text-text-sub text-[10px]">{formatDateTime(u.last_login)}</td>
+              <td className="px-3 py-2 text-center">
+                <div className="flex gap-2 justify-center flex-wrap">
 
                   {onApprove && (
-                    <button onClick={() => onApprove(u.id)} style={{ padding: '6px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
+                    <button onClick={() => onApprove(u.id)} className="px-2 py-1 bg-success hover:bg-success/80 text-white rounded text-[9px] font-bold transition-colors">
                       Approve
                     </button>
                   )}
 
                   {onToggleStatus && (
-                    <button onClick={() => onToggleStatus(u)} disabled={u.id === currentUser.id} style={{ padding: '6px 12px', background: u.is_active ? '#f59e0b' : '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', opacity: u.id === currentUser.id ? 0.5 : 1 }}>
+                    <button onClick={() => onToggleStatus(u)} disabled={u.id === currentUser.id} className={`px-2 py-1 text-white rounded text-[9px] font-bold transition-colors ${u.id === currentUser.id ? 'opacity-50 cursor-not-allowed' : ''} ${u.is_active ? 'bg-warning hover:bg-warning/80' : 'bg-success hover:bg-success/80'}`}>
                       {u.is_active ? 'Deactivate' : 'Activate'}
                     </button>
                   )}
 
                   {onToggleAdmin && (
-                    <button onClick={() => onToggleAdmin(u)} disabled={u.id === currentUser.id} style={{ padding: '6px 12px', background: u.is_admin ? '#6b7280' : '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', opacity: u.id === currentUser.id ? 0.5 : 1 }}>
+                    <button onClick={() => onToggleAdmin(u)} disabled={u.id === currentUser.id} className={`px-2 py-1 text-white rounded text-[9px] font-bold transition-colors ${u.id === currentUser.id ? 'opacity-50 cursor-not-allowed' : ''} ${u.is_admin ? 'bg-text-sub hover:bg-gray-600' : 'bg-primary hover:bg-primary-dark'}`}>
                       {u.is_admin ? 'Remove Admin' : 'Make Admin'}
                     </button>
                   )}
 
                   {onEditProfile && (
-                    <button onClick={() => onEditProfile(u)} style={{ padding: '6px 12px', background: '#8b5cf6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
-                      Edit Profile
+                    <button onClick={() => onEditProfile(u)} className="px-2 py-1 bg-purple-500 hover:bg-purple-600 text-white rounded text-[9px] font-bold transition-colors">
+                      Edit
                     </button>
                   )}
 
                   {onChangePassword && (
-                    <button onClick={() => onChangePassword(u)} style={{ padding: '6px 12px', background: '#ec4899', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
-                      Change Password
+                    <button onClick={() => onChangePassword(u)} className="px-2 py-1 bg-pink-500 hover:bg-pink-600 text-white rounded text-[9px] font-bold transition-colors">
+                      Pwd
                     </button>
                   )}
 
-                  <button onClick={() => onDelete(u.id)} disabled={u.id === currentUser.id} style={{ padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', opacity: u.id === currentUser.id ? 0.5 : 1 }}>
-                    Delete
+                  <button onClick={() => onDelete(u.id)} disabled={u.id === currentUser.id} className={`px-2 py-1 bg-danger hover:bg-danger/80 text-white rounded text-[9px] font-bold transition-colors ${u.id === currentUser.id ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    Del
                   </button>
                 </div>
               </td>
@@ -287,9 +287,9 @@ function Modal({ isOpen, onClose, title, children }) {
   if (!isOpen) return null;
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }} onClick={onClose}>
-      <div style={{ background: 'white', padding: '30px', borderRadius: '8px', minWidth: '400px', maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
-        <h2 style={{ marginTop: 0 }}>{title}</h2>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-surface border border-border p-6 rounded-lg shadow-xl min-w-[400px] max-w-lg" onClick={(e) => e.stopPropagation()}>
+        <h2 className="text-lg font-bold text-text-main mb-4">{title}</h2>
         {children}
       </div>
     </div>
@@ -314,22 +314,22 @@ function EditProfileForm({ user, onSuccess, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>First Name</label>
-        <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-xs font-bold text-text-sub mb-1">First Name</label>
+        <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none" />
       </div>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Last Name</label>
-        <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+      <div>
+        <label className="block text-xs font-bold text-text-sub mb-1">Last Name</label>
+        <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none" />
       </div>
-      {error && <p style={{ color: 'red', fontSize: '0.9rem' }}>{error}</p>}
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-        <button type="button" onClick={onCancel} style={{ padding: '10px 20px', background: '#6b7280', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+      {error && <p className="text-danger text-xs">{error}</p>}
+      <div className="flex gap-3 justify-end pt-2">
+        <button type="button" onClick={onCancel} className="px-4 py-2 bg-text-sub/20 hover:bg-text-sub/30 text-text-main rounded text-xs font-bold transition-colors">
           Cancel
         </button>
-        <button type="submit" style={{ padding: '10px 20px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Save
+        <button type="submit" className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded text-xs font-bold transition-colors">
+          Save Changes
         </button>
       </div>
     </form>
@@ -358,18 +358,18 @@ function ChangePasswordForm({ user, onSuccess, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <p>Set new password for <strong>{user.username}</strong>:</p>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>New Password</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <p className="text-sm text-text-sub">Set new password for <strong className="text-text-main">{user.username}</strong>:</p>
+      <div>
+        <label className="block text-xs font-bold text-text-sub mb-1">New Password</label>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none" />
       </div>
-      {error && <p style={{ color: 'red', fontSize: '0.9rem' }}>{error}</p>}
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-        <button type="button" onClick={onCancel} style={{ padding: '10px 20px', background: '#6b7280', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+      {error && <p className="text-danger text-xs">{error}</p>}
+      <div className="flex gap-3 justify-end pt-2">
+        <button type="button" onClick={onCancel} className="px-4 py-2 bg-text-sub/20 hover:bg-text-sub/30 text-text-main rounded text-xs font-bold transition-colors">
           Cancel
         </button>
-        <button type="submit" style={{ padding: '10px 20px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+        <button type="submit" className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded text-xs font-bold transition-colors">
           Set Password
         </button>
       </div>

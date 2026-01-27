@@ -1,8 +1,5 @@
 // src/components/ReportView.js
 import React from 'react';
-import './ReportView.css';
-
-// ¡Importamos las herramientas para las gráficas!
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -28,25 +25,18 @@ ChartJS.register(
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD', // (Mostraremos el símbolo $, pero el valor es genérico)
+    currency: 'USD',
   }).format(value);
 };
 
 // Componente principal del visualizador
 function ReportView({ reportData }) {
-  // reportData es el JSON gigante de tu API, 
-  // ej: { data_by_currency: { "USD": {...}, "MXN": {...} } }
-
-  // Extraemos las claves de las monedas (ej. ["USD", "MXN"])
   const currencies = Object.keys(reportData.data_by_currency);
 
   return (
-    <div className="report-view-container">
+    <div className="space-y-8">
       {currencies.map((currency) => {
-        // Obtenemos los datos de esta moneda específica
         const data = reportData.data_by_currency[currency];
-
-        // Pasamos los datos a nuestros sub-componentes
         return (
           <CurrencySection
             key={currency}
@@ -60,17 +50,20 @@ function ReportView({ reportData }) {
 }
 
 // --- Sub-Componente: Sección por Moneda ---
-// (Esto crea una sección para USD, otra para MXN, etc.)
 function CurrencySection({ currency, data }) {
   return (
-    <div className="currency-section">
-      <h2 className="currency-title">Summary for {currency}</h2>
+    <div className="space-y-4">
+      <h2 className="text-sm font-bold uppercase tracking-widest text-primary border-b border-border pb-2">
+        Summary for {currency}
+      </h2>
 
       {/* 1. El Resumen de Antigüedad (Gráfica y Totales) */}
       <AgingSummary data={data.aging_summary} />
 
       {/* 2. La Tabla de Entradas (El detalle) */}
-      <h3 className="table-title">Detailed Entries ({data.entries.length} items)</h3>
+      <h3 className="text-xs font-bold uppercase tracking-widest text-text-sub mt-6 mb-2">
+        Detailed Entries ({data.entries.length} items)
+      </h3>
       <EntriesTable entries={data.entries} />
     </div>
   );
@@ -78,8 +71,6 @@ function CurrencySection({ currency, data }) {
 
 // --- Sub-Componente: Resumen de Antigüedad (¡La Gráfica!) ---
 function AgingSummary({ data }) {
-  // 'data' aquí es el objeto 'aging_summary': { "Cliente A": {...}, "Cliente B": {...} }
-
   // 1. Sumamos los totales de todos los clientes
   const grandTotal = Object.values(data).reduce(
     (acc, summary) => {
@@ -91,7 +82,6 @@ function AgingSummary({ data }) {
       acc.bucket_45_plus += summary.bucket_45_plus;
       return acc;
     },
-    // Valores iniciales
     { total_balance: 0, not_yet_due: 0, bucket_0_21: 0, bucket_22_30: 0, bucket_31_45: 0, bucket_45_plus: 0 }
   );
 
@@ -109,27 +99,31 @@ function AgingSummary({ data }) {
           grandTotal.bucket_45_plus,
         ],
         backgroundColor: [
-          '#22c55e', // Verde
-          '#facc15', // Amarillo
-          '#f97316', // Naranja
-          '#ef4444', // Rojo
-          '#b91c1c', // Rojo oscuro
+          '#10b981', // Success (Green)
+          '#facc15', // Yellow
+          '#f59e0b', // Warning (Orange)
+          '#f43f5e', // Danger (Red)
+          '#be123c', // Dark Red
         ],
+        borderRadius: 4,
       },
     ],
   };
 
   const chartOptions = {
     responsive: true,
-    maintainAspectRatio: false, // <--- ¡IMPORTANTE! Para que respete la altura del contenedor
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
       title: {
-        display: true,
-        text: 'Accounts Receivable Aging Summary',
-        font: { size: 16 }
+        display: false,
       },
       tooltip: {
+        backgroundColor: '#121921',
+        titleColor: '#e2e8f0',
+        bodyColor: '#94a3b8',
+        borderColor: '#2d3a4b',
+        borderWidth: 1,
         callbacks: {
           label: (context) => formatCurrency(context.parsed.y)
         }
@@ -137,23 +131,33 @@ function AgingSummary({ data }) {
     },
     scales: {
       y: {
+        grid: { color: '#2d3a4b' },
         ticks: {
+          color: '#94a3b8',
+          font: { size: 10, family: 'JetBrains Mono' },
           callback: (value) => formatCurrency(value)
+        }
+      },
+      x: {
+        grid: { display: false },
+        ticks: {
+          color: '#94a3b8',
+          font: { size: 10, family: 'Inter' }
         }
       }
     }
   };
 
   return (
-    <div className="aging-summary">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {/* El Total General */}
-      <div className="total-balance-card">
-        <span>Total Outstanding Balance</span>
-        <strong>{formatCurrency(grandTotal.total_balance)}</strong>
+      <div className="card-dense flex flex-col justify-center items-center md:col-span-1">
+        <span className="text-[10px] uppercase tracking-wider text-text-sub font-bold mb-1">Total Outstanding Balance</span>
+        <strong className="text-2xl font-mono text-primary">{formatCurrency(grandTotal.total_balance)}</strong>
       </div>
 
       {/* La Gráfica de Barras */}
-      <div className="chart-container" style={{ height: '300px' }}>
+      <div className="card-dense md:col-span-2 h-48">
         <Bar options={chartOptions} data={chartData} />
       </div>
     </div>
@@ -163,29 +167,33 @@ function AgingSummary({ data }) {
 // --- Sub-Componente: Tabla de Entradas ---
 function EntriesTable({ entries }) {
   return (
-    <div className="table-container">
-      <table className="entries-table">
-        <thead>
+    <div className="overflow-x-auto border border-border rounded-md">
+      <table className="w-full mini-table">
+        <thead className="bg-surface-lighter">
           <tr>
-            <th>Customer</th>
-            <th>Reference</th>
-            <th>Doc</th>
-            <th>Inv. Date</th>
-            <th>Due Date</th>
-            <th>Days</th>
-            <th className="text-right">Balance</th>
+            <th className="px-3 py-2">Customer</th>
+            <th className="px-3 py-2">Reference</th>
+            <th className="px-3 py-2">Doc</th>
+            <th className="px-3 py-2">Inv. Date</th>
+            <th className="px-3 py-2">Due Date</th>
+            <th className="px-3 py-2 text-center">Days</th>
+            <th className="px-3 py-2 text-right">Balance</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-border">
           {entries.map((entry, index) => (
-            <tr key={`${entry.folio}-${index}`}>
-              <td>{entry.customer_name}</td>
-              <td>{entry.reference}</td>
-              <td>{entry.module}</td>
-              <td>{entry.invoice_date}</td>
-              <td>{entry.due_date}</td>
-              <td className="text-center">{entry.days_since}</td>
-              <td className="text-right">{formatCurrency(entry.balance)}</td>
+            <tr key={`${entry.folio}-${index}`} className="hover:bg-surface-lighter/50 transition-colors">
+              <td className="px-3 py-1.5 text-text-main font-bold">{entry.customer_name}</td>
+              <td className="px-3 py-1.5 text-text-sub">{entry.reference}</td>
+              <td className="px-3 py-1.5 text-text-sub">{entry.module}</td>
+              <td className="px-3 py-1.5 text-text-sub">{entry.invoice_date}</td>
+              <td className="px-3 py-1.5 text-text-sub">{entry.due_date}</td>
+              <td className={`px-3 py-1.5 text-center font-bold ${entry.days_since > 30 ? 'text-danger' : 'text-success'}`}>
+                {entry.days_since}
+              </td>
+              <td className="px-3 py-1.5 text-right font-mono text-text-main">
+                {formatCurrency(entry.balance)}
+              </td>
             </tr>
           ))}
         </tbody>

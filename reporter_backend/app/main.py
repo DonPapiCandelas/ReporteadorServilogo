@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 # Importamos los NUEVOS routers
 from . import security, models
+from . import companies
 from .reports import receivables
 from .database import engine
 
@@ -82,6 +83,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 # --- ¡LA PARTE MÁS IMPORTANTE! (El Enrutamiento Correcto) ---
 # Usamos 'include_router' para que la Inyección de Dependencias funcione
 app.include_router(security.router, prefix="/api") # Incluye /api/token, /api/users, etc.
+app.include_router(companies.router, prefix="/api") # Incluye /api/companies
 app.include_router(receivables.router, prefix="/api/reports") # Incluye /api/reports/...
 
 # --- Endpoints de la Raíz ---

@@ -22,6 +22,7 @@ class ReceivableEntry(BaseModel):
     real_balance: float = 0.0
     days_since: int
     aging_bucket: str
+    po: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 

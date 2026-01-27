@@ -19,7 +19,25 @@ SqlServerConnDep = Annotated[pyodbc.Connection, Depends(get_sql_server_conn)]
 
 # --- Lógica de SQL (Directa de tu script) ---
 def _get_sql_base() -> str:
-    return "SELECT * FROM zzReporteSaldoDocuments"
+    return """
+        SELECT 
+            Cliente, 
+            BusinessEntityID, 
+            Modulo, 
+            InvoiceDate, 
+            CAST(Folio AS varchar(50)) AS Folio, 
+            ArrivalDate, 
+            Vencimiento, 
+            Referencia, 
+            CAST(PO AS varchar(50)) AS PO, 
+            Moneda, 
+            TC, 
+            SubTotal, 
+            Total, 
+            Pagado, 
+            Saldo
+        FROM zzReporteSaldoDocuments
+    """
 
 def fetch_report_data(
     conn: pyodbc.Connection, 
@@ -97,7 +115,8 @@ def process_report_data(
             paid=float(row.Pagado or 0.0),
             balance=float(row.Saldo or 0.0),
             days_since=0,
-            aging_bucket="N/A"
+            aging_bucket="N/A",
+            po=row.PO or ""
         )
         entry.days_since = _calculate_days_since(as_of, entry.arrival_date)
         
