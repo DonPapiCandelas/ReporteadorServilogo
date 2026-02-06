@@ -7,17 +7,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "primary": "#0ea5e9",
-        "primary-dark": "#0284c7",
-        "background": "#0a0f14",
-        "surface": "#121921",
-        "surface-lighter": "#1e2936",
-        "border": "#2d3a4b",
-        "text-main": "#e2e8f0",
-        "text-sub": "#94a3b8",
-        "success": "#10b981",
-        "danger": "#f43f5e",
-        "warning": "#f59e0b"
+        "primary": "rgb(var(--color-primary) / <alpha-value>)",
+        "primary-dark": "rgb(var(--color-primary-dark) / <alpha-value>)",
+        "background": "rgb(var(--color-background) / <alpha-value>)",
+        "surface": "rgb(var(--color-surface) / <alpha-value>)",
+        "surface-lighter": "rgb(var(--color-surface-lighter) / <alpha-value>)",
+        "border": "rgb(var(--color-border) / <alpha-value>)",
+        "text-main": "rgb(var(--color-text-main) / <alpha-value>)",
+        "text-sub": "rgb(var(--color-text-sub) / <alpha-value>)",
+        "success": "rgb(var(--color-success) / <alpha-value>)",
+        "danger": "rgb(var(--color-danger) / <alpha-value>)",
+        "warning": "rgb(var(--color-warning) / <alpha-value>)"
       },
       fontFamily: {
         "sans": ["Inter", "sans-serif"],

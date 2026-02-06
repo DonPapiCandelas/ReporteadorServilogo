@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .nav-item {
+      @apply flex items-center gap-2 px-3 py-1.5 rounded text-text-sub hover:bg-surface-lighter hover:text-white transition-all cursor-pointer text-xs font-medium border border-transparent;
+  }
+  .nav-item.active {
+      @apply bg-primary/10 text-primary border-primary/20;
+  }
+  .nav-item .icon {
+      @apply text-[18px];
+  }
+  .card-dense {
+      @apply bg-surface border border-border rounded-md p-3 hover:border-gray-600 transition-colors;
+  }
+  .data-label {
+      @apply text-[10px] uppercase tracking-wider text-text-sub font-bold;
+  }
+  .data-value {
+      @apply font-mono text-lg font-semibold text-text-main leading-tight;
+  }
+  .mini-table th {
+      @apply text-[9px] text-text-sub font-normal border-b border-border text-left py-1;
+  }
+  .mini-table td {
+      @apply text-[10px] py-1 font-mono;
+  }
+  .sparkline-container {
+      @apply flex items-end gap-[1px] h-6 w-16;
+  }
+  .spark-bar {
+      @apply w-1 bg-primary/40 rounded-t-[1px];
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+      width: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #2d3a4b;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #0a0f14;
+  color: #e2e8f0;
+}
+
+code {
+  font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

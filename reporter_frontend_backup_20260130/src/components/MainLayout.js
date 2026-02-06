@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import ThemeToggle from './ThemeToggle';
 
 const MainLayout = ({ children, title }) => {
     const { user, logout, companyKey, setCompanyKey, companies } = useAuth();
@@ -148,7 +147,6 @@ const MainLayout = ({ children, title }) => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <ThemeToggle />
                         <div className="hidden md:flex items-center gap-3 font-mono text-[10px] text-text-sub">
                             <span>{new Date().toLocaleDateString()}</span>
                         </div>

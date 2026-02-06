@@ -26,6 +26,10 @@ TENANTS: Dict[str, Dict[str, Any]] = {
         "name": "Sofresco GmbH",
         "database": os.getenv("DB_SOFRESCO", "SOFRESCO_GMBH_25"),
     },
+    "produce_lovers": {
+        "name": "Produce Lovers",
+        "database": os.getenv("DB_PRODUCE_LOVERS", "PRODUCE_LOVERS_2025"),
+    },
 }
 
 DEFAULT_COMPANY = os.getenv("DEFAULT_COMPANY", "growers_union")

@@ -1,0 +1,67 @@
+/* src/components/Modal.css */
+.modal-backdrop {
+  position: fixed; /* Cubre toda la pantalla */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 24, 39, 0.6); /* Negro translúcido */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px; /* Ancho del modal */
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-title {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.modal-close-button {
+  font-size: 1.75rem;
+  font-weight: 300;
+  color: #9ca3af;
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+}
+.modal-close-button:hover {
+  color: #111827;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* Animación simple de aparición */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

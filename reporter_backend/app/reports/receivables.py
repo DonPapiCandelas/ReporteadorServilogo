@@ -66,9 +66,11 @@ def fetch_customer_credit_info(conn: pyodbc.Connection, customer_id: int) -> Cus
     sql = """
         SELECT TOP 1 
             c.CreditLimit, 
-            t.PaymentTermName 
+            t.PaymentTermName,
+            ISNULL(cr.Currency, 'MXN') AS Currency
         FROM dbo.orgCustomer c
         LEFT OUTER JOIN dbo.engPaymentTerm t ON c.PaymentTermID = t.PaymentTermID
+        LEFT OUTER JOIN dbo.engRefCurrency cr ON c.CurrencyID = cr.CurrencyID
         WHERE c.BusinessEntityID = ?
     """
     try:
@@ -78,7 +80,7 @@ def fetch_customer_credit_info(conn: pyodbc.Connection, customer_id: int) -> Cus
             return CustomerCreditInfo(
                 credit_limit=float(row.CreditLimit or 0.0),
                 payment_terms=row.PaymentTermName or "N/A",
-                currency="USD" # Hardcoded for now as per screenshot/request ambiguity
+                currency=row.Currency
             )
     except Exception as e:
         print(f"Error fetching credit info: {e}")

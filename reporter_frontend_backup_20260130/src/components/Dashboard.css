@@ -1,0 +1,142 @@
+/* src/components/Dashboard.css */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* --- ¡NUEVO! --- */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Espacio entre el título y el enlace de admin */
+}
+
+.navbar-brand {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 700;
+  color: #2E86AB;
+}
+
+/* --- ¡NUEVO! --- */
+.navbar-link {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  color: #374151; /* Gris oscuro */
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+.navbar-link:hover {
+  background-color: #f3f4f6; /* Gris suave */
+  color: #111827;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem; /* 14px */
+  color: #374151;
+}
+
+.logout-button {
+  background-color: #6b7280;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.75rem; /* 12px */
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #4b5563;
+}
+
+.dashboard-content {
+  padding: 2rem;
+}
+
+.dashboard-content h1 {
+  font-size: 1.875rem; /* 30px */
+  color: #111827;
+  margin-top: 0;
+}
+
+/* ... (después de .dashboard-content h1) ... */
+
+/* ¡NUEVO! Estilo para el enlace activo */
+.navbar-link.active {
+  color: #2E86AB;
+  border-bottom: 2px solid #2E86AB;
+  padding-bottom: 4px; /* Ajuste para la línea */
+}
+
+/* Modificamos el brand para que se comporte como un enlace */
+.navbar-brand {
+  /* ... (borra el 'font-size' y 'font-weight' de aquí) ... */
+  color: #2E86AB;
+}
+
+/* El .navbar-link ahora controla el texto */
+.navbar-link {
+  font-size: 1.1rem; /* Un poco más grande */
+  font-weight: 600;
+  color: #374151;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-bottom: 2px solid transparent; /* Espacio para la línea activa */
+  transition: all 0.2s;
+}
+.navbar-link:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+/* src/components/Dashboard.css */
+
+/* --- ¡NUEVO! Bloque Responsivo --- */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column; /* Apila la sección izq y der */
+    align-items: flex-start; /* Alinea todo a la izq */
+    gap: 1rem;
+    padding: 1rem; /* Un poco menos de padding en el celular */
+  }
+
+  .navbar-left {
+    flex-direction: column; /* Apila los enlaces (Report y Admin) */
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .navbar-link.active {
+    padding-bottom: 2px;
+  }
+
+  .navbar-user {
+    width: 100%; /* El "Welcome" y "Logout" ocupan todo el ancho */
+    justify-content: space-between; /* Pone uno en cada extremo */
+  }
+
+  /* Reduce el padding principal para dar más espacio */
+  .dashboard-content {
+    padding: 1rem;
+  }
+}
