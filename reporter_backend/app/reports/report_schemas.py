@@ -57,6 +57,10 @@ class ReportFilters(BaseModel):
     as_of: datetime.date
     customer_id: Optional[int] = None
     customer_name: str = "All Customers"
+    # New filters
+    filter_mode: str = "to_date" # "current_month", "to_date", "date_range"
+    start_date: Optional[datetime.date] = None
+    end_date: Optional[datetime.date] = None
 
 class ReceivablesReportData(BaseModel):
     data_by_currency: Dict[str, CurrencyGroup]

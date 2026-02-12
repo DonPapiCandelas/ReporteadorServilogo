@@ -42,14 +42,31 @@ def _get_sql_base() -> str:
 def fetch_report_data(
     conn: pyodbc.Connection, 
     as_of: datetime.date, 
-    customer_id: int | None
+    customer_id: int | None,
+    start_date: datetime.date | None = None,
+    end_date: datetime.date | None = None,
+    filter_mode: str = "to_date"
 ) -> List[pyodbc.Row]:
 
     sql = _get_sql_base()
     params = []
 
-    sql += " WHERE InvoiceDate < DATEADD(day,1,?) "
-    params.append(as_of)
+    # "basado en la fecha de Arrival Date"
+    sql += " WHERE 1=1 "
+
+    if filter_mode == "date_range" or filter_mode == "current_month":
+        if start_date:
+            sql += " AND ArrivalDate >= ? "
+            params.append(start_date)
+        if end_date:
+            sql += " AND ArrivalDate <= ? "
+            params.append(end_date)
+    else:
+        # "to_date" or default (Desde el inicio hasta la fecha X)
+        # Use end_date if present, else as_of
+        cutoff = end_date if end_date else as_of
+        sql += " AND ArrivalDate <= ? "
+        params.append(cutoff)
 
     if customer_id:
         sql += " AND BusinessEntityID = ? " 
@@ -192,7 +209,12 @@ def run_receivables_report(
 ) -> ReceivablesReportData:
     try:
         raw_data = fetch_report_data(
-            conn=sql_conn, as_of=filters.as_of, customer_id=filters.customer_id
+            conn=sql_conn, 
+            as_of=filters.as_of, 
+            customer_id=filters.customer_id,
+            start_date=filters.start_date,
+            end_date=filters.end_date,
+            filter_mode=filters.filter_mode
         )
         if not raw_data:
             raise HTTPException(status_code=404, detail="No data found for the selected filters.")
@@ -224,7 +246,14 @@ def download_receivables_report_excel(
     sql_conn: SqlServerConnDep
 ):
     try:
-        raw_data = fetch_report_data(conn=sql_conn, as_of=filters.as_of, customer_id=filters.customer_id)
+        raw_data = fetch_report_data(
+            conn=sql_conn, 
+            as_of=filters.as_of, 
+            customer_id=filters.customer_id,
+            start_date=filters.start_date,
+            end_date=filters.end_date,
+            filter_mode=filters.filter_mode
+        )
         if not raw_data:
             raise HTTPException(status_code=404, detail="No data found for selected filters.")
         processed_data = process_report_data(raw_data=raw_data, as_of=filters.as_of)
@@ -257,7 +286,14 @@ def download_receivables_report_pdf(
     sql_conn: SqlServerConnDep
 ):
     try:
-        raw_data = fetch_report_data(conn=sql_conn, as_of=filters.as_of, customer_id=filters.customer_id)
+        raw_data = fetch_report_data(
+            conn=sql_conn, 
+            as_of=filters.as_of, 
+            customer_id=filters.customer_id,
+            start_date=filters.start_date,
+            end_date=filters.end_date,
+            filter_mode=filters.filter_mode
+        )
         if not raw_data:
             raise HTTPException(status_code=404, detail="No data found for selected filters.")
         processed_data = process_report_data(raw_data=raw_data, as_of=filters.as_of)
@@ -290,7 +326,14 @@ def download_receivables_report_html(
     sql_conn: SqlServerConnDep
 ):
     try:
-        raw_data = fetch_report_data(conn=sql_conn, as_of=filters.as_of, customer_id=filters.customer_id)
+        raw_data = fetch_report_data(
+            conn=sql_conn, 
+            as_of=filters.as_of, 
+            customer_id=filters.customer_id,
+            start_date=filters.start_date,
+            end_date=filters.end_date,
+            filter_mode=filters.filter_mode
+        )
         if not raw_data:
             raise HTTPException(status_code=404, detail="No data found for selected filters.")
         processed_data = process_report_data(raw_data=raw_data, as_of=filters.as_of)

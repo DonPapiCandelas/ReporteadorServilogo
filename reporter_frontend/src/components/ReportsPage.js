@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import { format } from 'date-fns';
+import { format, startOfMonth, endOfMonth } from 'date-fns';
 import MainLayout from './MainLayout';
 import ReportsFilter from './ReportsFilter';
 import ReportsSummary from './ReportsSummary';
@@ -42,12 +42,24 @@ function ReportsPage() {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('summary');
 
-  // AL CARGAR: Obtener datos globales de TODOS los clientes
+  // AL CARGAR: Obtener datos globales de TODOS los clientes (Current Month Default)
   useEffect(() => {
     const fetchGlobalData = async () => {
       try {
-        const today = format(new Date(), 'yyyy-MM-dd');
-        const globalFilters = { as_of: today, customer_id: null, customer_name: 'All' };
+        const today = new Date();
+        const formattedToday = format(today, 'yyyy-MM-dd');
+        const start = format(startOfMonth(today), 'yyyy-MM-dd');
+        const end = format(endOfMonth(today), 'yyyy-MM-dd');
+
+        const globalFilters = {
+          as_of: formattedToday,
+          customer_id: null,
+          customer_name: 'All',
+          filter_mode: 'current_month',
+          start_date: start,
+          end_date: end
+        };
+
         const response = await axios.post('/api/reports/receivables-preview', globalFilters);
         setGlobalSummaryData(response.data);
       } catch (e) {
@@ -84,7 +96,7 @@ function ReportsPage() {
     <MainLayout title="Accounts Receivable">
 
       {/* Filters Section */}
-      <div className="bg-surface border border-border rounded-md p-4 mb-4 shadow-sm">
+      <div className="bg-surface border border-border rounded-md p-4 mb-4 shadow-sm relative z-20">
         <ReportsFilter
           onRunReport={handleRunReport}
           onDownloadExcel={handleDownloadExcel}

@@ -17,11 +17,12 @@ from .database import engine
 
 # --- Configuración de Logging (¡La dejamos!) ---
 log_path = os.getenv("LOG_FILE_PATH", "api_debug.log")  # Y ahora usa esa variable en lugar del texto fijo
+from logging.handlers import TimedRotatingFileHandler
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     handlers=[
-        logging.FileHandler(log_path),
+        TimedRotatingFileHandler(log_path, when="midnight", interval=1, backupCount=30, encoding="utf-8"),
         logging.StreamHandler()
     ]
 )

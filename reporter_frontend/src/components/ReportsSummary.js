@@ -85,9 +85,9 @@ const ReportsSummary = ({ reportData }) => {
     });
     const totalNormalized = pieData.reduce((acc, item) => acc + item.normalizedValue, 0);
 
-    // --- 2. TREEMAP DATA & ACTION ITEMS ---
+    // --- 2. TREEMAP DATA ---
     let allClients = [];
-    let allEntries = [];
+
 
     currencies.forEach((cur) => {
         const group = reportData.data_by_currency[cur];
@@ -112,19 +112,11 @@ const ReportsSummary = ({ reportData }) => {
         const validEntries = entries.filter(e => e.value > 1);
         allClients = [...allClients, ...validEntries];
 
-        // For Action Items (Entries)
-        if (group.entries) {
-            allEntries = [...allEntries, ...group.entries.map(e => ({ ...e, currency: cur }))];
-        }
     });
 
     allClients.sort((a, b) => b.value - a.value);
 
-    // Sort entries by days overdue (descending) for Action Items
-    const topOverdueEntries = allEntries
-        .filter(e => e.days_since > 45)
-        .sort((a, b) => b.days_since - a.days_since)
-        .slice(0, 5);
+
 
     const treemapData = [{ name: 'Portfolio', children: allClients }];
     const handleRateChange = (cur, val) => setRates(prev => ({ ...prev, [cur]: parseFloat(val) || 0 }));
@@ -257,46 +249,7 @@ const ReportsSummary = ({ reportData }) => {
                 })}
             </div>
 
-            {/* 4. ACTION ITEMS (Top Overdue) */}
-            <div className="bg-surface border border-border rounded-md shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-border bg-background/50">
-                    <h3 className="font-bold text-text-main uppercase text-sm tracking-wide">Action Items: Top Overdue (>45 Days)</h3>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                        <thead className="bg-background text-text-sub font-semibold uppercase">
-                            <tr>
-                                <th className="px-5 py-3">Customer</th>
-                                <th className="px-5 py-3">Reference</th>
-                                <th className="px-5 py-3">Days</th>
-                                <th className="px-5 py-3 text-right">Amount</th>
-                                <th className="px-5 py-3"></th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border">
-                            {topOverdueEntries.length > 0 ? topOverdueEntries.map((entry, idx) => (
-                                <tr key={idx} className="hover:bg-background/50 transition-colors">
-                                    <td className="px-5 py-3 font-medium text-text-main">{entry.customer_name}</td>
-                                    <td className="px-5 py-3 text-text-sub">{entry.reference}</td>
-                                    <td className="px-5 py-3">
-                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-danger/10 text-danger border border-danger/20">
-                                            {entry.days_since}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3 text-right font-mono text-text-main">${entry.balance.toLocaleString()} <span className="text-[9px] text-text-sub">{entry.currency}</span></td>
-                                    <td className="px-5 py-3 text-right">
-                                        <button className="text-primary hover:text-white transition-colors"><span className="material-symbols-outlined text-sm">mail</span></button>
-                                    </td>
-                                </tr>
-                            )) : (
-                                <tr>
-                                    <td colSpan="5" className="px-5 py-4 text-center text-text-sub">No overdue items found.</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
 
             {/* 5. GIANT TREEMAP */}
             <div className="bg-surface border border-border rounded-md p-4 shadow-sm">

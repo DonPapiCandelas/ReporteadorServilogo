@@ -30,6 +30,10 @@ TENANTS: Dict[str, Dict[str, Any]] = {
         "name": "Produce Lovers",
         "database": os.getenv("DB_PRODUCE_LOVERS", "PRODUCE_LOVERS_2025"),
     },
+    "licencias": {
+        "name": "Licencias y Servicios",
+        "database": os.getenv("DB_LICENCIAS", "LICENCIAS_Y_SERVICIOS_PRODUCE"),
+    },
 }
 
 DEFAULT_COMPANY = os.getenv("DEFAULT_COMPANY", "growers_union")

@@ -4,10 +4,21 @@ import axios from 'axios';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { format } from 'date-fns';
+import { format, startOfMonth, endOfMonth } from 'date-fns';
 
 function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownloadHtml }) {
-  const [asOfDate, setAsOfDate] = useState(new Date());
+  // Filter Mode: 'month_range', 'to_date', 'date_range'
+  const [filterMode, setFilterMode] = useState('month_range');
+
+  // Date States
+  const [asOfDate, setAsOfDate] = useState(new Date()); // For "To Date" mode
+  const [startDate, setStartDate] = useState(startOfMonth(new Date())); // For "Date Range" (Days)
+  const [endDate, setEndDate] = useState(endOfMonth(new Date()));   // For "Date Range" (Days)
+
+  // Month Range States
+  const [fromMonth, setFromMonth] = useState(new Date());
+  const [toMonth, setToMonth] = useState(new Date());
+
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerOptions, setCustomerOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,12 +42,28 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
   }, []);
 
   const getFilters = () => {
-    const formattedDate = format(asOfDate, 'yyyy-MM-dd');
-    return {
-      as_of: formattedDate,
+    const filters = {
       customer_id: selectedCustomer ? selectedCustomer.value : null,
-      customer_name: selectedCustomer ? selectedCustomer.label : "(All Customers)"
+      customer_name: selectedCustomer ? selectedCustomer.label : "(All Customers)",
+      filter_mode: 'date_range', // Default to date_range for backend compatibility
+      as_of: format(new Date(), 'yyyy-MM-dd')
     };
+
+    if (filterMode === 'month_range') {
+      filters.start_date = fromMonth ? format(startOfMonth(fromMonth), 'yyyy-MM-dd') : null;
+      filters.end_date = toMonth ? format(endOfMonth(toMonth), 'yyyy-MM-dd') : null;
+      filters.as_of = filters.end_date || format(endOfMonth(new Date()), 'yyyy-MM-dd');
+    } else if (filterMode === 'to_date') {
+      filters.filter_mode = 'to_date';
+      filters.end_date = format(asOfDate, 'yyyy-MM-dd');
+      filters.as_of = filters.end_date;
+      filters.start_date = null;
+    } else if (filterMode === 'date_range') {
+      filters.start_date = format(startDate, 'yyyy-MM-dd');
+      filters.end_date = format(endDate, 'yyyy-MM-dd');
+      filters.as_of = filters.end_date;
+    }
+    return filters;
   };
 
   const handleRunClick = () => { onRunReport(getFilters()); };
@@ -48,67 +75,154 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
   const customSelectStyles = {
     control: (provided) => ({
       ...provided,
-      backgroundColor: '#0a0f14', // bg-background
-      borderColor: '#2d3a4b', // border-border
-      color: '#e2e8f0', // text-main
+      backgroundColor: 'rgb(var(--color-background))',
+      borderColor: 'rgb(var(--color-border))',
+      color: 'rgb(var(--color-text-main))',
       minHeight: '38px',
       fontSize: '0.875rem',
     }),
     menu: (provided) => ({
       ...provided,
-      backgroundColor: '#121921', // bg-surface
-      border: '1px solid #2d3a4b',
+      backgroundColor: 'rgb(var(--color-surface))',
+      border: '1px solid rgb(var(--color-border))',
+      zIndex: 50 // Ensure high z-index
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isFocused ? '#1e2936' : '#121921',
-      color: '#e2e8f0',
+      backgroundColor: state.isFocused ? 'rgb(var(--color-surface-lighter))' : 'rgb(var(--color-surface))',
+      color: 'rgb(var(--color-text-main))',
       fontSize: '0.875rem',
+      cursor: 'pointer',
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: '#e2e8f0',
+      color: 'rgb(var(--color-text-main))',
     }),
     input: (provided) => ({
       ...provided,
-      color: '#e2e8f0',
+      color: 'rgb(var(--color-text-main))',
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: 'rgb(var(--color-text-sub))',
     }),
   };
 
+  const modeOptions = [
+    { value: 'month_range', label: 'Month Range' },
+    { value: 'date_range', label: 'Date Range (Custom)' },
+    { value: 'to_date', label: 'Cut-off Date (Snapshot)' },
+  ];
+
   return (
-    <div className="flex flex-col md:flex-row items-end gap-4">
-      <div className="w-full md:w-auto">
-        <label htmlFor="asOfDate" className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">Cut-off Date</label>
-        <div className="relative">
-          <DatePicker
-            id="asOfDate"
-            selected={asOfDate}
-            onChange={(date) => setAsOfDate(date)}
-            dateFormat="MM/dd/yyyy"
-            className="w-full md:w-32 bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none"
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col md:flex-row items-end gap-4 w-full">
+
+        {/* Filter Mode */}
+        <div className="w-full md:w-48">
+          <label className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">Filter Mode</label>
+          <Select
+            options={modeOptions}
+            value={modeOptions.find(o => o.value === filterMode)}
+            onChange={(opt) => setFilterMode(opt.value)}
+            styles={customSelectStyles}
+            isSearchable={false}
+          />
+        </div>
+
+        {/* Dynamic Date Inputs */}
+        {filterMode === 'month_range' && (
+          <div className="flex items-center gap-2">
+            <div>
+              <label className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">From Month</label>
+              <DatePicker
+                selected={fromMonth}
+                onChange={(date) => setFromMonth(date)}
+                dateFormat="MM/yyyy"
+                showMonthYearPicker
+                isClearable
+                placeholderText="Beginning of History"
+                className="w-32 bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">To Month</label>
+              <DatePicker
+                selected={toMonth}
+                onChange={(date) => setToMonth(date)}
+                dateFormat="MM/yyyy"
+                showMonthYearPicker
+                className="w-32 bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none"
+              />
+            </div>
+          </div>
+        )}
+
+        {filterMode === 'to_date' && (
+          <div className="w-full md:w-auto">
+            <label className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">Cut-off Date (To)</label>
+            <DatePicker
+              selected={asOfDate}
+              onChange={(date) => setAsOfDate(date)}
+              dateFormat="MM/dd/yyyy"
+              className="w-full md:w-32 bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none"
+            />
+          </div>
+        )}
+
+        {filterMode === 'date_range' && (
+          <div className="flex items-center gap-2">
+            <div>
+              <label className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">From</label>
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                dateFormat="MM/dd/yyyy"
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                className="w-28 bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">To</label>
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                dateFormat="MM/dd/yyyy"
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                className="w-28 bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Customer Select */}
+        <div className="w-full md:w-64">
+          <label htmlFor="customer" className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">Customer (Optional)</label>
+          <Select
+            id="customer"
+            options={customerOptions}
+            onChange={setSelectedCustomer}
+            value={selectedCustomer}
+            isLoading={isLoading}
+            isClearable={true}
+            isSearchable={true}
+            placeholder={isLoading ? "Loading..." : "Select Customer..."}
+            styles={customSelectStyles}
           />
         </div>
       </div>
 
-      <div className="w-full md:w-64">
-        <label htmlFor="customer" className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">Customer (Optional)</label>
-        <Select
-          id="customer"
-          options={customerOptions}
-          onChange={setSelectedCustomer}
-          value={selectedCustomer}
-          isLoading={isLoading}
-          isClearable={true}
-          isSearchable={true}
-          placeholder={isLoading ? "Loading..." : "Select Customer..."}
-          styles={customSelectStyles}
-        />
-      </div>
-
-      <div className="flex gap-2 mt-4 md:mt-0 flex-wrap">
+      {/* Action Buttons */}
+      <div className="flex gap-2 flex-wrap">
         <button onClick={handleRunClick} className="px-4 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded transition-colors shadow-lg shadow-primary/20">
           Generate Report
         </button>
+        <div className="h-8 w-px bg-border mx-2"></div>
         <button onClick={handleDownloadExcelClick} className="px-3 py-2 bg-success hover:bg-success/80 text-white text-xs font-bold rounded transition-colors" title="Download Excel">
           XLSX
         </button>
