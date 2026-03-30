@@ -33,6 +33,17 @@ const ReportsDetails = ({ reportData }) => {
         if (newPage >= 1 && newPage <= totalPages) setCurrentPage(newPage);
     };
 
+    // Helper to format YYYY-MM-DD to MM/DD/YYYY without timezone shift
+    const validDate = (dateStr) => {
+        if (!dateStr || dateStr === 'None') return '-';
+        // Assume dateStr is YYYY-MM-DD
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            return `${parts[1]}/${parts[2]}/${parts[0]}`;
+        }
+        return dateStr;
+    };
+
     return (
         <div className="bg-surface border border-border rounded-md shadow-sm overflow-hidden">
 
@@ -67,11 +78,13 @@ const ReportsDetails = ({ reportData }) => {
                             <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider">Invoice Date</th>
                             <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider">Arrival Date</th>
                             <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider">Due Date</th>
+                            <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider text-center">Credit Days</th>
                             <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider">Currency</th>
                             <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider text-right">Total</th>
                             <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider text-right">Paid</th>
                             <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider text-right">Balance</th>
-                            <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider text-center">Days</th>
+                            <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider text-center">Days Elapsed</th>
+                            <th className="px-4 py-3 text-xs font-bold text-text-sub uppercase tracking-wider text-center">Days Overdue</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
@@ -85,9 +98,10 @@ const ReportsDetails = ({ reportData }) => {
                                     <td className="px-4 py-3 text-xs text-text-sub font-mono">{entry.reference || '-'}</td>
                                     <td className="px-4 py-3 text-xs text-text-main">{entry.module}</td>
                                     <td className="px-4 py-3 text-xs text-text-main font-mono">{entry.folio}</td>
-                                    <td className="px-4 py-3 text-xs text-text-sub">{entry.invoice_date}</td>
-                                    <td className="px-4 py-3 text-xs text-text-sub">{entry.arrival_date}</td>
-                                    <td className="px-4 py-3 text-xs text-text-sub">{entry.due_date}</td>
+                                    <td className="px-4 py-3 text-xs text-text-sub">{validDate(entry.invoice_date)}</td>
+                                    <td className="px-4 py-3 text-xs text-text-sub">{validDate(entry.arrival_date)}</td>
+                                    <td className="px-4 py-3 text-xs text-text-sub">{validDate(entry.due_date)}</td>
+                                    <td className="px-4 py-3 text-xs text-text-sub text-center">{entry.credit_days || '-'}</td>
                                     <td className="px-4 py-3 text-xs text-text-main font-mono text-center">
                                         <span className="bg-background px-2 py-0.5 rounded border border-border">{entry.currency}</span>
                                     </td>
@@ -102,10 +116,16 @@ const ReportsDetails = ({ reportData }) => {
                                     </td>
                                     <td className="px-4 py-3 text-center">
                                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-bold ${isCritical ? 'bg-danger/10 text-danger border border-danger/20' :
-                                                isOverdue ? 'bg-warning/10 text-warning border border-warning/20' :
-                                                    'bg-success/10 text-success border border-success/20'
+                                            isOverdue ? 'bg-warning/10 text-warning border border-warning/20' :
+                                                'bg-success/10 text-success border border-success/20'
                                             }`}>
                                             {entry.days_since}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-3 text-center">
+                                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-bold ${entry.days_overdue > 0 ? 'text-danger' : 'text-success'
+                                            }`}>
+                                            {entry.days_overdue}
                                         </span>
                                     </td>
                                 </tr>

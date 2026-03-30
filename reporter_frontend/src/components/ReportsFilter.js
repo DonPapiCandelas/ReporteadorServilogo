@@ -7,17 +7,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 
 function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownloadHtml }) {
-  // Filter Mode: 'month_range', 'to_date', 'date_range'
-  const [filterMode, setFilterMode] = useState('month_range');
+  // Filter Mode: 'to_date', 'date_range'
+  const [filterMode, setFilterMode] = useState('to_date');
 
   // Date States
   const [asOfDate, setAsOfDate] = useState(new Date()); // For "To Date" mode
   const [startDate, setStartDate] = useState(startOfMonth(new Date())); // For "Date Range" (Days)
   const [endDate, setEndDate] = useState(endOfMonth(new Date()));   // For "Date Range" (Days)
-
-  // Month Range States
-  const [fromMonth, setFromMonth] = useState(new Date());
-  const [toMonth, setToMonth] = useState(new Date());
 
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerOptions, setCustomerOptions] = useState([]);
@@ -45,20 +41,17 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
     const filters = {
       customer_id: selectedCustomer ? selectedCustomer.value : null,
       customer_name: selectedCustomer ? selectedCustomer.label : "(All Customers)",
-      filter_mode: 'date_range', // Default to date_range for backend compatibility
+      filter_mode: 'to_date', // Default
       as_of: format(new Date(), 'yyyy-MM-dd')
     };
 
-    if (filterMode === 'month_range') {
-      filters.start_date = fromMonth ? format(startOfMonth(fromMonth), 'yyyy-MM-dd') : null;
-      filters.end_date = toMonth ? format(endOfMonth(toMonth), 'yyyy-MM-dd') : null;
-      filters.as_of = filters.end_date || format(endOfMonth(new Date()), 'yyyy-MM-dd');
-    } else if (filterMode === 'to_date') {
+    if (filterMode === 'to_date') {
       filters.filter_mode = 'to_date';
       filters.end_date = format(asOfDate, 'yyyy-MM-dd');
       filters.as_of = filters.end_date;
       filters.start_date = null;
     } else if (filterMode === 'date_range') {
+      filters.filter_mode = 'date_range';
       filters.start_date = format(startDate, 'yyyy-MM-dd');
       filters.end_date = format(endDate, 'yyyy-MM-dd');
       filters.as_of = filters.end_date;
@@ -109,9 +102,8 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
   };
 
   const modeOptions = [
-    { value: 'month_range', label: 'Month Range' },
-    { value: 'date_range', label: 'Date Range (Custom)' },
-    { value: 'to_date', label: 'Cut-off Date (Snapshot)' },
+    { value: 'to_date', label: 'Cut-off Date' },
+    { value: 'date_range', label: 'Date Range' },
   ];
 
   return (
@@ -129,34 +121,6 @@ function ReportsFilter({ onRunReport, onDownloadExcel, onDownloadPdf, onDownload
             isSearchable={false}
           />
         </div>
-
-        {/* Dynamic Date Inputs */}
-        {filterMode === 'month_range' && (
-          <div className="flex items-center gap-2">
-            <div>
-              <label className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">From Month</label>
-              <DatePicker
-                selected={fromMonth}
-                onChange={(date) => setFromMonth(date)}
-                dateFormat="MM/yyyy"
-                showMonthYearPicker
-                isClearable
-                placeholderText="Beginning of History"
-                className="w-32 bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] font-bold text-text-sub uppercase tracking-wider mb-1">To Month</label>
-              <DatePicker
-                selected={toMonth}
-                onChange={(date) => setToMonth(date)}
-                dateFormat="MM/yyyy"
-                showMonthYearPicker
-                className="w-32 bg-background border border-border rounded px-3 py-2 text-sm text-text-main focus:border-primary outline-none"
-              />
-            </div>
-          </div>
-        )}
 
         {filterMode === 'to_date' && (
           <div className="w-full md:w-auto">

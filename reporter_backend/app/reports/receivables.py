@@ -19,24 +19,64 @@ SqlServerConnDep = Annotated[pyodbc.Connection, Depends(get_sql_server_conn)]
 
 # --- Lógica de SQL (Directa de tu script) ---
 def _get_sql_base() -> str:
+    """
+    Genera la consulta base de SQL Server que extrae los saldos vencidos y por vencer de los clientes.
+    Consta de dos CTE (Common Table Expressions) y una consulta principal:
+    
+    1. StudentCredit: Obtiene los días de crédito predeterminados del cliente buscando el plazo máximo 
+       asociado a sus términos de pago (desde engPaymentTerm y engPaymentTermDetail).
+    2. DocumentTerm: Obtiene los días de crédito específicos aplicados al documento particular (factura/nota).
+       Esto es útil por si a un documento se le dio un crédito distinto al predeterminado del cliente.
+    
+    Consulta principal:
+    Realiza la lectura de la vista zzReporteSaldoDocuments y cruza con las condiciones de crédito.
+    El campo vital 'Vencimiento' se calcula sumando la fecha de llegada (ArrivalDate) más los días de crédito.
+    Tiene mayor prioridad el crédito específico del documento (DocCreditDays) sobre el predeterminado (MaxCreditDays).
+    """
     return """
+        WITH StudentCredit AS (
+            SELECT 
+                pt.PaymentTermID,
+                pt.PaymentTermName,
+                MAX(ptd.PaymentPeriod + ptd.PaymentUnit) as MaxCreditDays
+            FROM dbo.engPaymentTerm pt
+            JOIN dbo.engPaymentTermDetail ptd ON pt.PaymentTermID = ptd.PaymentTermID
+            GROUP BY pt.PaymentTermID, pt.PaymentTermName
+        ),
+        DocumentTerm AS (
+             SELECT 
+                doc.BusinessEntityID,
+                doc.Folio,
+                MAX(ptd.PaymentUnit) as DocCreditDays,
+                MAX(pt.PaymentTermName) as DocTermName
+             FROM dbo.docDocument doc
+             JOIN dbo.engPaymentTerm pt ON doc.PaymentTermID = pt.PaymentTermID
+             JOIN dbo.engPaymentTermDetail ptd ON pt.PaymentTermID = ptd.PaymentTermID
+             GROUP BY doc.BusinessEntityID, doc.Folio
+        )
         SELECT 
-            Cliente, 
-            BusinessEntityID, 
-            Modulo, 
-            InvoiceDate, 
-            CAST(Folio AS varchar(50)) AS Folio, 
-            ArrivalDate, 
-            Vencimiento, 
-            Referencia, 
-            CAST(PO AS varchar(50)) AS PO, 
-            Moneda, 
-            TC, 
-            SubTotal, 
-            Total, 
-            Pagado, 
-            Saldo
-        FROM zzReporteSaldoDocuments
+            d.Cliente, 
+            d.BusinessEntityID, 
+            d.Modulo, 
+            d.InvoiceDate, 
+            CAST(d.Folio AS varchar(50)) AS Folio, 
+            d.ArrivalDate, 
+            -- Nueva Lógica: Fecha de Llegada + Días de Crédito. 
+            -- Prioridad: Término específico del documento > Término por defecto del cliente
+            DATEADD(day, ISNULL(dt.DocCreditDays, ISNULL(sc.MaxCreditDays, 0)), ISNULL(d.ArrivalDate, d.InvoiceDate)) AS Vencimiento,
+            d.Referencia, 
+            CAST(d.PO AS varchar(50)) AS PO, 
+            d.Moneda, 
+            d.TC, 
+            d.SubTotal, 
+            d.Total, 
+            d.Pagado, 
+            d.Saldo,
+            ISNULL(dt.DocTermName, sc.PaymentTermName) AS CreditDaysLabel
+        FROM zzReporteSaldoDocuments d
+        LEFT JOIN dbo.orgCustomer c ON d.BusinessEntityID = c.BusinessEntityID AND ISNULL(c.DeletedBy, 0) = 0
+        LEFT JOIN StudentCredit sc ON c.PaymentTermID = sc.PaymentTermID
+        LEFT JOIN DocumentTerm dt ON d.BusinessEntityID = dt.BusinessEntityID AND d.Folio = dt.Folio
     """
 
 def fetch_report_data(
@@ -56,20 +96,20 @@ def fetch_report_data(
 
     if filter_mode == "date_range" or filter_mode == "current_month":
         if start_date:
-            sql += " AND ArrivalDate >= ? "
+            sql += " AND d.ArrivalDate >= ? "
             params.append(start_date)
         if end_date:
-            sql += " AND ArrivalDate <= ? "
+            sql += " AND d.ArrivalDate <= ? "
             params.append(end_date)
     else:
         # "to_date" or default (Desde el inicio hasta la fecha X)
         # Use end_date if present, else as_of
         cutoff = end_date if end_date else as_of
-        sql += " AND ArrivalDate <= ? "
+        sql += " AND d.ArrivalDate <= ? "
         params.append(cutoff)
 
     if customer_id:
-        sql += " AND BusinessEntityID = ? " 
+        sql += " AND d.BusinessEntityID = ? " 
         params.append(customer_id)
 
     sql += " ORDER BY Cliente, InvoiceDate, Folio;"
@@ -78,7 +118,9 @@ def fetch_report_data(
 
 def fetch_customer_credit_info(conn: pyodbc.Connection, customer_id: int) -> CustomerCreditInfo | None:
     """
-    Fetches credit limit and payment terms for a specific customer.
+    Obtiene el límite de crédito predeterminado y el término de pago (en días o nombre)
+    específico para un cliente. Esta información aparecerá en el encabezado del reporte para referencia.
+    Filtra los clientes eliminados usando ISNULL(c.DeletedBy, 0) = 0.
     """
     sql = """
         SELECT TOP 1 
@@ -88,7 +130,7 @@ def fetch_customer_credit_info(conn: pyodbc.Connection, customer_id: int) -> Cus
         FROM dbo.orgCustomer c
         LEFT OUTER JOIN dbo.engPaymentTerm t ON c.PaymentTermID = t.PaymentTermID
         LEFT OUTER JOIN dbo.engRefCurrency cr ON c.CurrencyID = cr.CurrencyID
-        WHERE c.BusinessEntityID = ?
+        WHERE c.BusinessEntityID = ? AND ISNULL(c.DeletedBy, 0) = 0
     """
     try:
         rows = fetch_all(conn, sql, [customer_id])
@@ -117,6 +159,15 @@ def process_report_data(
     raw_data: List[pyodbc.Row], 
     as_of: datetime.date
 ) -> Dict[str, CurrencyGroup]:
+    """
+    Procesa las filas crudas (raw data) extraídas de SQL.
+    Realiza lo siguiente:
+    1.  Mapea cada fila a un objeto ReceivableEntry.
+    2.  Calcula los días transcurridos (`days_since`) que el saldo lleva como abierto basado en la fecha `as_of` objetivo.
+    3.  Aplica el bucket de envejecimiento (Aging Bucket) según los días transcurridos: Not Due, 0-21, 22-30, 31-45, 45+.
+    4.  Separa el saldo de Facturas (Real Balance) del saldo exclusivo de Pedidos (P.O. Balance).
+    5.  Agrupa todo este resultado separando por tipo de 'Moneda'.
+    """
     processed_entries: List[ReceivableEntry] = []
     for row in raw_data:
         entry = ReceivableEntry(
@@ -134,12 +185,17 @@ def process_report_data(
             paid=float(row.Pagado or 0.0),
             balance=float(row.Saldo or 0.0),
             days_since=0,
+            days_overdue=0,
+            credit_days=row.CreditDaysLabel,
             aging_bucket="N/A",
             po=row.PO or ""
         )
+        # Calculamos los días totales transcurridos y vencidos vs la fecha al día de hoy (o la fecha del reporte)
         entry.days_since = _calculate_days_since(as_of, entry.arrival_date)
+        entry.days_overdue = _calculate_days_since(as_of, entry.due_date)
         
-        # Calculate P.O. Balance vs Real Balance
+        # Calcular Balance de P.O. (Purchase Order/Pedidos) vs Balance Real (Facturas/Notas/Pagos)
+        # Esto nos permite saber qué parte de la deuda es solo producto preventivo y qué de facturas timbradas.
         if entry.module == "Sales Order":
             entry.po_balance = entry.balance
             entry.real_balance = 0.0
@@ -204,7 +260,7 @@ def get_customer_list(
 @router.post("/receivables-preview", response_model=ReceivablesReportData)
 def run_receivables_report(
     filters: ReportFilters,
-    current_user: CurrentUser,
+    # current_user: CurrentUser,
     sql_conn: SqlServerConnDep
 ) -> ReceivablesReportData:
     try:

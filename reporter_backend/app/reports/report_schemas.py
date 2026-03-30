@@ -21,6 +21,8 @@ class ReceivableEntry(BaseModel):
     po_balance: float = 0.0
     real_balance: float = 0.0
     days_since: int
+    days_overdue: int
+    credit_days: str | None = None
     aging_bucket: str
     po: Optional[str] = None
 

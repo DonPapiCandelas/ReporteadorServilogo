@@ -1,0 +1,114 @@
+2026-03-19 09:08:24,694 [INFO] app.main: [API] REQ: GET /api/users/me
+2026-03-19 09:08:24,700 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2026-03-19 09:08:24,700 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2026-03-19 09:08:27,051 [INFO] app.main: [API] REQ: POST /api/token body=username=********&password=********
+2026-03-19 09:08:27,339 [INFO] app.main: [API] RES: POST /api/token -> 200
+2026-03-19 09:08:27,350 [INFO] app.main: [API] REQ: GET /api/users/me
+2026-03-19 09:08:27,352 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2026-03-19 09:08:27,425 [INFO] app.main: [API] REQ: GET /api/companies
+2026-03-19 09:08:27,427 [INFO] app.main: [API] RES: GET /api/companies -> 200
+2026-03-19 09:08:27,440 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 09:08:27,441 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2026-03-19 09:08:27,441 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 09:08:27,443 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 09:08:27,443 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 09:08:27,443 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 09:08:27,619 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2026-03-19 09:08:27,640 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 09:08:34,919 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 09:08:34,922 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 09:08:34,922 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 09:08:34,999 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 09:57:45,845 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 09:57:45,846 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 09:57:45,846 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 09:57:45,861 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 10:01:24,140 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 10:01:24,141 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 10:01:24,141 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 10:01:24,151 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 10:14:11,781 [INFO] app.main: [API] REQ: GET /api/users/me
+2026-03-19 10:14:11,783 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2026-03-19 10:14:11,783 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2026-03-19 10:14:14,535 [INFO] app.main: [API] REQ: POST /api/token body=username=********&password=********
+2026-03-19 10:14:14,829 [INFO] app.main: [API] RES: POST /api/token -> 200
+2026-03-19 10:14:14,877 [INFO] app.main: [API] REQ: GET /api/users/me
+2026-03-19 10:14:14,879 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2026-03-19 10:14:14,898 [INFO] app.main: [API] REQ: GET /api/companies
+2026-03-19 10:14:14,900 [INFO] app.main: [API] RES: GET /api/companies -> 200
+2026-03-19 10:14:14,934 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 10:14:14,934 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 10:14:14,935 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 10:14:14,938 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2026-03-19 10:14:14,940 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 10:14:14,940 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 10:14:15,032 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 10:14:15,032 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2026-03-19 10:14:21,135 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 10:14:21,136 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 10:14:21,136 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 10:14:21,179 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 10:14:45,951 [INFO] app.main: [API] REQ: POST /api/reports/receivables-download-excel
+2026-03-19 10:14:45,956 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 10:14:45,956 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 10:14:46,516 [INFO] app.main: [API] RES: POST /api/reports/receivables-download-excel -> 200
+2026-03-19 11:25:03,527 [INFO] app.main: [API] REQ: GET /api/users/me
+2026-03-19 11:25:03,530 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2026-03-19 11:25:03,572 [INFO] app.main: [API] REQ: GET /api/companies
+2026-03-19 11:25:03,574 [INFO] app.main: [API] RES: GET /api/companies -> 200
+2026-03-19 11:25:03,638 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:25:03,639 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2026-03-19 11:25:03,640 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 11:25:03,640 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 11:25:03,642 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-19 11:25:03,642 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-19 11:25:03,701 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:25:03,706 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2026-03-19 11:25:50,640 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:25:50,642 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'licencias'
+2026-03-19 11:25:50,642 [INFO] app.sql_server_conn: Resolved Company: 'licencias' -> Database: 'LICENCIAS_Y_SERVICIOS_PRODUCE'
+2026-03-19 11:25:52,503 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:25:54,141 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:25:54,143 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'sofresco'
+2026-03-19 11:25:54,144 [INFO] app.sql_server_conn: Resolved Company: 'sofresco' -> Database: 'SOFRESCO_GMBH_25'
+2026-03-19 11:25:54,208 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:25:55,033 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:25:55,035 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'sofresco'
+2026-03-19 11:25:55,035 [INFO] app.sql_server_conn: Resolved Company: 'sofresco' -> Database: 'SOFRESCO_GMBH_25'
+2026-03-19 11:25:55,052 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:26:02,737 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:26:02,740 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'sofresco'
+2026-03-19 11:26:02,740 [INFO] app.sql_server_conn: Resolved Company: 'sofresco' -> Database: 'SOFRESCO_GMBH_25'
+2026-03-19 11:26:02,757 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:42:55,155 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:42:55,156 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'licencias'
+2026-03-19 11:42:55,156 [INFO] app.sql_server_conn: Resolved Company: 'licencias' -> Database: 'LICENCIAS_Y_SERVICIOS_PRODUCE'
+2026-03-19 11:42:55,350 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:42:55,665 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:42:55,667 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'licencias'
+2026-03-19 11:42:55,667 [INFO] app.sql_server_conn: Resolved Company: 'licencias' -> Database: 'LICENCIAS_Y_SERVICIOS_PRODUCE'
+2026-03-19 11:42:55,680 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:43:01,447 [INFO] app.main: [API] REQ: GET /api/users/me
+2026-03-19 11:43:01,455 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2026-03-19 11:43:01,471 [INFO] app.main: [API] REQ: GET /api/companies
+2026-03-19 11:43:01,478 [INFO] app.main: [API] RES: GET /api/companies -> 200
+2026-03-19 11:43:01,538 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:43:01,541 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2026-03-19 11:43:01,543 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'licencias'
+2026-03-19 11:43:01,543 [INFO] app.sql_server_conn: Resolved Company: 'licencias' -> Database: 'LICENCIAS_Y_SERVICIOS_PRODUCE'
+2026-03-19 11:43:01,544 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'licencias'
+2026-03-19 11:43:01,545 [INFO] app.sql_server_conn: Resolved Company: 'licencias' -> Database: 'LICENCIAS_Y_SERVICIOS_PRODUCE'
+2026-03-19 11:43:01,551 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:43:01,631 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2026-03-19 11:43:05,315 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:43:05,317 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'licencias'
+2026-03-19 11:43:05,317 [INFO] app.sql_server_conn: Resolved Company: 'licencias' -> Database: 'LICENCIAS_Y_SERVICIOS_PRODUCE'
+2026-03-19 11:43:05,387 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:46:05,896 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:46:05,899 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'licencias'
+2026-03-19 11:46:05,899 [INFO] app.sql_server_conn: Resolved Company: 'licencias' -> Database: 'LICENCIAS_Y_SERVICIOS_PRODUCE'
+2026-03-19 11:46:05,909 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-19 11:46:59,354 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-19 11:46:59,354 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'licencias'
+2026-03-19 11:46:59,354 [INFO] app.sql_server_conn: Resolved Company: 'licencias' -> Database: 'LICENCIAS_Y_SERVICIOS_PRODUCE'
+2026-03-19 11:46:59,358 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200

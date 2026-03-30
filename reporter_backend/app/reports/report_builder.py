@@ -133,13 +133,13 @@ def create_excel_report(
             headers2 = [
                 "REFERENCE", "PO", "DOCUMENT", "NO.", "INVOICE DATE", 
                 "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "P.O. BALANCE", "REAL BALANCE", 
-                "DUE DATE", "DAYS SINCE ARRIVAL"
+                "DUE DATE", "DAYS ELAPSED", "DAYS OVERDUE"
             ]
         else:
             headers2 = [
                 "CUSTOMER", "REFERENCE", "PO", "DOCUMENT", "NO.", "INVOICE DATE", 
                 "TOTAL AMOUNT", "ARRIVAL DATE", "PAYMENTS", "P.O. BALANCE", "REAL BALANCE", 
-                "DUE DATE", "DAYS SINCE ARRIVAL"
+                "DUE DATE", "DAYS ELAPSED", "DAYS OVERDUE"
             ]
 
         for i, h in enumerate(headers2, start=1):
@@ -155,13 +155,13 @@ def create_excel_report(
                 out = [
                     entry.reference, entry.po, entry.module, entry.folio, entry.invoice_date,
                     entry.total, entry.arrival_date, entry.paid, entry.po_balance, entry.real_balance,
-                    entry.due_date, entry.days_since
+                    entry.due_date, entry.days_since, entry.days_overdue
                 ]
             else:
                 out = [
                     entry.customer_name, entry.reference, entry.po, entry.module, entry.folio, entry.invoice_date,
                     entry.total, entry.arrival_date, entry.paid, entry.po_balance, entry.real_balance,
-                    entry.due_date, entry.days_since
+                    entry.due_date, entry.days_since, entry.days_overdue
                 ]
             
             for i, v in enumerate(out, start=1):
@@ -179,10 +179,10 @@ def create_excel_report(
             
             if is_single_customer:
                 # Adjusted widths for new PO column (index 1)
-                widths = [30, 20, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14]
+                widths = [30, 20, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14, 14]
             else:
                 # Adjusted widths for new PO column (index 2)
-                widths = [28, 30, 20, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14]
+                widths = [28, 30, 20, 14, 8, 12, 16, 14, 16, 16, 16, 14, 14, 14]
             set_col_widths(ws2, widths)
 
     # ===== 2. Hojas Summary (Summary Sheets) - SEGUNDAS =====
@@ -251,7 +251,7 @@ def create_excel_report(
     headers = [
         "CUSTOMER", "REFERENCE", "DOCUMENT", "INVOICE DATE", "NO.",
         "ARRIVAL DATE", "DUE DATE", "CURRENCY", "FX RATE", "TOTAL AMOUNT",
-        "PAYMENTS", "BALANCE", "DAYS SINCE ARRIVAL",
+        "PAYMENTS", "BALANCE", "DAYS ELAPSED", "DAYS OVERDUE"
     ]
     for i, h in enumerate(headers, start=1):
         c = ws.cell(6, i, h)
@@ -265,7 +265,7 @@ def create_excel_report(
         out = [
             entry.customer_name, entry.reference, entry.module, entry.invoice_date,
             entry.folio, entry.arrival_date, entry.due_date, entry.currency,
-            entry.fx_rate, entry.total, entry.paid, entry.balance, entry.days_since,
+            entry.fx_rate, entry.total, entry.paid, entry.balance, entry.days_since, entry.days_overdue
         ]
         for i, v in enumerate(out, start=1):
             if isinstance(v, (datetime.datetime, datetime.date)):
@@ -279,7 +279,7 @@ def create_excel_report(
     if all_entries:
         _apply_main_report_formats_excel(ws, start, last)
 
-    set_col_widths(ws, [28, 30, 14, 12, 8, 14, 14, 10, 10, 16, 16, 16, 14])
+    set_col_widths(ws, [28, 30, 14, 12, 8, 14, 14, 10, 10, 16, 16, 16, 14, 14])
 
     if len(wb.sheetnames) > 0:
         wb.active = 0
@@ -301,11 +301,12 @@ def _apply_main_report_formats_excel(ws, start, last):
         for col in (10, 11, 12):
             ws.cell(row, col).number_format = "$#,##0.00"
         ws.cell(row, 13).number_format = "0"
+        ws.cell(row, 14).number_format = "0"
         ws.cell(row, 1).alignment = Alignment(horizontal="left")
         ws.cell(row, 2).alignment = Alignment(horizontal="left")
-        for col in range(3, 14):
+        for col in range(3, 15):
             ws.cell(row, col).alignment = Alignment(horizontal="center")
-        for col in range(1, 14):
+        for col in range(1, 15):
             ws.cell(row, col).border = border_all()
     tr = last + 1
     ws.merge_cells(f"A{tr}:I{tr}")
@@ -319,7 +320,7 @@ def _apply_main_report_formats_excel(ws, start, last):
         ws.cell(tr, col).alignment = Alignment(horizontal="center")
         ws.cell(tr, col).border = border_all()
     ws.freeze_panes = "A7"
-    ws.auto_filter.ref = f"A6:M{last}"
+    ws.auto_filter.ref = f"A6:N{last}"
     overdue_fill = PatternFill("solid", fgColor="FDE68A")
     ws.conditional_formatting.add(
         f"M{start}:M{last}",
@@ -333,19 +334,19 @@ def _apply_currency_sheet_formats_excel_custom(ws2, r0, last2, is_single_custome
         # Columns shifted by 1 due to PO
         date_cols = (5, 7, 11)
         money_cols = (6, 8, 9, 10)
-        int_cols = (12,)
+        int_cols = (12, 13)
         total_cols = (6, 8, 9, 10)
-        days_col = 12
-        last_col = 12
+        days_col = 12 # This is Days Elapsed, we can keep coloring it or not on Overdue. Overdue is 13.
+        last_col = 13
         merge_range_end = 5
     else:
         # Columns shifted by 1 due to PO
         date_cols = (6, 8, 12)
         money_cols = (7, 9, 10, 11)
-        int_cols = (13,)
+        int_cols = (13, 14)
         total_cols = (7, 9, 10, 11)
         days_col = 13
-        last_col = 13
+        last_col = 14
         merge_range_end = 6
 
     for row in range(r0, last2 + 1):
@@ -462,7 +463,7 @@ def create_pdf_report(
         story.append(Paragraph(f"CURRENCY — {cur}", title_style))
         story.append(
             Paragraph(
-                f"As Of: <b>{as_of:%m/%d/%y}</b> &nbsp;|&nbsp; Customer: <b>{customer_name}</b> &nbsp;|&nbsp; Records: <b>{len(cur_group.entries)}</b>",
+                f"As Of: <b>{as_of:%m/%d/%Y}</b> &nbsp;|&nbsp; Customer: <b>{customer_name}</b> &nbsp;|&nbsp; Records: <b>{len(cur_group.entries)}</b>",
                 meta_style,
             )
         )
@@ -475,10 +476,10 @@ def create_pdf_report(
 
         headers = [
             "CUSTOMER", "REFERENCE", "PO", "DOC", "INV\nDATE", "NO.", "ARR\nDATE",
-            "DUE\nDATE", "TOTAL", "PAYMT", "P.O.\nBAL", "REAL\nBAL", "DAYS",
+            "DUE\nDATE", "TOTAL", "PAYMT", "P.O.\nBAL", "REAL\nBAL", "DAYS\nELAP", "DAYS\nOVR",
         ]
         # Adjusted widths for PO column
-        widths = [40, 45, 25, 14, 14, 12, 14, 14, 25, 22, 22, 22, 18] # mm
+        widths = [35, 35, 20, 12, 16, 10, 16, 16, 22, 20, 20, 20, 12, 12] # mm
 
         tbl_data = [headers]
         for entry in cur_group.entries:
@@ -506,15 +507,16 @@ def create_pdf_report(
                 reference_display,
                 po_display,
                 doc_abbr,
-                fmt_date(entry.invoice_date, "%m/%d/%y"),
+                fmt_date(entry.invoice_date, "%m/%d/%Y"),
                 str(entry.folio or ""),
-                fmt_date(entry.arrival_date, "%m/%d/%y"),
-                fmt_date(entry.due_date, "%m/%d/%y"),
+                fmt_date(entry.arrival_date, "%m/%d/%Y"),
+                fmt_date(entry.due_date, "%m/%d/%Y"),
                 f"{entry.total:,.2f}",
                 f"{entry.paid:,.2f}",
                 f"{entry.po_balance:,.2f}",
                 f"{entry.real_balance:,.2f}",
                 str(entry.days_since),
+                str(entry.days_overdue),
             ])
 
         t = Table(tbl_data, colWidths=[w * mm for w in widths], repeatRows=1, splitByRow=True)
@@ -538,7 +540,7 @@ def create_pdf_report(
         cur_po_bal = cur_group.totals['po_balance']
         cur_real_bal = cur_group.totals['real_balance']
         # Adjusted totals row for extra column
-        totals_row = [["", "", "", "", "", "", "", "TOTALS:", f"{cur_total:,.2f}", f"{cur_pays:,.2f}", f"{cur_po_bal:,.2f}", f"{cur_real_bal:,.2f}", ""]]
+        totals_row = [["", "", "", "", "", "", "", "TOTALS:", f"{cur_total:,.2f}", f"{cur_pays:,.2f}", f"{cur_po_bal:,.2f}", f"{cur_real_bal:,.2f}", "", ""]]
         tt = Table(totals_row, colWidths=[w * mm for w in widths])
         tt.setStyle(TableStyle([
             ("SPAN", (0, 0), (7, 0)),
@@ -660,7 +662,7 @@ def create_html_report(
         </div><div style="width:80px"></div></div>"""
     ]
 
-    meta = f"""<div class="meta"><div>As Of: <b>{fmt_date_ordinal(as_of)}</b></div>
+    meta = f"""<div class="meta"><div>As Of: <b>{as_of.strftime('%m/%d/%Y')}</b></div>
                 <div>Customer: <b>{customer_name}</b></div>
                 <div>Total Records: <b>{len(all_entries)}</b></div></div>"""
     parts.append(meta)
@@ -679,19 +681,22 @@ def create_html_report(
         parts.append(
             "<table><thead><tr>"
             "<th>CUSTOMER</th><th>REFERENCE</th><th>PO</th><th>DOCUMENT</th><th>INVOICE DATE</th><th>NO.</th>"
-            "<th>ARRIVAL DATE</th><th>DUE DATE</th><th>TOTAL AMOUNT</th><th>PAYMENTS</th><th>P.O. BALANCE</th><th>REAL BALANCE</th><th>DAYS SINCE ARRIVAL</th>"
+            "<th>ARRIVAL DATE</th><th>DUE DATE</th><th>TOTAL AMOUNT</th><th>PAYMENTS</th><th>P.O. BALANCE</th><th>REAL BALANCE</th>"
+            "<th>DAYS ELAPSED</th><th>DAYS OVERDUE</th>"
             "</tr></thead><tbody>"
         )
         for entry in cur_group.entries:
+            overdue_style = "color:red;font-weight:bold" if entry.days_overdue > 0 else "color:green"
             parts.append(
                 f"<tr><td>{entry.customer_name or ''}</td><td>{entry.reference or ''}</td><td>{entry.po or ''}</td><td class='center'>{entry.module or ''}</td>"
-                f"<td class='center'>{fmt_date(entry.invoice_date)}</td><td class='center'>{entry.folio or ''}</td>"
-                f"<td class='center'>{fmt_date(entry.arrival_date)}</td><td class='center'>{fmt_date(entry.due_date)}</td>"
+                f"<td class='center'>{fmt_date(entry.invoice_date, '%m/%d/%Y')}</td><td class='center'>{entry.folio or ''}</td>"
+                f"<td class='center'>{fmt_date(entry.arrival_date, '%m/%d/%Y')}</td><td class='center'>{fmt_date(entry.due_date, '%m/%d/%Y')}</td>"
                 f"<td class='num'>{entry.total:,.2f}</td>"
                 f"<td class='num'>{entry.paid:,.2f}</td>"
                 f"<td class='num'>{entry.po_balance:,.2f}</td>"
                 f"<td class='num'>{entry.real_balance:,.2f}</td>"
-                f"<td class='num' style='text-align:center'>{entry.days_since}</td></tr>"
+                f"<td class='num' style='text-align:center'>{entry.days_since}</td>"
+                f"<td class='num' style='text-align:center; {overdue_style}'>{entry.days_overdue}</td></tr>"
             )
 
         cur_total = cur_group.totals['total']
@@ -703,7 +708,7 @@ def create_html_report(
             f"<td class='num'>{cur_total:,.2f}</td>"
             f"<td class='num'>{cur_pays:,.2f}</td>"
             f"<td class='num'>{cur_po_bal:,.2f}</td>"
-            f"<td class='num'>{cur_real_bal:,.2f}</td><td></td></tr>"
+            f"<td class='num'>{cur_real_bal:,.2f}</td><td></td><td></td></tr>"
         )
         parts.append("</tbody></table>")
 

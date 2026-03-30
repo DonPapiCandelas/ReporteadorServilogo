@@ -55,9 +55,9 @@ function ReportsPage() {
           as_of: formattedToday,
           customer_id: null,
           customer_name: 'All',
-          filter_mode: 'current_month',
-          start_date: start,
-          end_date: end
+          filter_mode: 'to_date', // CHANGED: Show history to today
+          // start_date is not needed for 'to_date'
+          end_date: formattedToday
         };
 
         const response = await axios.post('/api/reports/receivables-preview', globalFilters);
@@ -118,7 +118,7 @@ function ReportsPage() {
               : 'text-text-sub hover:text-white'
               }`}
           >
-            Global Summary
+            Summary
           </button>
           <button
             onClick={() => setActiveTab('details')}
@@ -133,11 +133,11 @@ function ReportsPage() {
 
         {/* CONTENT */}
         {activeTab === 'summary' && (
-          /* Siempre usa globalSummaryData */
-          globalSummaryData ? (
-            <ReportsSummary reportData={globalSummaryData} />
+          /* Usa filteredReportData si existe, sino globalSummaryData */
+          (filteredReportData || globalSummaryData) ? (
+            <ReportsSummary reportData={filteredReportData || globalSummaryData} />
           ) : (
-            <div className="p-4 text-text-sub font-mono text-sm">Loading Global Summary...</div>
+            <div className="p-4 text-text-sub font-mono text-sm">Loading Summary...</div>
           )
         )}
 

@@ -1,0 +1,21 @@
+2026-03-06 11:05:30,902 [INFO] app.main: [API] REQ: GET /api/users/me
+2026-03-06 11:05:30,916 [WARNING] app.main: [API] HTTPException: GET /api/users/me -> 401 Could not validate credentials
+2026-03-06 11:05:30,916 [INFO] app.main: [API] RES: GET /api/users/me -> 401
+2026-03-06 11:07:02,908 [INFO] app.main: [API] REQ: POST /api/token body=username=********&password=********
+2026-03-06 11:07:03,211 [INFO] app.main: [API] RES: POST /api/token -> 200
+2026-03-06 11:07:03,219 [INFO] app.main: [API] REQ: GET /api/users/me
+2026-03-06 11:07:03,221 [INFO] app.main: [API] RES: GET /api/users/me -> 200
+2026-03-06 11:07:03,254 [INFO] app.main: [API] REQ: GET /api/companies
+2026-03-06 11:07:03,256 [INFO] app.main: [API] RES: GET /api/companies -> 200
+2026-03-06 11:07:03,280 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-06 11:07:03,281 [INFO] app.main: [API] REQ: GET /api/reports/filters/customers
+2026-03-06 11:07:03,281 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-06 11:07:03,281 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-06 11:07:03,283 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-06 11:07:03,283 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-06 11:07:03,352 [INFO] app.main: [API] RES: GET /api/reports/filters/customers -> 200
+2026-03-06 11:07:03,413 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
+2026-03-06 11:07:20,029 [INFO] app.main: [API] REQ: POST /api/reports/receivables-preview
+2026-03-06 11:07:20,032 [INFO] app.sql_server_conn: Connection Request - X-Company Header: 'growers_union'
+2026-03-06 11:07:20,032 [INFO] app.sql_server_conn: Resolved Company: 'growers_union' -> Database: 'GROWERS_UNION_2025'
+2026-03-06 11:07:20,135 [INFO] app.main: [API] RES: POST /api/reports/receivables-preview -> 200
